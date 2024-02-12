@@ -20,8 +20,9 @@ class TwoWayDict(dict):
         """Returns the number of connections"""
         return dict.__len__(self) // 2
 
+# TODO: Add remove element when socket is closed
 
-class PyvDatabase:
+class ElementsDatabase:
     def __init__(self):
         self.component_events: dict[str, dict[str, Callable]] = {}
         self.component_ids = TwoWayDict()

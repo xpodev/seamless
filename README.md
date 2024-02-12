@@ -1,13 +1,13 @@
-# PyV Module
+# JSX
 
 ![build](https://github.com/xpodev/pyrl/actions/workflows/python-publish.yml/badge.svg)
 
-PyV is a Python package for creating and manipulating HTML components. It is working similar to React.js, but in Python.
+JSX is a Python package for creating and manipulating HTML components. It is working similar to React.js, but in Python.
 
 ## Usage
 
 ```python
-from pyv import Div, H1, P, Component, Style
+from jsx import Div, H1, P, Component, Style
 
 class MyComponent(Component):
   def render(self):
@@ -19,7 +19,7 @@ class MyComponent(Component):
         ),
       ),
       P(
-        "Welcome to PyV!"
+        "Welcome to JSX!"
       ),
       style=Style(
         text_align="center"
@@ -28,7 +28,7 @@ class MyComponent(Component):
 ```
 ```python
 from .components import MyComponent
-from pyv.renderer import render
+from jsx.renderer import render
 
 @app.get("/")
 def hello_world():
@@ -60,28 +60,28 @@ class MyComponent(Component):
       on_submit=self.save_age
     )
 
-  def set_age(self, event_data: PyvChangeEvent):
+  def set_age(self, event_data: JSXChangeEvent):
     self.age = event_data.value
 
-  def save_age(self, event_data: PyvSubmitEvent):
+  def save_age(self, event_data: JSXSubmitEvent):
     user = get_user()
     user.age = self.age
     save(user)
 ```
 To call a function on the server include this script in your file
 ```html
-<script src="/_pyv/all.js"></script>
+<script src="/_jsx/all.js"></script>
 ```
-In your ASGI app call the `mount` function from the `pyv.server` module
+In your ASGI app call the `mount` function from the `jsx.server` module
 ```python
 from fastapi import FastAPI
-from pyv.server import mount
+from jsx.server import mount
 
 app = FastAPI()
 mount(app)
 ```
-You can pass the following config to the `mount` to change the path of all pyv endpoints.
+You can pass the following config to the `mount` to change the path of all jsx endpoints.
 ```python
-mount(app, socket_path="/pyv.io", scripts_path="/static/pyv")
+mount(app, socket_path="/jsx.io", scripts_path="/static/jsx")
 ```
 The actions use [socket.io](https://socket.io) to communicate between server and client.
