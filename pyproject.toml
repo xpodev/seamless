@@ -1,5 +1,5 @@
 [project]
-name = "pyrl"
+name = "pyv"
 version = "0.1.0"
 authors = [
   { name="Xpo Development", email="dev@xpo.dev" },
@@ -14,5 +14,5 @@ classifiers = [
 ]
 
 [project.urls]
-Homepage = "https://github.com/xpodev/pyrl"
-Issues = "https://github.com/xpodev/pyrl/issues"
+Homepage = "https://github.com/xpodev/pyv"
+Issues = "https://github.com/xpodev/pyv/issues"

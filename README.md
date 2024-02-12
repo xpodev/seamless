@@ -1,11 +1,11 @@
-# Pyx Module
+# PyV Module
 
-Pyx is a Python package for creating and manipulating HTML components. It is working similar to React.js, but in Python.
+PyV is a Python package for creating and manipulating HTML components. It is working similar to React.js, but in Python.
 
 ## Usage
 
 ```python
-from pyx import Div, H1, P, Component, Style
+from pyv import Div, H1, P, Component, Style
 
 class MyComponent(Component):
   def render(self):
@@ -17,7 +17,7 @@ class MyComponent(Component):
         ),
       ),
       P(
-        "Welcome to Pyx!"
+        "Welcome to PyV!"
       ),
       style=Style(
         text_align="center"
@@ -26,7 +26,7 @@ class MyComponent(Component):
 ```
 ```python
 from .components import MyComponent
-from pyx.renderer import render
+from pyv.renderer import render
 
 @app.get("/")
 def hello_world():
@@ -58,28 +58,28 @@ class MyComponent(Component):
       on_submit=self.save_age
     )
 
-  def set_age(self, event_data: PyxChangeEvent):
+  def set_age(self, event_data: PyvChangeEvent):
     self.age = event_data.value
 
-  def save_age(self, event_data: PyxSubmitEvent):
+  def save_age(self, event_data: PyvSubmitEvent):
     user = get_user()
     user.age = self.age
     save(user)
 ```
 To call a function on the server include this script in your file
 ```html
-<script src="/_pyx/all.js"></script>
+<script src="/_pyv/all.js"></script>
 ```
-In your ASGI app call the `mount` function from the `pyx.server` module
+In your ASGI app call the `mount` function from the `pyv.server` module
 ```python
 from fastapi import FastAPI
-from pyx.server import mount
+from pyv.server import mount
 
 app = FastAPI()
 mount(app)
 ```
-You can pass the following config to the `mount` to change the path of all pyx endpoints.
+You can pass the following config to the `mount` to change the path of all pyv endpoints.
 ```python
-mount(app, socket_path="/pyx.io", scripts_path="/static/pyx")
+mount(app, socket_path="/pyv.io", scripts_path="/static/pyv")
 ```
 The actions use [socket.io](https://socket.io) to communicate between server and client.

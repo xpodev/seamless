@@ -1,5 +1,5 @@
 from typing import Callable
-from shortuuid import uuid
+from uuid import uuid4 as uuid
 from ..components import Component
 from ..html import Element
 
@@ -21,7 +21,7 @@ class TwoWayDict(dict):
         return dict.__len__(self) // 2
 
 
-class PyxDatabase:
+class PyvDatabase:
     def __init__(self):
         self.component_events: dict[str, dict[str, Callable]] = {}
         self.component_ids = TwoWayDict()

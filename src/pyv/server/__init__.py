@@ -1,8 +1,8 @@
 from socketio import AsyncServer, ASGIApp
-from .database import PyxDatabase
+from .database import PyvDatabase
 
 
-db = PyxDatabase()
+db = PyvDatabase()
 server = AsyncServer(async_mode="asgi")
 
 
@@ -18,5 +18,9 @@ async def connect(sid, environ):
     print("connect", sid)
 
 
-def mount(app, path: str = "/socket.io"):
-    app.mount(path, ASGIApp(server))
+def mount(
+    app,
+    socket_path="/socket.io",
+    scripts_path="/_pyv"
+):
+    app.mount(socket_path, ASGIApp(server))
