@@ -1,5 +1,7 @@
 # Pyx Module
 
+![build](https://github.com/xpodev/pyrl/actions/workflows/python-publish.yml/badge.svg)
+
 Pyx is a Python package for creating and manipulating HTML components. It is working similar to React.js, but in Python.
 
 ## Usage
