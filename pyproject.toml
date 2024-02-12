@@ -1,0 +1,18 @@
+[project]
+name = "pyrl"
+version = "0.1.0"
+authors = [
+  { name="Xpo Development", email="dev@xpo.dev" },
+]
+description = "A Python package for creating and manipulating HTML components. It is working similar to React.js, but in Python"
+readme = "README.md"
+requires-python = ">=3.10"
+classifiers = [
+    "Programming Language :: Python :: 3",
+    "License :: OSI Approved :: MIT License",
+    "Operating System :: OS Independent",
+]
+
+[project.urls]
+Homepage = "https://github.com/xpodev/pyrl"
+Issues = "https://github.com/xpodev/pyrl/issues"
