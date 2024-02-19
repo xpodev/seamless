@@ -8,7 +8,7 @@ from .server import db
 
 def render(component: Element | str, *, prettify=False, tab_indent=1) -> str:
     if isinstance(component, Component):
-        component = component.render()
+        component = render(component.render(), prettify=prettify, tab_indent=tab_indent)
 
     if not isinstance(component, Element):
         return component
@@ -17,7 +17,7 @@ def render(component: Element | str, *, prettify=False, tab_indent=1) -> str:
     tab = "  " * tab_indent if prettify else ""
     children_join_string = f"\n{tab}" if prettify else ""
     children = [
-        render(child, prettify=True, tab_indent=tab_indent + 1)
+        render(child, prettify=prettify, tab_indent=tab_indent + 1)
         for child in component.children
     ]
     if prettify:

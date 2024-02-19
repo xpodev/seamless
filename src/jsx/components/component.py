@@ -6,6 +6,10 @@ if typing.TYPE_CHECKING:
 
 
 class Component:
+    def __init__(self, *children: "Component | Element | str", **props):
+        self.children = children
+        self.props = props
+
     @abstractmethod
     def render(self) -> "Element | str":
         raise NotImplementedError(f"{type(self).__name__}.render() is not implemented")
