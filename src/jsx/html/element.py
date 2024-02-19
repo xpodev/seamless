@@ -27,7 +27,7 @@ class Element:
             "type": self.tag_name,
             "children": list(
                 map(
-                    lambda x: x.to_json() if isinstance(x, Element) else x,
+                    lambda elem: elem.to_json() if isinstance(elem, Element) else elem,
                     self.children,
                 )
             ),

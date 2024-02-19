@@ -6,7 +6,9 @@ from .html.element import Element
 from .server import db
 
 
-def render(component: Element | str, *, prettify=False, tab_indent=1) -> str:
+def render(
+    component: Component | Element | str, *, prettify=False, tab_indent=1
+) -> str:
     if isinstance(component, Component):
         component = render(component.render(), prettify=prettify, tab_indent=tab_indent)
 
@@ -14,6 +16,18 @@ def render(component: Element | str, *, prettify=False, tab_indent=1) -> str:
         return component
 
     tag_name = getattr(component, "tag_name", None)
+
+    props = {k: v for k, v in component.props.items() if v not in [None, False]}
+
+    props_string = render_props(props, component)
+    open_tag = f"{tag_name} {props_string}".strip()
+
+    if component.inline:
+        if len(component.children) > 0:
+            # Maybe this should be a warning instead of an error?
+            raise RenderError("Inline components cannot have children")
+        return f"<{open_tag}>"
+
     tab = "  " * tab_indent if prettify else ""
     children_join_string = f"\n{tab}" if prettify else ""
     children = [
@@ -30,18 +44,6 @@ def render(component: Element | str, *, prettify=False, tab_indent=1) -> str:
 
     if not tag_name:
         return children
-
-    props = {k: v for k, v in component.props.items() if v not in [None, False]}
-
-    props_string = render_props(props, component)
-
-    if component.inline:
-        if component.children != []:
-            # Maybe this should be a warning instead of an error?
-            raise RenderError("Inline components cannot have children")
-        return f"<{tag_name} {props_string}/>"
-
-    open_tag = f"{tag_name} {props_string}".strip()
 
     return f"<{open_tag}>{children}</{tag_name}>"
 
