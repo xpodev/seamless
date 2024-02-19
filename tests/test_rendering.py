@@ -57,7 +57,3 @@ class TestRender(unittest.TestCase):
 
     def test_render_nested_mixed_children(self):
         self.assertEqual(render(Div(Div("Hello", id="my-div"), Div(), "World")), '<div><div id="my-div">Hello</div><div></div>World</div>')
-
-
-if __name__ == "__main__":
-    unittest.main()
