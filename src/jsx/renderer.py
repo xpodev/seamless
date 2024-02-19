@@ -6,7 +6,7 @@ from .html.element import Element
 from .server import db
 
 
-def render(component: Element | str) -> str:
+def render(component: Element | str, *, prettify=False, tab_indent=1) -> str:
     if isinstance(component, Component):
         component = component.render()
 
@@ -14,38 +14,53 @@ def render(component: Element | str) -> str:
         return component
 
     tag_name = getattr(component, "tag_name", None)
-    children = "".join([render(child) for child in component.children])
+    tab = "  " * tab_indent if prettify else ""
+    children_join_string = f"\n{tab}" if prettify else ""
+    children = [
+        render(child, prettify=True, tab_indent=tab_indent + 1)
+        for child in component.children
+    ]
+    if prettify:
+        children.insert(0, "")
+
+    children = children_join_string.join(children)
+
+    if prettify:
+        children += f"\n{tab[:-2]}"
 
     if not tag_name:
         return children
 
     props = {k: v for k, v in component.props.items() if v not in [None, False]}
 
+    props_string = render_props(props, component)
+
     if component.inline:
         if component.children != []:
+            # Maybe this should be a warning instead of an error?
             raise RenderError("Inline components cannot have children")
-        return f"<{tag_name} {render_props(props)}/>"
+        return f"<{tag_name} {props_string}/>"
 
-    props_string = render_props(props, component)
-    if props_string != "":
-        props_string = " " + props_string
+    open_tag = f"{tag_name} {props_string}".strip()
 
-    return f"<{tag_name}{props_string}>{children}</{tag_name}>"
+    return f"<{open_tag}>{children}</{tag_name}>"
 
 
 def render_props(props: dict[str, object], element: Element) -> str:
-    props_string = ""
+    props_strings = []
     for key, value in props.items():
         if callable(value):
             event = key.removeprefix("on_")
             db.add_component_event(element, event, value)
         elif value is True:
-            props_string += f"{key} "
+            props_strings.append(key)
         else:
-            props_string += f'{key}="{escape(str(value))}" '
+            props_strings.append(f'{key}="{escape(str(value))}"')
 
     if element in db.component_ids:
         component_id = db.component_ids[element]
-        props_string += f'pyx-id="{component_id}" pyx-events="{",".join(db.component_events[component_id].keys())}"'
+        props_strings.append(
+            f'pyx-id="{component_id}" pyx-events="{",".join(db.component_events[component_id].keys())}"'
+        )
 
-    return props_string
+    return " ".join(props_strings)
