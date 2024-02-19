@@ -1,6 +1,6 @@
 from .element import Element
 
 
-class Input(Element):
-    tag_name = "input"
+class Area(Element):
+    tag_name = "area"
     inline = True

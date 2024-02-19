@@ -9,15 +9,9 @@ class Element:
         *children: tuple["Element | Component | str"],
         class_name=None,
         html_for=None,
-        inline=False,
         **kwargs
     ):
-        self.children = [
-            child.render() if isinstance(child, Component) else child
-            for child in children
-            if child is not None
-        ]
-        self.inline = inline
+        self.children = children
         kwargs["class"] = class_name
         kwargs["for"] = html_for
         self.props = kwargs
@@ -25,6 +19,8 @@ class Element:
     @abstractproperty
     def tag_name(self) -> str:
         pass
+
+    inline = False
 
     def to_json(self):
         return {

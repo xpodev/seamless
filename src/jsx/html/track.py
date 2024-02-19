@@ -1,6 +1,6 @@
 from .element import Element
 
 
-class Input(Element):
-    tag_name = "input"
+class Track(Element):
+    tag_name = "track"
     inline = True
