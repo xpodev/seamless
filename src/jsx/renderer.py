@@ -17,7 +17,7 @@ def render(
 
     tag_name = getattr(component, "tag_name", None)
 
-    props = {k: v for k, v in component.props.items() if v not in [None, False]}
+    props = {k: v for k, v in component.props_dict().items() if v not in [None, False]}
 
     props_string = render_props(props, component)
     open_tag = f"{tag_name} {props_string}".strip()
