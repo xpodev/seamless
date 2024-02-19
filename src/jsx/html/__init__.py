@@ -8,6 +8,7 @@ from .blockquote import BlockQuote
 from .body import Body
 from .br import Br
 from .button import Button
+from .canvas import Canvas
 from .cite import Cite
 from .code import Code
 from .div import Div
