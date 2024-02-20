@@ -1,2 +1,2 @@
-from . components import Component
+from . components import Component, ContainerComponent
 from . html import Element

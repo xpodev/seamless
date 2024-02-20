@@ -1,6 +1,6 @@
 from .components import App
-from jsx.renderer import render
+from jsx.renderer import render, render_json
 from pprint import pprint
 
 print(render(App(), prettify=True))
-pprint(App().to_json())
+pprint(render_json(App()))

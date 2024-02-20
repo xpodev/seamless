@@ -42,13 +42,14 @@ It's possible to pass a python function as component props.
 
 The current version works only with `ASGIApp`.
 ```python
-class MyComponent(Component):
-  def __init__(self, **props):
-    super().__init__(props)
-    self.age: int = None
+class Person(Component):
+  def __init__(self, name: str, age: float):
+    self.age = age
+    self.name = name
 
   def render(self):
     return Form(
+      Div(f"Update the age for {name}"),
       Label(
         "Age: ",
         html_for="age"
