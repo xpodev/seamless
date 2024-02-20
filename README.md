@@ -1,9 +1,10 @@
-# JSX
+# Python JSX
 
 ![build](https://github.com/xpodev/pyrl/actions/workflows/python-publish.yml/badge.svg)
 ![test](https://github.com/xpodev/pyrl/actions/workflows/python-test.yml/badge.svg)
 
 JSX is a Python package for creating and manipulating HTML components. It is working similar to React.js, but in Python.
+
 
 ## Usage
 
@@ -37,7 +38,9 @@ def hello_world():
 ```
 
 ### Server actions
-It's possible to pass a python function as component props
+It's possible to pass a python function as component props.
+
+The current version works only with `ASGIApp`.
 ```python
 class MyComponent(Component):
   def __init__(self, **props):
