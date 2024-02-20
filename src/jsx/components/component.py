@@ -1,18 +1,21 @@
 from abc import abstractmethod
-import typing
+from typing import TYPE_CHECKING, Generic, TypeVar, Final
 
-if typing.TYPE_CHECKING:
+if TYPE_CHECKING:
     from ..html.element import Element
 
 
-class Component:
-    def __init__(self, *children: "Component | Element | str", **props):
-        self.children = children
-        self.props = props
+T = TypeVar("T")
 
+
+class Component:
     @abstractmethod
     def render(self) -> "Element | str":
         raise NotImplementedError(f"{type(self).__name__}.render() is not implemented")
 
-    def to_json(self):
-        return self.render().to_json()
+
+class ContainerComponent(Component, Generic[T]):
+    children: Final[tuple[T, ...]]
+
+    def __init__(self, *children: T) -> None:
+        self.children = children

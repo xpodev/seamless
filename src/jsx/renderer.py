@@ -6,24 +6,22 @@ from .html.element import Element
 from .server import db
 
 
-def render(
-    component: Component | Element | str, *, prettify=False, tab_indent=1
-) -> str:
-    if isinstance(component, Component):
-        component = render(component.render(), prettify=prettify, tab_indent=tab_indent)
+def render(element: Component | Element | str, *, prettify=False, tab_indent=1) -> str:
+    if isinstance(element, Component):
+        element = render(element.render(), prettify=prettify, tab_indent=tab_indent)
 
-    if not isinstance(component, Element):
-        return component
+    if not isinstance(element, Element):
+        return element
 
-    tag_name = getattr(component, "tag_name", None)
+    tag_name = getattr(element, "tag_name", None)
 
-    props = {k: v for k, v in component.props_dict().items() if v not in [None, False]}
+    props = {k: v for k, v in element.props_dict().items() if v not in [None, False]}
 
-    props_string = render_props(props, component)
+    props_string = render_props(props, element)
     open_tag = f"{tag_name} {props_string}".strip()
 
-    if component.inline:
-        if len(component.children) > 0:
+    if element.inline:
+        if len(element.children) > 0:
             # Maybe this should be a warning instead of an error?
             raise RenderError("Inline components cannot have children")
         return f"<{open_tag}>"
@@ -32,7 +30,7 @@ def render(
     children_join_string = f"\n{tab}" if prettify else ""
     children = [
         render(child, prettify=prettify, tab_indent=tab_indent + 1)
-        for child in component.children
+        for child in element.children
     ]
     if prettify:
         children.insert(0, "")
@@ -46,6 +44,25 @@ def render(
         return children
 
     return f"<{open_tag}>{children}</{tag_name}>"
+
+
+def render_json(element: Component | Element):
+    if isinstance(element, Component):
+        element = render_json(element.render())
+
+    if not isinstance(element, Element):
+        return element
+
+    return {
+        "type": element.tag_name,
+        "children": list(
+            map(
+                render_json,
+                element.children,
+            )
+        ),
+        "props": element.props_dict(),
+    }
 
 
 def render_props(props: dict[str, object], element: Element) -> str:
