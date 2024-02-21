@@ -1,4 +1,3 @@
-from calendar import c
 from pathlib import Path
 
 from fastapi import FastAPI
