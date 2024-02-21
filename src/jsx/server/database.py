@@ -1,7 +1,10 @@
-from typing import Callable
+from typing import Callable, TYPE_CHECKING
 from uuid import uuid4 as uuid
-from ..components import Component
-from ..html import Element
+
+if TYPE_CHECKING:
+    from ..html import Element
+    from ..components import Component
+
 
 class TwoWayDict(dict):
     def __setitem__(self, key, value):
@@ -20,27 +23,35 @@ class TwoWayDict(dict):
         """Returns the number of connections"""
         return dict.__len__(self) // 2
 
+
 # TODO: Add remove element when socket is closed
+
 
 class ElementsDatabase:
     def __init__(self):
         self.component_events: dict[str, dict[str, Callable]] = {}
         self.component_ids = TwoWayDict()
 
-    def add_component_event(self, component: Component | Element, event: str, callback: Callable):
+    def add_component_event(
+        self, component: "Component | Element", event: str, callback: Callable
+    ):
         if component not in self.component_ids:
             component_id = uuid()
             self.component_ids[component] = component_id
 
         component_id = self.component_ids[component]
 
-        self.component_events[component_id] = self.component_events.get(component_id, {})
+        self.component_events[component_id] = self.component_events.get(
+            component_id, {}
+        )
         self.component_events[component_id][event] = callback
 
-    def get_component_event(self, component: Component | Element, event: str) -> Callable:
+    def get_component_event(
+        self, component: "Component | Element", event: str
+    ) -> Callable:
         component_id = self.component_ids[component]
         return self.component_events[component_id].get(event)
-    
+
     def invoke_component_event(self, component_id: str, event: str, *data):
         callback = self.component_events[component_id].get(event)
         if callback:

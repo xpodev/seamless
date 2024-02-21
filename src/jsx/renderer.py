@@ -3,7 +3,6 @@ from html import escape
 from .errors import RenderError
 from .components.component import Component
 from .html.element import Element
-from .server import db
 
 
 def render(element: Component | Element | str, *, prettify=False, tab_indent=1) -> str:
@@ -66,6 +65,8 @@ def render_json(element: Component | Element):
 
 
 def render_props(props: dict[str, object], element: Element) -> str:
+    from .server import db
+
     props_strings = []
     for key, value in props.items():
         if callable(value):
