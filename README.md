@@ -75,18 +75,28 @@ class Person(Component):
 ```
 To call a function on the server include this script in your file
 ```html
-<script src="/_jsx/all.js"></script>
+<script src="/_jsx/scripts/main.js"></script>
 ```
 In your ASGI app call the `mount` function from the `jsx.server` module
 ```python
 from fastapi import FastAPI
-from jsx.server import mount
+from fastapi.staticfiles import StaticFiles
+from jsx.server import JSXServer
 
 app = FastAPI()
-mount(app)
+jsx_server = JSXServer(cors_allowed_origins="*")
+app.mount("/_jsx/scripts", StaticFiles(directory=jsx_server.scripts_path()), name="scripts")
+jsx_server.mount(app, socket_path="/socket.io")
 ```
 You can pass the following config to the `mount` to change the path of all jsx endpoints.
 ```python
-mount(app, socket_path="/jsx.io", scripts_path="/static/jsx")
+jsx_server.mount(app, socket_path="/jsx.io", scripts_path="/static/jsx")
 ```
 The actions use [socket.io](https://socket.io) to communicate between server and client.
+
+## TODO
+- [ ] Add detailed documentation
+- [ ] Add more tests
+
+## Contributing
+Feel free to open an issue or a pull request.
