@@ -1,6 +1,8 @@
+from typing import TYPE_CHECKING
 from abc import abstractproperty
 
-from ..components.component import Component
+if TYPE_CHECKING:
+    from ..components.component import Component
 
 
 def class_name_mapper(class_name):
