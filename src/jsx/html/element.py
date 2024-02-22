@@ -2,7 +2,7 @@ from typing import TYPE_CHECKING
 from abc import abstractproperty
 
 if TYPE_CHECKING:
-    from ..components.component import Component
+    from jsx.types import ChildrenType
 
 
 def class_name_mapper(class_name):
@@ -20,7 +20,7 @@ PROPS_MAP = {
 
 
 class Element:
-    def __init__(self, *children: tuple["Element | Component | str"], **kwargs):
+    def __init__(self, *children: "ChildrenType", **kwargs):
         self.children = children
         self.props = kwargs
 
