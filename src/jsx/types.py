@@ -1,10 +1,11 @@
-from typing import TypeAlias, Protocol
+from typing import Protocol, TypeAlias
 
+Primitive: TypeAlias = str | int | float | bool | None
 
-Primitive: TypeAlias = "str | int | float | bool | None"
-RenderResult: TypeAlias = "Renderable | Primitive"
-
-ChildrenType: TypeAlias = "Renderable | list[Renderable] | Primitive | list[Primitive]"
 
 class Renderable(Protocol):
-    def render(self) -> RenderResult: ...
+    def render(self) -> "RenderResult": ...
+
+
+ChildrenType: TypeAlias = Renderable | list[Renderable] | Primitive | list[Primitive]
+RenderResult: TypeAlias = Renderable | Primitive
