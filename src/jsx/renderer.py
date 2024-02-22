@@ -1,16 +1,20 @@
 from html import escape
+from typing import TYPE_CHECKING, Any
 
 from .errors import RenderError
 from .components.component import Component
 from .html.element import Element
 
+if TYPE_CHECKING:
+    from .types import Renderable, Primitive
 
-def render(element: Component | Element | str, *, prettify=False, tab_indent=1) -> str:
+
+def render(element: "Renderable | Primitive", *, prettify=False, tab_indent=1) -> str:
     if isinstance(element, Component):
         element = render(element.render(), prettify=prettify, tab_indent=tab_indent)
 
     if not isinstance(element, Element):
-        return element
+        return str(element) if element is not None else ""
 
     tag_name = getattr(element, "tag_name", None)
 
@@ -45,7 +49,7 @@ def render(element: Component | Element | str, *, prettify=False, tab_indent=1) 
     return f"<{open_tag}>{children}</{tag_name}>"
 
 
-def render_json(element: Component | Element):
+def render_json(element: "Renderable | Primitive"):
     if isinstance(element, Component):
         element = render_json(element.render())
 
@@ -64,7 +68,7 @@ def render_json(element: Component | Element):
     }
 
 
-def render_props(props: dict[str, object], element: Element) -> str:
+def render_props(props: dict[str, Any], element: Element) -> str:
     from .server import db
 
     props_strings = []

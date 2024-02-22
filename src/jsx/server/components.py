@@ -1,7 +1,8 @@
 from typing import TYPE_CHECKING
 
 if TYPE_CHECKING:
-  from jsx import Component
+    from jsx import Component
+
 
 class ComponentsRepository:
     def __init__(self):
@@ -12,5 +13,6 @@ class ComponentsRepository:
 
     def get_component(self, component_name: str) -> "Component":
         return self.components[component_name]
+
 
 COMPONENTS_REPOSITORY = ComponentsRepository()
