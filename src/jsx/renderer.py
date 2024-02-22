@@ -14,7 +14,7 @@ def render(element: "Renderable | Primitive", *, prettify=False, tab_indent=1) -
         element = render(element.render(), prettify=prettify, tab_indent=tab_indent)
 
     if not isinstance(element, Element):
-        return element
+        return str(element) if element is not None else ""
 
     tag_name = getattr(element, "tag_name", None)
 
