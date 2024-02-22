@@ -1,17 +1,14 @@
 from abc import abstractmethod
-from typing import TYPE_CHECKING, Generic, TypeVar, Final
+from typing import TYPE_CHECKING, Final
 
 
 if TYPE_CHECKING:
-    from ..html.element import Element
-
-
-T = TypeVar("T")
+    from jsx.types import RenderResult, ChildrenType
 
 
 class Component:
     @abstractmethod
-    def render(self) -> "Element | str":
+    def render(self) -> "RenderResult":
         raise NotImplementedError(f"{type(self).__name__}.render() is not implemented")
     
     def __init_subclass__(cls) -> None:
@@ -21,8 +18,8 @@ class Component:
             COMPONENTS_REPOSITORY.add_component(cls)
 
 
-class ContainerComponent(Component, Generic[T]):
-    children: Final[tuple[T, ...]]
+class ContainerComponent(Component):
+    children: Final[tuple["ChildrenType", ...]]
 
-    def __init__(self, *children: T) -> None:
+    def __init__(self, *children: "ChildrenType") -> None:
         self.children = children
