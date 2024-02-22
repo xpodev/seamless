@@ -6,6 +6,7 @@ from .ws_router import ws_router
 
 db = ElementsDatabase()
 
+
 class JSXServer:
     def __init__(self, **config):
         self.app = None
