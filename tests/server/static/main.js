@@ -17,10 +17,10 @@
       this.pyxSocket = io({
         reconnectionDelayMax: 10000,
       });
-      this.ezReactRootNode = ReactDOM.createRoot(
-        document.getElementById("root")
-      );
       document.addEventListener("DOMContentLoaded", function () {
+        this.ezReactRootNode = ReactDOM.createRoot(
+          document.getElementById("root")
+        );
         var allPyxElements = document.querySelectorAll("[pyx-id]");
         allPyxElements.forEach(_this.attachEventListeners.bind(_this));
       });

@@ -1,17 +1,18 @@
+from socketio import AsyncServer
 from functools import wraps
-from pathlib import Path
-from socketio import AsyncServer, ASGIApp
-from .database import ElementsDatabase
-from .ws_router import ws_router
+
+from ..server.database import ElementsDatabase
+from ..server.ws_router import ws_router
 
 db = ElementsDatabase()
 
 
-class JSXServer:
-    def __init__(self, **config):
-        self.app = None
-        config["async_mode"] = "asgi"
-        self.server = AsyncServer(**config)
+class BaseMiddleware:
+    server: AsyncServer
+
+    def __init__(self, app, socket_path="/socket.io"):
+        self.server = self._server_class()(cors_allowed_origins=[])
+        self.app = self._app_class()(self.server, app, socketio_path=socket_path)
         self._setup()
 
     def _setup(self):
@@ -30,13 +31,7 @@ class JSXServer:
 
         return _handler
 
-    def mount(self, app, socket_path="/socket.io"):
-        app.mount(socket_path, ASGIApp(self.server))
-
-    def scripts_path(self):
-        return Path(__file__).parent / "scripts"
-
-    async def dom_event(self, sid, data, event_data):
+    async def dom_event(self, sid, data: str, event_data):
         component_id, event = data.split(":")
         component_id = component_id
         db.invoke_component_event(component_id, event, event_data)
@@ -47,6 +42,13 @@ class JSXServer:
             try:
                 return await handler(sid, *args, **kwargs)
             except Exception as e:
+                print(e)
                 await self.server.emit("error", str(e), to=sid)
 
         self.server.on(event, wrapper)
+
+    def _app_class(self):
+        raise NotImplementedError("self._app_class is not implemented")
+
+    def _server_class(self):
+        raise NotImplementedError("self._server_class is not implemented")

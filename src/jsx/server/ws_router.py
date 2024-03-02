@@ -1,14 +1,10 @@
 from enum import Enum
-from pathlib import Path
 from .components import COMPONENTS_REPOSITORY
 from jsx.renderer import render_json
 
 
 class WSRouterCommands(str, Enum):
     GET_COMPONENT = "component"
-
-
-HERE = Path(__file__).parent
 
 
 def get_component(name: str, props={}):

@@ -36,7 +36,7 @@ class ElementsDatabase:
         self, component: "Component | Element", event: str, callback: Callable
     ):
         if component not in self.component_ids:
-            component_id = uuid()
+            component_id = str(uuid())
             self.component_ids[component] = component_id
 
         component_id = self.component_ids[component]

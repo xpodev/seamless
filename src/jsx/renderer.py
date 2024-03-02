@@ -69,7 +69,7 @@ def render_json(element: "Renderable | Primitive"):
 
 
 def render_props(props: dict[str, Any], element: Element) -> str:
-    from .server import db
+    from .middlewares.base import db
 
     props_strings = []
     for key, value in props.items():
