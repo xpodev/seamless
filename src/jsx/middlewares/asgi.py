@@ -1,10 +1,10 @@
 from functools import partial
 from socketio import AsyncServer, ASGIApp
 
-from .base import BaseMiddleware
+from .base import BaseAsyncMiddleware
 
 
-class ASGIMiddleware(BaseMiddleware):
+class ASGIMiddleware(BaseAsyncMiddleware):
     async def __call__(self, scope, receive, send):
         await self.app(scope, receive, send)
 
