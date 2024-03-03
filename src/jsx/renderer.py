@@ -69,22 +69,22 @@ def render_json(element: "Renderable | Primitive"):
 
 
 def render_props(props: dict[str, Any], element: Element) -> str:
-    from .middlewares.base import db
+    from .server.database import DB
 
     props_strings = []
     for key, value in props.items():
         if callable(value):
             event = key.removeprefix("on_")
-            db.add_component_event(element, event, value)
+            DB.add_component_event(element, event, value)
         elif value is True:
             props_strings.append(key)
         else:
             props_strings.append(f'{key}="{escape(str(value))}"')
 
-    if element in db.component_ids:
-        component_id = db.component_ids[element]
+    if element in DB.component_ids:
+        component_id = DB.component_ids[element]
         props_strings.append(
-            f'pyx-id="{component_id}" pyx-events="{",".join(db.component_events[component_id].keys())}"'
+            f'jsx-id="{component_id}" jsx-events="{",".join(DB.component_events[component_id].keys())}"'
         )
 
     return " ".join(props_strings)

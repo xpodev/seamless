@@ -7,7 +7,7 @@ interface PyJSXElement {
 }
 
 class Ez {
-  private pyxSocket = io({
+  private jsxSocket = io({
     reconnectionDelayMax: 10000,
   });
   private ezReactRootNode = ReactDOM.createRoot(
@@ -16,18 +16,18 @@ class Ez {
 
   constructor() {
     document.addEventListener("DOMContentLoaded", () => {
-      const allPyxElements = document.querySelectorAll("[pyx-id]");
+      const allPyxElements = document.querySelectorAll("[jsx-id]");
       allPyxElements.forEach(this.attachEventListeners.bind(this));
     });
   }
 
   private attachEventListeners(element: HTMLElement) {
-    const pyxId = element.getAttribute("pyx-id");
-    const pyxEvents = element.getAttribute("pyx-events")?.split(",") || [];
-    pyxEvents.forEach((event) => {
+    const jsxId = element.getAttribute("jsx-id");
+    const jsxEvents = element.getAttribute("jsx-events")?.split(",") || [];
+    jsxEvents.forEach((event) => {
       element.addEventListener(event, (e) => {
-        this.pyxSocket.emit("dom_event", `${pyxId}:${event}`, {
-          pyxId,
+        this.jsxSocket.emit("dom_event", `${jsxId}:${event}`, {
+          jsxId,
           foo: "bar",
         });
       });
@@ -39,16 +39,16 @@ class Ez {
       return element;
     }
 
-    if ("pyx-id" in element.props) {
-      const events: string[] = element.props["pyx-events"]?.split(",") || [];
+    if ("jsx-id" in element.props) {
+      const events: string[] = element.props["jsx-events"]?.split(",") || [];
       events.forEach((event) => {
         event = this.capitalizeFirstLetter(event);
         element.props[`on${event}`] = (e: any) => {
-          this.pyxSocket.emit(
+          this.jsxSocket.emit(
             "dom_event",
-            `${element.props["pyx-id"]}:${event}`,
+            `${element.props["jsx-id"]}:${event}`,
             {
-              pyxId: element.props["pyx-id"],
+              jsxId: element.props["jsx-id"],
               foo: "bar",
             }
           );
@@ -77,9 +77,9 @@ class Ez {
   }
 
   getComponent(name: string, props: Record<string, any>) {
-    this.pyxSocket.emit("component", name, props);
+    this.jsxSocket.emit("component", name, props);
     return new Promise((resolve) => {
-      this.pyxSocket.once(
+      this.jsxSocket.once(
         `component`,
         (component: PyJSXElement | Primitive) => {
           resolve(component);
@@ -89,11 +89,11 @@ class Ez {
   }
 
   registerPyxEventListener(
-    pyxId: string,
+    jsxId: string,
     event: string,
     callback: (e: any) => any
   ) {
-    this.pyxSocket.on(`${pyxId}:${event}`, callback);
+    this.jsxSocket.on(`${jsxId}:${event}`, callback);
   }
 
   capitalizeFirstLetter(string: string) {

@@ -21,16 +21,16 @@
         this.ezReactRootNode = ReactDOM.createRoot(
           document.getElementById("root")
         );
-        var allPyxElements = document.querySelectorAll("[pyx-id]");
+        var allPyxElements = document.querySelectorAll("[jsx-id]");
         allPyxElements.forEach(_this.attachEventListeners.bind(_this));
       });
     }
     Ez.prototype.attachEventListeners = function (element) {
       var _this = this;
       var _a;
-      var pyxId = element.getAttribute("pyx-id");
+      var pyxId = element.getAttribute("jsx-id");
       var pyxEvents =
-        ((_a = element.getAttribute("pyx-events")) === null || _a === void 0
+        ((_a = element.getAttribute("jsx-events")) === null || _a === void 0
           ? void 0
           : _a.split(",")) || [];
       pyxEvents.forEach(function (event) {
@@ -52,9 +52,9 @@
       if (this.isPrimitive(element)) {
         return element;
       }
-      if ("pyx-id" in element.props) {
+      if ("jsx-id" in element.props) {
         var events =
-          ((_a = element.props["pyx-events"]) === null || _a === void 0
+          ((_a = element.props["jsx-events"]) === null || _a === void 0
             ? void 0
             : _a.split(",")) || [];
         events.forEach(function (event) {
@@ -62,9 +62,9 @@
           element.props["on".concat(event)] = function (e) {
             _this.pyxSocket.emit(
               "dom_event",
-              "".concat(element.props["pyx-id"], ":").concat(event),
+              "".concat(element.props["jsx-id"], ":").concat(event),
               {
-                pyxId: element.props["pyx-id"],
+                pyxId: element.props["jsx-id"],
                 foo: "bar",
               }
             );
