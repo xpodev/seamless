@@ -56,3 +56,6 @@ class ElementsDatabase:
         callback = self.component_events[component_id].get(event)
         if callback:
             callback(*data)
+
+
+DB = ElementsDatabase()
