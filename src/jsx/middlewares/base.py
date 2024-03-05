@@ -1,13 +1,18 @@
+from msilib.schema import Patch
 from socketio.base_server import BaseServer
 from functools import wraps
+from mimetypes import guess_type
+from pathlib import Path
 
 from ..server.database import DB
 from ..server.ws_router import ws_router
 
 
 class BaseMiddleware:
+    STATIC_FOLDER = Path(__file__).parent.parent / "server/static"
+
     def __init__(self, app, socket_path="/socket.io"):
-        self.socket_path = socket_path
+        self.socket_path = f"/{socket_path.strip('/')}"
         self.server = self._server_class()(cors_allowed_origins=[])
         self.app = self._app_class()(self.server, app, socketio_path=socket_path)
         self._setup()
@@ -45,6 +50,10 @@ class BaseMiddleware:
                 self._emit("error", str(e), to=sid)
 
         self.server.on(event, wrapper)
+
+    def _mime_type(self, filename: str):
+        mime_type, _ = guess_type(filename)
+        return mime_type or "text/plain"
 
     def _app_class(self):
         raise NotImplementedError("self._app_class is not implemented")
