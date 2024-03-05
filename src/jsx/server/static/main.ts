@@ -1,3 +1,5 @@
+//@ts-nocheck
+
 type Primitive = string | number | boolean | null;
 
 interface PyJSXElement {
@@ -15,10 +17,8 @@ class Ez {
   );
 
   constructor() {
-    document.addEventListener("DOMContentLoaded", () => {
-      const allPyxElements = document.querySelectorAll("[jsx-id]");
-      allPyxElements.forEach(this.attachEventListeners.bind(this));
-    });
+    const allJsxElements = document.querySelectorAll("[jsx-id]");
+    allJsxElements.forEach(this.attachEventListeners.bind(this));
   }
 
   private attachEventListeners(element: HTMLElement) {
@@ -55,7 +55,7 @@ class Ez {
         };
       });
     }
-    
+
     const children = Array.isArray(element.children)
       ? element.children.map((v) => this.convertToReact(v))
       : [element.children];
@@ -88,7 +88,7 @@ class Ez {
     });
   }
 
-  registerPyxEventListener(
+  registerJsxEventListener(
     jsxId: string,
     event: string,
     callback: (e: any) => any
@@ -100,3 +100,7 @@ class Ez {
     return string.charAt(0).toUpperCase() + string.slice(1);
   }
 }
+
+document.addEventListener("DOMContentLoaded", () => {
+  const ez = new Ez();
+});
