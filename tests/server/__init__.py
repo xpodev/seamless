@@ -25,16 +25,6 @@ app.add_middleware(
     ASGIMiddleware,
 )
 
-@app.get("/")
-def index():
-    return FileResponse(HERE / "static/index.html")
-
-
-@app.get("/static/index.js")
-def index():
-    return FileResponse(HERE / "static/main.js")
-
-
 @app.get("/c", response_class=HTMLResponse)
 def index():
     return render(Page(SampleComponent(name="world")))
@@ -50,7 +40,7 @@ class Page(ContainerComponent):
                     Script(src="https://unpkg.com/react@18/umd/react.development.js"),
                     Script(src="https://unpkg.com/react-dom@18/umd/react-dom.development.js"),
                     Script(src="https://cdn.socket.io/4.7.4/socket.io.min.js"),
-                    Script(src="/static/index.js"),
+                    Script(src="/socket.io/static/main.js"),
                 ),
                 Body(
                     Div(
