@@ -84,7 +84,7 @@ def render_props(props: dict[str, Any], element: Element) -> str:
     if element in DB.component_ids:
         component_id = DB.component_ids[element]
         props_strings.append(
-            f'jsx-id="{component_id}" jsx-events="{",".join(DB.component_events[component_id].keys())}"'
+            f'jsx:id="{component_id}" jsx:events="{",".join(DB.component_events[component_id].keys())}"'
         )
 
     return " ".join(props_strings)

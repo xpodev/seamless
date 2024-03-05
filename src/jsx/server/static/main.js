@@ -14,14 +14,14 @@ var Ez = /** @class */ (function () {
             reconnectionDelayMax: 10000,
         });
         this.ezReactRootNode = ReactDOM.createRoot(document.getElementById("root"));
-        var allJsxElements = document.querySelectorAll("[jsx-id]");
+        var allJsxElements = document.querySelectorAll("[jsx\\:id]");
         allJsxElements.forEach(this.attachEventListeners.bind(this));
     }
     Ez.prototype.attachEventListeners = function (element) {
         var _this = this;
         var _a;
-        var jsxId = element.getAttribute("jsx-id");
-        var jsxEvents = ((_a = element.getAttribute("jsx-events")) === null || _a === void 0 ? void 0 : _a.split(",")) || [];
+        var jsxId = element.getAttribute("jsx:id");
+        var jsxEvents = ((_a = element.getAttribute("jsx:events")) === null || _a === void 0 ? void 0 : _a.split(",")) || [];
         jsxEvents.forEach(function (event) {
             element.addEventListener(event, function (e) {
                 _this.jsxSocket.emit("dom_event", "".concat(jsxId, ":").concat(event), {
@@ -37,13 +37,13 @@ var Ez = /** @class */ (function () {
         if (this.isPrimitive(element)) {
             return element;
         }
-        if ("jsx-id" in element.props) {
-            var events = ((_a = element.props["jsx-events"]) === null || _a === void 0 ? void 0 : _a.split(",")) || [];
+        if ("jsx:id" in element.props) {
+            var events = ((_a = element.props["jsx:events"]) === null || _a === void 0 ? void 0 : _a.split(",")) || [];
             events.forEach(function (event) {
                 event = _this.capitalizeFirstLetter(event);
                 element.props["on".concat(event)] = function (e) {
-                    _this.jsxSocket.emit("dom_event", "".concat(element.props["jsx-id"], ":").concat(event), {
-                        jsxId: element.props["jsx-id"],
+                    _this.jsxSocket.emit("dom_event", "".concat(element.props["jsx:id"], ":").concat(event), {
+                        jsxId: element.props["jsx:id"],
                         foo: "bar",
                     });
                 };

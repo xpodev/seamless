@@ -52,7 +52,7 @@ class Element:
                 del props_copy[key]
 
         if len(jsx_events) > 0:
-            props_copy["jsx-id"] = DB.component_ids[self]
-            props_copy["jsx-events"] = ",".join(jsx_events)
+            props_copy["jsx:id"] = DB.component_ids[self]
+            props_copy["jsx:events"] = ",".join(jsx_events)
 
         return props_copy

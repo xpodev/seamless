@@ -17,13 +17,13 @@ class Ez {
   );
 
   constructor() {
-    const allJsxElements = document.querySelectorAll("[jsx-id]");
+    const allJsxElements = document.querySelectorAll("[jsx\\:id]");
     allJsxElements.forEach(this.attachEventListeners.bind(this));
   }
 
   private attachEventListeners(element: HTMLElement) {
-    const jsxId = element.getAttribute("jsx-id");
-    const jsxEvents = element.getAttribute("jsx-events")?.split(",") || [];
+    const jsxId = element.getAttribute("jsx:id");
+    const jsxEvents = element.getAttribute("jsx:events")?.split(",") || [];
     jsxEvents.forEach((event) => {
       element.addEventListener(event, (e) => {
         this.jsxSocket.emit("dom_event", `${jsxId}:${event}`, {
@@ -39,16 +39,16 @@ class Ez {
       return element;
     }
 
-    if ("jsx-id" in element.props) {
-      const events: string[] = element.props["jsx-events"]?.split(",") || [];
+    if ("jsx:id" in element.props) {
+      const events: string[] = element.props["jsx:events"]?.split(",") || [];
       events.forEach((event) => {
         event = this.capitalizeFirstLetter(event);
         element.props[`on${event}`] = (e: any) => {
           this.jsxSocket.emit(
             "dom_event",
-            `${element.props["jsx-id"]}:${event}`,
+            `${element.props["jsx:id"]}:${event}`,
             {
-              jsxId: element.props["jsx-id"],
+              jsxId: element.props["jsx:id"],
               foo: "bar",
             }
           );
