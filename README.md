@@ -1,5 +1,7 @@
 # Python JSX
 
+[![PyPI version](https://badge.fury.io/py/jsx.svg?)](https://pypi.org/project/jsx)
+
 ![build](https://github.com/xpodev/pyrl/actions/workflows/python-publish.yml/badge.svg)
 ![test](https://github.com/xpodev/pyrl/actions/workflows/python-test.yml/badge.svg)
 
@@ -92,7 +94,7 @@ app.add_middleware(
   socket_path="/my/custom/path"
 )
 ```
-The actions use [socket.io](https://socket.io) to communicate between server and client.
+Actions use [socket.io](https://socket.io) to communicate between server and client.
 
 ## TODO
 - [ ] Add detailed documentation
