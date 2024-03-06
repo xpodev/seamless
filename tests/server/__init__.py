@@ -2,7 +2,7 @@ from pathlib import Path
 
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
-from fastapi.responses import FileResponse, HTMLResponse
+from fastapi.responses import HTMLResponse
 
 from jsx import Component, ContainerComponent
 from jsx.middlewares import ASGIMiddleware
@@ -37,9 +37,6 @@ class Page(ContainerComponent):
             Html(
                 Head(
                     Title("JSX"),
-                    Script(src="https://unpkg.com/react@18/umd/react.development.js"),
-                    Script(src="https://unpkg.com/react-dom@18/umd/react-dom.development.js"),
-                    Script(src="https://cdn.socket.io/4.7.4/socket.io.min.js"),
                     Script(src="/socket.io/static/main.js"),
                 ),
                 Body(
