@@ -13,4 +13,4 @@ class TestServer(unittest.TestCase):
     def test_static(self):
         response = client.get("/socket.io/static/main.js")
         self.assertEqual(response.status_code, 200)
-        self.assertEqual(response.headers["content-type"], "application/javascript")
+        self.assertIn(response.headers["content-type"], ["application/javascript", "text/javascript"])
