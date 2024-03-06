@@ -2,7 +2,7 @@ from pathlib import Path
 
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
-from fastapi.responses import FileResponse, HTMLResponse
+from fastapi.responses import HTMLResponse
 
 from jsx import Component, ContainerComponent
 from jsx.middlewares import ASGIMiddleware
