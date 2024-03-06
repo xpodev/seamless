@@ -1,4 +1,3 @@
-from msilib.schema import Patch
 from socketio.base_server import BaseServer
 from functools import wraps
 from mimetypes import guess_type
