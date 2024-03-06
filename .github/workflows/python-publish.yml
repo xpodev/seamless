@@ -9,7 +9,7 @@ permissions:
 
 jobs:
   build:
-    uses: xpodev/py-jsx/.github/workflows/build-frontend-assets.yml@main
+    uses: xpodev/py-jsx/.github/workflows/build-frontend-assets.yml@v1
 
   deploy:
     runs-on: ubuntu-latest
