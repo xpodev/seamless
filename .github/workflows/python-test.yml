@@ -4,6 +4,7 @@ on:
   pull_request:
     branches:
       - main
+      - dev/v\d+\.\d+\.\d+
     types: [opened, reopened, synchronize]
 
 permissions:
