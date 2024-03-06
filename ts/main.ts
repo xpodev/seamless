@@ -1,23 +1,30 @@
-//@ts-nocheck
+import React from "react";
+import { Root, createRoot } from "react-dom/client";
+import io from "socket.io-client";
 
 type Primitive = string | number | boolean | null;
 
 interface PyJSXElement {
   type: string;
   props: Record<string, any>;
-  children: Array<PyJSXElement | Primitive>;
+  children: Array<PyJSXElement | Primitive> | null;
 }
 
+type ReactElement = ReturnType<typeof React.createElement<Record<string, any>>>;
+
 class Ez {
-  private jsxSocket = io({
+  private readonly jsxSocket = io({
     reconnectionDelayMax: 10000,
   });
-  private ezReactRootNode = ReactDOM.createRoot(
-    document.getElementById("root")
-  );
+  private readonly ezReactRootNode: Root;
 
   constructor() {
-    const allJsxElements = document.querySelectorAll("[jsx\\:id]");
+    const rootElement = document.getElementById("root");
+    if (!rootElement) {
+      throw new Error("Root element not found (id=root)");
+    }
+    this.ezReactRootNode = createRoot(rootElement);
+    const allJsxElements = document.querySelectorAll<HTMLElement>("[jsx\\:id]");
     allJsxElements.forEach(this.attachEventListeners.bind(this));
   }
 
@@ -34,7 +41,7 @@ class Ez {
     });
   }
 
-  private convertToReact(element: PyJSXElement | Primitive) {
+  private convertToReact(element: PyJSXElement | Primitive): ReactElement | Primitive {
     if (this.isPrimitive(element)) {
       return element;
     }
@@ -56,9 +63,9 @@ class Ez {
       });
     }
 
-    const children = Array.isArray(element.children)
-      ? element.children.map((v) => this.convertToReact(v))
-      : [element.children];
+    const children = (
+      Array.isArray(element.children) ? element.children : [element.children]
+    ).map((v) => this.convertToReact(v));
     return React.createElement(element.type, element.props, ...children);
   }
 
