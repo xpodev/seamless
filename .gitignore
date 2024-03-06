@@ -162,3 +162,4 @@ cython_debug/
 
 # Node
 node_modules/
+src/**/*.js

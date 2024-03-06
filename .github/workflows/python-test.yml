@@ -10,8 +10,12 @@ permissions:
   contents: read
 
 jobs:
+  build:
+    uses: xpodev/py-jsx/.github/workflows/build-frontend-assets.yml@main
+
   test:
     runs-on: ubuntu-latest
+    needs: build
 
     steps:
       - uses: actions/checkout@v3
@@ -25,8 +29,6 @@ jobs:
           pip install -r requirements.txt
           pip install fastapi uvicorn httpx
 
-      - name: Build frontend assets
-        uses: xpodev/py-jsx/.github/workflows/build-frontend-assets.yml@main
       - name: Downloading the latest version of the frontend assets
         uses: actions/download-artifact@v4
         with:
