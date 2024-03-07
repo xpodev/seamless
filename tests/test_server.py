@@ -1,6 +1,6 @@
 import unittest
 from fastapi.testclient import TestClient
-from .server import app
+from .server.asgi import app
 
 client = TestClient(app)
 

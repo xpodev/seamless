@@ -1,7 +1,7 @@
 from socketio import Server, WSGIApp
 
 from .base import BaseMiddleware
-
+from ..server.request import set_request, HTTPRequest, request
 
 class WSGIMiddleware(BaseMiddleware):
     def static_handler(self, env, start_response):
@@ -20,12 +20,18 @@ class WSGIMiddleware(BaseMiddleware):
             return [file.read()]
 
     def __call__(self, env, start_response):
+        set_request(HTTPRequest())
+
         if env["REQUEST_METHOD"] == "GET" and env["PATH_INFO"].startswith(
             f"{self.socket_path}/static/"
         ):
             return self.static_handler(env, start_response)
-
-        return self.app(env, start_response)
+        
+        def c(status: str, headers: list, *args):
+            headers.extend([("Set-Cookie", f"_jsx_claimId={request().id}")])
+            start_response(status, headers, *args)
+        
+        return self.app(env, c)
 
     def _app_class(self):
         return WSGIApp

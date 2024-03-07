@@ -25,6 +25,10 @@ class Ez {
     }
     this.ezReactRootNode = createRoot(rootElement);
     const allJsxElements = document.querySelectorAll<HTMLElement>("[jsx\\:id]");
+    const claimId = document.querySelector("meta[name=jsx-claim-id]")?.getAttribute("value");
+    if (claimId) {
+      this.jsxSocket.emit("claim", claimId);
+    }
     allJsxElements.forEach(this.attachEventListeners.bind(this));
   }
 

@@ -10,8 +10,14 @@ if TYPE_CHECKING:
 
 
 def render(element: "Renderable | Primitive", *, prettify=False, tab_indent=1) -> str:
+    render_result = _render(element, prettify=prettify, tab_indent=tab_indent)
+    _db()._reset_http_id()
+    return render_result
+
+
+def _render(element: "Renderable | Primitive", *, prettify=False, tab_indent=1) -> str:
     if isinstance(element, Component):
-        element = render(element.render(), prettify=prettify, tab_indent=tab_indent)
+        element = _render(element.render(), prettify=prettify, tab_indent=tab_indent)
 
     if not isinstance(element, Element):
         return str(element) if element is not None else ""
@@ -32,7 +38,7 @@ def render(element: "Renderable | Primitive", *, prettify=False, tab_indent=1) -
     tab = "  " * tab_indent if prettify else ""
     children_join_string = f"\n{tab}" if prettify else ""
     children = [
-        render(child, prettify=prettify, tab_indent=tab_indent + 1)
+        _render(child, prettify=prettify, tab_indent=tab_indent + 1)
         for child in element.children
     ]
     if prettify:
@@ -69,22 +75,28 @@ def render_json(element: "Renderable | Primitive"):
 
 
 def render_props(props: dict[str, Any], element: Element) -> str:
-    from .server.database import DB
+    DB = _db()
 
     props_strings = []
     for key, value in props.items():
         if callable(value):
             event = key.removeprefix("on_")
-            DB.add_component_event(element, event, value)
+            DB.add_element_event(element, event, value)
         elif value is True:
             props_strings.append(key)
         else:
             props_strings.append(f'{key}="{escape(str(value))}"')
 
-    if element in DB.component_ids:
-        component_id = DB.component_ids[element]
+    if element in DB.element_ids:
+        subscriptable = DB.get_element(element)
         props_strings.append(
-            f'jsx:id="{component_id}" jsx:events="{",".join(DB.component_events[component_id].keys())}"'
+            f'jsx:id="{subscriptable.id}" jsx:events="{",".join(subscriptable.events)}"'
         )
 
     return " ".join(props_strings)
+
+
+def _db():
+    from .server.database import DB
+
+    return DB

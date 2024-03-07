@@ -1,10 +1,13 @@
-from socketio.base_server import BaseServer
 from functools import wraps
 from mimetypes import guess_type
 from pathlib import Path
 
+from socketio.base_server import BaseServer
+from socketio import AsyncServer
+
 from ..server.database import DB
 from ..server.ws_router import ws_router
+from ..server.request import set_request, WSRequest
 
 
 class BaseMiddleware:
@@ -23,6 +26,7 @@ class BaseMiddleware:
         return self.server.emit(*args, **kwargs)
 
     def _setup_events(self):
+        self.on("disconnect", self._handle_disconnect)
         self.on("dom_event", self.dom_event)
 
         for command, handler in ws_router.items():
@@ -30,7 +34,11 @@ class BaseMiddleware:
 
     def _make_handler(self, handler):
         def _handler(sid, *data):
-            response_event, *response_data = handler(*data)
+            result = handler(sid, *data)
+            if result is None:
+                return
+
+            response_event, *response_data = result
             self._emit(response_event, *response_data, to=sid)
 
         return _handler
@@ -38,12 +46,21 @@ class BaseMiddleware:
     def dom_event(self, sid, data: str, event_data):
         component_id, event = data.split(":")
         component_id = component_id
-        DB.invoke_component_event(component_id, event, event_data)
+        try:
+            DB.invoke_element_event(component_id, event, event_data)
+        except KeyError:
+            raise Exception(
+                f"Element {component_id} not found. Did you forget to claim your http rendered components?"
+            )
+
+    def _handle_disconnect(self, sid: str):
+        DB.release_elements(sid)
 
     def on(self, event, handler):
         @wraps(handler)
         def wrapper(sid, *args, **kwargs):
             try:
+                set_request(WSRequest(sid))
                 return handler(sid, *args, **kwargs)
             except Exception as e:
                 self._emit("error", str(e), to=sid)
@@ -65,16 +82,22 @@ class BaseMiddleware:
 
 
 class BaseAsyncMiddleware(BaseMiddleware):
+    server: AsyncServer
+
     def _is_async_server(self) -> bool:
         return True
-    
+
     async def _emit(self, *args, **kwargs):
         return await self.server.emit(*args, **kwargs)
-    
+
     def _make_handler(self, handler):
         async def _handler(sid, *data):
-                response_event, *response_data = handler(*data)
-                await self._emit(response_event, *response_data, to=sid)
+            result = handler(sid, *data)
+            if result is None:
+                return
+
+            response_event, *response_data = result
+            await self._emit(response_event, *response_data, to=sid)
 
         return _handler
 
@@ -82,6 +105,7 @@ class BaseAsyncMiddleware(BaseMiddleware):
         @wraps(handler)
         async def wrapper(sid, *args, **kwargs):
             try:
+                set_request(WSRequest(sid))
                 return await handler(sid, *args, **kwargs)
             except Exception as e:
                 await self.server.emit("error", str(e), to=sid)

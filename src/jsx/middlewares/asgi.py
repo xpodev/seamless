@@ -1,8 +1,8 @@
 from functools import partial
 from socketio import AsyncServer, ASGIApp
-from pathlib import Path
 
 from .base import BaseAsyncMiddleware
+from ..server.request import set_request, HTTPRequest, request
 
 
 class ASGIMiddleware(BaseAsyncMiddleware):
@@ -34,8 +34,22 @@ class ASGIMiddleware(BaseAsyncMiddleware):
 
     async def __call__(self, scope, receive, send):
         if scope["type"] == "http":
-            if scope["path"].startswith(f"{self.socket_path}/static/") and scope["method"] == "GET":
+            set_request(HTTPRequest())
+            if (
+                scope["path"].startswith(f"{self.socket_path}/static/")
+                and scope["method"] == "GET"
+            ):
                 return await self.static_handler(scope, receive, send)
+
+            async def c(message):
+                headers = [[b"Set-Cookie", f"_jsx_claimId={request().id}".encode()]]
+                if "headers" not in message:
+                    message["headers"] = []
+
+                message["headers"].extend(headers)
+                await send(message)
+
+            return await self.app(scope, receive, c)
 
         await self.app(scope, receive, send)
 
