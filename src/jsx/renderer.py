@@ -1,5 +1,8 @@
 from html import escape
 from typing import TYPE_CHECKING, Any
+from uuid import uuid4 as uuid
+
+from .server.request import request
 
 from .errors import RenderError
 from .components.component import Component
@@ -10,9 +13,8 @@ if TYPE_CHECKING:
 
 
 def render(element: "Renderable | Primitive", *, prettify=False, tab_indent=1) -> str:
-    render_result = _render(element, prettify=prettify, tab_indent=tab_indent)
-    _db()._reset_http_id()
-    return render_result
+    request().id = str(uuid())
+    return _render(element, prettify=prettify, tab_indent=tab_indent)
 
 
 def _render(element: "Renderable | Primitive", *, prettify=False, tab_indent=1) -> str:

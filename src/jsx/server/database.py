@@ -58,7 +58,7 @@ class SubscriptableElement:
     def events(self):
         return self._events.keys()
 
-    def __call__(self, event, *args: Any, **kwds: Any) -> Any:
+    def __call__(self, event: str, *args: Any, **kwds: Any) -> Any:
         if event in self._events:
             return self._events[event](*args, **kwds)
 
@@ -68,7 +68,6 @@ class ElementsDatabase:
     def __init__(self, *, claim_time=20.0):
         self.elements = dict[str, SubscriptableElement]()
         self.element_ids = TwoWayDict()
-        self._http_id: str = None
         self._unclaimed_elements = dict[str, list[SubscriptableElement]]()
         self._unclaimed_elements_timeouts = dict[str, Timer]()
         self.claim_time = claim_time
@@ -82,11 +81,10 @@ class ElementsDatabase:
             if request().type == RequestType.WS:
                 self._register_element(subscriptable, request().socket_id)
             else:
-                if self._http_id is None:
-                    self._http_id = request().id
-                    self._unclaimed_elements[self._http_id] = []
+                if self._request.id not in self._unclaimed_elements:
+                    self._unclaimed_elements[self._request.id] = []
 
-            self._unclaimed_elements[self._http_id].append(subscriptable)
+            self._unclaimed_elements[self._request.id].append(subscriptable)
 
             def delete_unclaimed(http_id):
                 for subscriptable in self._unclaimed_elements[http_id]:
@@ -94,8 +92,8 @@ class ElementsDatabase:
 
                 del self._unclaimed_elements[http_id]
 
-            timer = Timer(self.claim_time, delete_unclaimed, [self._http_id])
-            self._unclaimed_elements_timeouts[self._http_id] = timer
+            timer = Timer(self.claim_time, delete_unclaimed, [self._request.id])
+            self._unclaimed_elements_timeouts[self._request.id] = timer
             timer.start()
 
         subscriptable.add_event(event, callback)
@@ -104,10 +102,13 @@ class ElementsDatabase:
         element_id = self.element_ids[element]
         return self.all[element_id]
 
-    def invoke_element_event(self, element_id: str, event: str, *data):
-        callback = self.elements[element_id]
-        if callback:
-            callback(event, *data)
+    def invoke_element_event(self, element_id: str, socket_id: str, event: str, *data):
+        subscriptable = self.elements[element_id]
+        if subscriptable:
+            if not subscriptable.socket_id == socket_id:
+                raise Exception("Element not found")
+
+            subscriptable(event, *data)
 
     def claim_http_elements(self, http_id, socket_id):
         if http_id not in self._unclaimed_elements:
@@ -122,7 +123,7 @@ class ElementsDatabase:
         del self._unclaimed_elements[http_id]
 
     def release_elements(self, socket_id: str):
-        for element_id, subscriptable in self.elements.items():
+        for element_id, subscriptable in list(self.elements.items()):
             if subscriptable.socket_id == socket_id:
                 del self.elements[element_id]
                 del self.element_ids[element_id]
@@ -130,9 +131,6 @@ class ElementsDatabase:
     def _register_element(self, subscriptable: SubscriptableElement, socket_id: str):
         subscriptable.set_socket_id(socket_id)
         self.elements[subscriptable.id] = subscriptable
-
-    def _reset_http_id(self):
-        self._http_id = None
 
     @property
     def _all_unclaimed(self):
@@ -147,6 +145,10 @@ class ElementsDatabase:
         all_elements = self.elements.copy()
         all_elements.update(self._all_unclaimed)
         return all_elements
+
+    @property
+    def _request(self):
+        return request()
 
 
 DB = ElementsDatabase(claim_time=30)

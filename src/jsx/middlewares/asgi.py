@@ -2,7 +2,7 @@ from functools import partial
 from socketio import AsyncServer, ASGIApp
 
 from .base import BaseAsyncMiddleware
-from ..server.request import set_request, HTTPRequest, request
+from ..server.request import set_request, HTTPRequest
 
 
 class ASGIMiddleware(BaseAsyncMiddleware):
@@ -33,25 +33,40 @@ class ASGIMiddleware(BaseAsyncMiddleware):
             await send({"type": "http.response.body", "body": file.read()})
 
     async def __call__(self, scope, receive, send):
+        async def _send(message):
+            await send(message)
+
         if scope["type"] == "http":
-            set_request(HTTPRequest())
+            request = HTTPRequest.make(scope)
             if (
-                scope["path"].startswith(f"{self.socket_path}/static/")
-                and scope["method"] == "GET"
+                request.path.startswith(f"{self.socket_path}/static/")
+                and request.method == "GET"
             ):
                 return await self.static_handler(scope, receive, send)
 
-            async def c(message):
-                headers = [[b"Set-Cookie", f"_jsx_claimId={request().id}".encode()]]
-                if "headers" not in message:
-                    message["headers"] = []
+            if self._is_render_request():
 
-                message["headers"].extend(headers)
-                await send(message)
+                async def _send(message):
+                    if "headers" not in message:
+                        message["headers"] = []
 
-            return await self.app(scope, receive, c)
+                    message["headers"].extend(
+                        self._make_cookie_header("_jsx_claimId", request.id)
+                    )
+                    await send(message)
 
-        await self.app(scope, receive, send)
+            elif request.path.startswith(self.socket_path):
+                if "_jsx_claimId" in request.cookies:
+
+                    async def _send(message):
+                        if "headers" not in message:
+                            message["headers"] = []
+
+                        message["headers"].extend(self._remove_cookie("_jsx_claimId"))
+
+                        await send(message)
+
+        await self.app(scope, receive, _send)
 
     def _app_class(self):
         return ASGIApp

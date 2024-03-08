@@ -1,5 +1,5 @@
 import React from "react";
-import { Root, createRoot } from "react-dom/client";
+import { createRoot } from "react-dom/client";
 import io from "socket.io-client";
 
 type Primitive = string | number | boolean | null;
@@ -13,10 +13,8 @@ interface PyJSXElement {
 type ReactElement = ReturnType<typeof React.createElement<Record<string, any>>>;
 
 class Ez {
-  private readonly jsxSocket = io({
-    reconnectionDelayMax: 10000,
-  });
-  private readonly ezReactRootNode: Root;
+  private readonly jsxSocket;
+  private readonly ezReactRootNode;
 
   constructor() {
     const rootElement = document.getElementById("root");
@@ -24,11 +22,10 @@ class Ez {
       throw new Error("Root element not found (id=root)");
     }
     this.ezReactRootNode = createRoot(rootElement);
+    this.jsxSocket = io({
+      reconnectionDelayMax: 10000,
+    });
     const allJsxElements = document.querySelectorAll<HTMLElement>("[jsx\\:id]");
-    const claimId = document.querySelector("meta[name=jsx-claim-id]")?.getAttribute("value");
-    if (claimId) {
-      this.jsxSocket.emit("claim", claimId);
-    }
     allJsxElements.forEach(this.attachEventListeners.bind(this));
   }
 
