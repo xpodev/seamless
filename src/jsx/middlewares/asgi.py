@@ -37,7 +37,7 @@ class ASGIMiddleware(BaseAsyncMiddleware):
             await send(message)
 
         if scope["type"] == "http":
-            request = HTTPRequest.make(scope)
+            request = HTTPRequest.make(scope, type="asgi")
             if (
                 request.path.startswith(f"{self.socket_path}/static/")
                 and request.method == "GET"

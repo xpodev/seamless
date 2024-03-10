@@ -15,10 +15,11 @@ class Request:
     type: RequestType
 
     @classmethod
-    def make(cls, request_data):
-        request = cls(request_data)
+    def make(cls, request_data, **kwargs):
+        request = cls(request_data, **kwargs)
         set_request(request)
         return request
+
 
 @dataclass
 class WSRequest(Request):
@@ -36,14 +37,12 @@ class HTTPRequest(Request):
 
     id: str = None
 
-    def __init__(self, raw_request: dict):
+    def __init__(self, raw_request: dict, *, type=None):
         self._raw_request = raw_request
-        if "asgi" in raw_request:
+        if type == "asgi" or "asgi" in raw_request:
             self._parse_asgi()
         else:
             self._parse_wsgi()
-
-        self.id = str(uuid())
 
     def _parse_headers(self, headers: dict):
         return {k.decode(): v.decode() for k, v in headers}
@@ -74,7 +73,7 @@ class HTTPRequest(Request):
     @property
     def full_path(self):
         return f"{self.path}?{self._raw_query}"
-
+    
 
 _request: WSRequest | HTTPRequest = None
 
