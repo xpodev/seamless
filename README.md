@@ -1,6 +1,6 @@
 # Python JSX
 
-[![PyPI version](https://badge.fury.io/py/jsx.svg?)](https://pypi.org/project/jsx)
+[![PyPI version](https://badge.fury.io/py/jsx.svg)](https://pypi.org/project/jsx)
 
 ![build](https://github.com/xpodev/pyrl/actions/workflows/python-publish.yml/badge.svg)
 ![test](https://github.com/xpodev/pyrl/actions/workflows/python-test.yml/badge.svg)
