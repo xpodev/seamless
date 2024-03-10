@@ -1,16 +1,16 @@
 import unittest
-from fastapi.testclient import TestClient
-from .server.asgi import app
-
-client = TestClient(app)
-
+from .server.wsgi import app
 
 class TestServer(unittest.TestCase):
+    @classmethod
+    def setUpClass(cls):
+        cls.client = app.test_client()
+
     def test_index(self):
-        response = client.get("/c")
+        response = TestServer.client.get("/c")
         self.assertEqual(response.status_code, 200)
 
     def test_static(self):
-        response = client.get("/socket.io/static/main.js")
+        response = TestServer.client.get("/socket.io/static/main.js")
         self.assertEqual(response.status_code, 200)
         self.assertIn(response.headers["content-type"], ["application/javascript", "text/javascript"])
