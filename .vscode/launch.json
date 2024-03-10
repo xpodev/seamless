@@ -1,0 +1,30 @@
+{
+  "configurations": [
+    {
+      "name": "Python Debugger: Test File - WSGI",
+      "type": "debugpy",
+      "request": "launch",
+      // "python": "C:\\Users\\ee102\\Documents\\ez-web\\lib\\python\\python.exe",
+      "program": "${workspaceFolder}/test.py",
+      "args": [
+        "--type",
+        "wsgi"
+      ],
+      "console": "integratedTerminal",
+      "justMyCode": false
+    },
+    {
+      "name": "Python Debugger: Test File - ASGI",
+      "type": "debugpy",
+      "request": "launch",
+      // "python": "C:\\Users\\ee102\\Documents\\ez-web\\lib\\python\\python.exe",
+      "program": "${workspaceFolder}/test.py",
+      "args": [
+        "--type",
+        "asgi"
+      ],
+      "console": "integratedTerminal",
+      "justMyCode": false
+    }
+  ]
+}

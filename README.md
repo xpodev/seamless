@@ -1,5 +1,7 @@
 # Python JSX
 
+[![PyPI version](https://badge.fury.io/py/jsx.svg?)](https://pypi.org/project/jsx)
+
 ![build](https://github.com/xpodev/pyrl/actions/workflows/python-publish.yml/badge.svg)
 ![test](https://github.com/xpodev/pyrl/actions/workflows/python-test.yml/badge.svg)
 
@@ -40,7 +42,7 @@ def hello_world():
 ### Server actions
 It's possible to pass a python function as component props.
 
-The current version works only with `ASGIApp`.
+The current version works with `ASGIApp` and `WSGIApp`.
 ```python
 class Person(Component):
   def __init__(self, name: str, age: float):
@@ -75,28 +77,28 @@ class Person(Component):
 ```
 To call a function on the server include this script in your file
 ```html
-<script src="/_jsx/scripts/main.js"></script>
+<script src="/socket.io/static/main.js"></script>
 ```
-In your ASGI app call the `mount` function from the `jsx.server` module
+Import the middleware and mount it to your app
 ```python
 from fastapi import FastAPI
-from fastapi.staticfiles import StaticFiles
-from jsx.server import JSXServer
+from jsx.middlewares import ASGIMiddleware as JSXMiddleware
 
 app = FastAPI()
-jsx_server = JSXServer(cors_allowed_origins="*")
-app.mount("/_jsx/scripts", StaticFiles(directory=jsx_server.scripts_path()), name="scripts")
-jsx_server.mount(app, socket_path="/socket.io")
+app.add_middleware(JSXMiddleware)
 ```
-You can pass the following config to the `mount` to change the path of all jsx endpoints.
+You can pass the following config to the middleware to change the socket path of all jsx endpoints.
 ```python
-jsx_server.mount(app, socket_path="/jsx.io", scripts_path="/static/jsx")
+app.add_middleware(
+  JSXMiddleware,
+  socket_path="/my/custom/path"
+)
 ```
-The actions use [socket.io](https://socket.io) to communicate between server and client.
+Actions use [socket.io](https://socket.io) to communicate between server and client.
 
 ## TODO
 - [ ] Add detailed documentation
 - [ ] Add more tests
-
+- [ ] Add support for http actions
 ## Contributing
 Feel free to open an issue or a pull request.
