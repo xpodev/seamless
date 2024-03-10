@@ -28,7 +28,7 @@ jobs:
         run: |
           python -m pip install --upgrade pip
           pip install -r requirements.txt
-          pip install fastapi uvicorn httpx
+          pip install -r test-requirements.txt
 
       - name: Downloading the latest version of the frontend assets
         uses: actions/download-artifact@v4
