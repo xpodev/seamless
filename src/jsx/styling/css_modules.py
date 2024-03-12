@@ -5,33 +5,38 @@ from jsx.internal import short_uuid
 
 
 class CSSClass:
-    def __init__(self, class_name: str, css_text: str):
+    def __init__(self, class_name: str, css_text: str = None):
         self.class_name = class_name
-        self.css_text = css_text
+        self.sub_rules = dict[str, dict[str, str]]()
         self.uuid = short_uuid()
+        if css_text is not None:
+            self.add_rule("", css_text)
+
+    def add_rule(self, rule: str, properties: dict[str, str]):
+        if rule not in self.sub_rules:
+            self.sub_rules[rule] = {}
+
+        self.sub_rules[rule].update(properties)
 
     def as_css(self, minified=False):
-        text_lines = self.css_text.split("\n")
         text = ""
-        for line in text_lines:
-            line = line.strip()
-            if not line:
-                continue
+        for key, rule in self.sub_rules.items():
+            rule_text = ""
+            for attr, value in rule.items():
+                value = value.strip()
+                if not value.endswith(";"):
+                    value += ";"
+                if minified:
+                    rule_text += f"{attr}:{value}"
+                else:
+                    rule_text += f"  {attr}: {value}\n"
 
-            attr, value = line.split(":")
-            attr = attr.strip()
-            value = value.strip()
-            if not value.endswith(";"):
-                value += ";"
             if minified:
-                text += f"{attr}:{value}"
+                text += f".{self.uuid}{key}{{{rule_text}}}"
             else:
-                text += f"  {attr}: {value}\n"
+                text += f".{self.uuid}{key} {{\n{rule_text}}}\n"
 
-        if minified:
-            return f".{self.uuid}{{{text}}}"
-        else:
-            return f".{self.uuid} {{\n{text}}}"
+        return text
 
     def __str__(self):
         return self.uuid
@@ -44,12 +49,23 @@ class CSSModule:
         self.classes = dict[str, CSSClass]()
         for rule in css:
             if rule.type == rule.STYLE_RULE:
-                for selector in rule.selectorList:
-                    if selector.seq[0].type == "class":
-                        class_name = selector.seq[0].value.removeprefix(".")
-                        self.classes[class_name] = CSSClass(
-                            class_name, rule.style.cssText
-                        )
+                selectors = rule.selectorList
+                first_selector = selectors[0]
+                if first_selector.seq[0].type != "class":
+                    continue
+
+                style_dict = {
+                    css_property.name: css_property.value for css_property in rule.style
+                }
+
+                base_name = first_selector.seq[0].value.removeprefix(".")
+                css_class = self.classes[base_name] if base_name in self.classes else CSSClass(base_name)
+                for selector in selectors:
+                    css_class.add_rule(
+                        selector.selectorText.replace(f".{base_name}", ""), style_dict
+                    )
+
+                self.classes[base_name] = css_class
 
     def __getattr__(self, __name: str) -> str:
         return str(self.classes[__name])
