@@ -1,6 +1,8 @@
+from functools import wraps
+from inspect import iscoroutinefunction
 from pathlib import Path
 from fastapi import FastAPI
-from fastapi.responses import HTMLResponse, Response
+from fastapi.responses import StreamingResponse, Response
 from starlette.middleware.base import BaseHTTPMiddleware
 from jsx import *
 from jsx.middlewares import ASGIMiddleware
@@ -10,13 +12,22 @@ from .server.common import Page
 CSS.set_root_folder(Path(__file__).parent / "server/static")
 app = FastAPI()
 
+
 class JSXMiddleware(BaseHTTPMiddleware):
     async def dispatch(self, request, call_next):
         response = await call_next(request)
-        if not hasattr(response, "body"):
-            return response
+        if isinstance(response, StreamingResponse):
+            body = await anext(response.body_iterator)
+            response = StreamingResponse(
+                content=body,
+                status_code=response.status_code,
+                headers=response.headers,
+                media_type=response.media_type,
+                background=response.background,
+            )
+        else:
+            body = response.body
 
-        body = response.body
         if isinstance(body, Component):
             if not isinstance(body, Page):
                 body = Page(body)
@@ -29,17 +40,41 @@ class JSXMiddleware(BaseHTTPMiddleware):
 app.add_middleware(
     ASGIMiddleware,
 )
-app.add_middleware(
-    JSXMiddleware,
-)
 
+def _make_response(response):
+    if isinstance(response, (Component, Element)):
+        if not isinstance(response, Page):
+            response = Page(response)
+                
+        response = Response(render(response), media_type="text/html")
+    
+    return response
+
+@wraps(app.get)
+def get(path: str, **kwargs):
+    def wrapper(_handler):
+        if iscoroutinefunction(_handler):
+            @wraps(_handler)
+            async def handler(*args, **kwargs):
+                response = await _handler(*args, **kwargs)
+                return _make_response(response)
+
+        else:
+            @wraps(_handler)
+            def handler(*args, **kwargs):
+                response = _handler(*args, **kwargs)
+                return _make_response(response)
+            
+        app.get(path, **kwargs)(handler)
+    
+    return wrapper
 
 def card():
     styles = CSS.module("card.css")
     return Div("Hello, world!", class_name=styles.card)
 
 
-@app.get("/")
+@get("/")
 async def index():
     return card()
 
