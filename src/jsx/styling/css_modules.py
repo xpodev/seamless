@@ -18,8 +18,8 @@ class CSSClass:
 
         self.sub_rules[rule].update(properties)
 
-    def as_css(self, minified=False):
-        text = ""
+    def export(self, minified=False):
+        rules = []
         for key, rule in self.sub_rules.items():
             rule_text = ""
             for attr, value in rule.items():
@@ -32,11 +32,12 @@ class CSSClass:
                     rule_text += f"  {attr}: {value}\n"
 
             if minified:
-                text += f".{self.uuid}{key}{{{rule_text}}}"
+                rules.append(f".{self.uuid}{key}{{{rule_text}}}")
             else:
-                text += f".{self.uuid}{key} {{\n{rule_text}}}\n"
+                rules.append(f".{self.uuid}{key} {{\n{rule_text}}}")
 
-        return text
+        join_string = "" if minified else "\n\n"
+        return join_string.join(rules)
 
     def __str__(self):
         return self.uuid
@@ -69,6 +70,10 @@ class CSSModule:
 
     def __getattr__(self, __name: str) -> str:
         return str(self.classes[__name])
+    
+    def export(self, minified=False):
+        join_string = "" if minified else "\n\n"
+        return join_string.join(css_class.export(minified) for css_class in self.classes.values())
 
 
 class CSSModulesManager:
@@ -86,15 +91,12 @@ class CSSModulesManager:
             self.modules[css_path] = CSSModule(css_path)
         return self.modules[css_path]
 
-    def output(self, minified=False):
+    def export(self, minified=False):
         """
         Get the CSS output of all the CSS modules.
         """
-        output = ""
-        for module in self.modules.values():
-            for css_class in module.classes.values():
-                output += css_class.as_css(minified=minified)
-        return output
+        join_string = "" if minified else "\n\n"
+        return join_string.join(css_module.export(minified) for css_module in self.modules.values())
 
     def set_root_folder(self, folder: PathLike):
         """
