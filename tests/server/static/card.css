@@ -6,3 +6,12 @@
   padding: 10px;
   text-align: center;
 }
+
+.card:hover {
+  background-color: red;
+}
+
+.card:active,
+.card:disabled {
+  background-color: blue;
+}
