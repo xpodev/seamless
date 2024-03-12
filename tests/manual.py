@@ -61,7 +61,12 @@ async def index():
 
 @app.get("/static/main.css")
 def css_file():
-    return Response(CSS.output(minified=True), media_type="text/css")
+    return Response(CSS.export(), media_type="text/css")
+
+
+@app.get("/static/main.min.css")
+def css_file():
+    return Response(CSS.export(minified=True), media_type="text/css")
 
 
 if __name__ == "__main__":

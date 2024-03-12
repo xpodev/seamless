@@ -7,8 +7,8 @@ def index():
     return render(Page(SampleComponent(name="world")))
 
 
-def css_file():
-    return CSS.output()
+def css_file(minified=False):
+    return CSS.export(minified)
 
 
 def db_memory():
