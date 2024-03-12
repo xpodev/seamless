@@ -1,11 +1,14 @@
 from jsx.html import *
-from jsx import Component, ContainerComponent
-from jsx.renderer import render
-from jsx.server.request import request
+from jsx import Component, ContainerComponent, render
+from jsx.styling import CSS
 from jsx.server.database import DB
 
 def index():
     return render(Page(SampleComponent(name="world")))
+
+
+def css_file():
+    return CSS.output()
 
 
 def db_memory():
@@ -23,14 +26,11 @@ class Page(ContainerComponent):
             Html(
                 Head(
                     Title("JSX"),
-                    Meta(name="jsx-claim-id", value=request().id),
                     Script(src="/socket.io/static/main.js"),
+                    Link(rel="stylesheet", href="/static/main.css"),
                 ),
                 Body(
                     Div(
-                        Div(
-                            f"JSX Claim ID: {request().id}"
-                        ),
                         *self.children,
                         id="root",
                     )

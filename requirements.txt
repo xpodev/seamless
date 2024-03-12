@@ -1,1 +1,2 @@
 python-socketio==5.11.1
+cssutils==2.9.0

@@ -2,7 +2,7 @@ from functools import partial
 from socketio import AsyncServer, ASGIApp
 
 from .base import BaseAsyncMiddleware
-from ..server.request import set_request, HTTPRequest
+from ..server.request import HTTPRequest
 
 
 class ASGIMiddleware(BaseAsyncMiddleware):
@@ -44,27 +44,23 @@ class ASGIMiddleware(BaseAsyncMiddleware):
             ):
                 return await self.static_handler(scope, receive, send)
 
-            if self._is_render_request():
-
-                async def _send(message):
+            async def _send(message):
+                if self._is_render_request():
                     if "headers" not in message:
                         message["headers"] = []
 
                     message["headers"].extend(
                         self._make_cookie_header("_jsx_claimId", request.id)
                     )
-                    await send(message)
 
-            elif request.path.startswith(self.socket_path):
-                if "_jsx_claimId" in request.cookies:
-
-                    async def _send(message):
+                elif request.path.startswith(self.socket_path):
+                    if "_jsx_claimId" in request.cookies:
                         if "headers" not in message:
                             message["headers"] = []
 
                         message["headers"].extend(self._remove_cookie("_jsx_claimId"))
 
-                        await send(message)
+                await send(message)
 
         await self.app(scope, receive, _send)
 

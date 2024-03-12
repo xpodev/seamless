@@ -8,11 +8,11 @@ if TYPE_CHECKING:
 
 
 def class_name_mapper(class_name):
-    return {
-        "class": " ".join(
-            class_name.split() if isinstance(class_name, str) else class_name
-        )
-    }
+    if isinstance(class_name, list):
+        class_name = " ".join(class_name)
+
+    class_name = str(class_name)
+    return {"class": " ".join(class_name.split())}
 
 
 PROPS_MAP = {
