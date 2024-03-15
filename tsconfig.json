@@ -1,8 +1,0 @@
-{
-  "compilerOptions": {
-    "rootDir": "./ts",
-    "forceConsistentCasingInFileNames": true,
-    "strict": true,
-    "esModuleInterop": true
-  }
-}

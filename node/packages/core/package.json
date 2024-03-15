@@ -1,0 +1,13 @@
+{
+    "name": "py-jsx",
+    "version": "0.0.1",
+    "description": "Python JSX",
+    "devDependencies": {
+      "socket.io-client": "4.7.4",
+      "typescript": "^5.3.3"
+    },
+    "scripts": {
+      "build": "tsc"
+    }
+  }
+  

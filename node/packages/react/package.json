@@ -1,0 +1,19 @@
+{
+    "name": "@py-jsx/react",
+    "version": "0.0.1",
+    "description": "Python JSX for React.js",
+    "dependencies": {
+      "react": "^18.2.0",
+      "react-dom": "^18.2.0",
+      "py-jsx": "file:../core"
+    },
+    "devDependencies": {
+      "@types/react": "^18.2.63",
+      "@types/react-dom": "^18.2.20",
+      "typescript": "^5.3.3"
+    },
+    "scripts": {
+      "build": "tsc"
+    }
+  }
+  
