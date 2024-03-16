@@ -7,6 +7,11 @@
 
 JSX is a Python package for creating and manipulating HTML components. It is working similar to React.js, but in Python.
 
+## Installation
+```sh
+pip install jsx
+```
+
 
 ## Usage
 
