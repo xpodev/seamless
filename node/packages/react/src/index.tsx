@@ -1,21 +1,24 @@
-import { default as _PyJSX } from 'py-jsx';
-import { capitalizeFirstLetter } from 'py-jsx/utils'
-import type { PyJSXElement, Primitive } from 'py-jsx';
 import React from 'react';
+
+import BaseJSX, { type PyJSXElement, type Primitive } from 'slarf';
+import { SlarfOptions } from 'slarf/types';
+import { capitalizeFirstLetter } from 'slarf/utils';
 
 type ReactElement = ReturnType<typeof React.createElement<Record<string, any>>>;
 
-export let PyJSXContext: React.Context<PyJSX> = null as any;
 
-export function createContext(config?: any) {
+export let PyJSXContext: React.Context<PyJSX>;
+
+
+export function createContext(config?: SlarfOptions): React.Context<PyJSX> {
     if (!PyJSXContext) {
-        PyJSXContext = React.createContext(new PyJSX());
+        PyJSXContext = React.createContext(new PyJSX(config));
     }
 
-    return PyJSXContext
+    return PyJSXContext;
 }
 
-class PyJSX extends _PyJSX {
+class PyJSX extends BaseJSX {
     private convertToReact(element: PyJSXElement | Primitive): ReactElement | Primitive {
         if (this.isPrimitive(element)) {
             return element;
@@ -25,13 +28,13 @@ class PyJSX extends _PyJSX {
             const events: string[] = element.props['jsx:events']?.split(',') || [];
             events.forEach((event) => {
                 event = capitalizeFirstLetter(event);
-                element.props[`on${event}`] = (e: any) => {
+                element.props[`on${event}`] = (e: Event) => {
                     this.emit(
                         'dom_event',
                         `${element.props['jsx:id']}:${event}`,
                         {
                             jsxId: element.props['jsx:id'],
-                            foo: 'bar',
+                            event: this.serializeEventObject(e),
                         }
                     );
                 };
@@ -45,13 +48,16 @@ class PyJSX extends _PyJSX {
     }
 }
 
-function canRender(component: any): component is PyJSXElement {
-    return typeof component === 'object' && component !== null && component.hasOwnProperty('type') && component.hasOwnProperty('props');
+function canRender(component: unknown): component is PyJSXElement {
+    return typeof component === 'object'
+        && component !== null
+        && Object.prototype.hasOwnProperty.call(component, 'type')
+        && Object.prototype.hasOwnProperty.call(component, 'props');
 }
 
 function render(component: any) {
     if (canRender(component)) {
-        const children: any[] = Array.isArray(component.children) ? component.children.map(render) : [];
+        const children: ReactElement[] = Array.isArray(component.children) ? component.children.map(render) : [];
         return React.createElement(component.type, component.props, ...children);
     }
     return component;

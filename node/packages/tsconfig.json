@@ -1,34 +1,29 @@
 {
-  "files": [],
-  "references": [
-    {
-      "path": "./core/tsconfig.json",
+    "compilerOptions": {
+        "rootDir": ".",
+        "forceConsistentCasingInFileNames": true,
+        "strict": true,
+        "esModuleInterop": true,
+        "skipLibCheck": true,
+        "declaration": true,
+        "paths": {
+            "@slarf/*": [
+                "./*"
+            ],
+            "slarf/*": [
+                "./core/src/*"
+            ],
+        },
     },
-    {
-      "path": "./react/tsconfig.json",
-    }
-  ],
-  "compilerOptions": {
-    "rootDir": ".",
-    "forceConsistentCasingInFileNames": true,
-    "strict": true,
-    "esModuleInterop": true,
-    "composite": true,
-    "jsx": "react-jsx",
-    "paths": {
-      "py-jsx": [
-        "./core/src"
-      ],
-      "py-jsx/*": [
-        "./core/src/*"
-      ]
-    }
-  },
-  "include": [
-    "./**/*"
-  ],
-  "exclude": [
-    "node_modules",
-    "**/*.spec.ts"
-  ]
+    "include": [
+        "./packages/*/src"
+    ],
+    "references": [
+        {
+            "path": "./core"
+        },
+        {
+            "path": "./react"
+        }
+    ]
 }

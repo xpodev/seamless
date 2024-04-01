@@ -1,5 +1,5 @@
 {
-    "name": "py-jsx",
+    "name": "slarf",
     "version": "0.0.1",
     "description": "Python JSX",
     "devDependencies": {
@@ -16,8 +16,8 @@
       "webpack-dev-server": "^4.7.3"
     },
     "scripts": {
-      "start": "webpack serve --mode development",
-      "build": "webpack --mode production"
+      "build": "tsc -b ./packages",
+      "watch": "tsc -b ./packages -w"
     }
   }
   
