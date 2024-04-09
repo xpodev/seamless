@@ -9,5 +9,6 @@ app.get("/c")(index)
 app.get("/usage")(db_memory)
 app.get("/static/main.css")(lambda: Response(css_file(), content_type="text/css"))
 
+
 def run():
     app.run(host="0.0.0.0", port=8081, debug=True)
