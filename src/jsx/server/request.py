@@ -1,6 +1,5 @@
 from enum import Enum
 from dataclasses import dataclass
-from uuid import uuid4 as uuid
 from urllib.parse import parse_qs
 
 from jsx.internal import Cookies
