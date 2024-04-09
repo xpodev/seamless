@@ -5,7 +5,7 @@ HERE = pathlib.Path(__file__).parent
 with open(HERE / "__init__.py", "w") as f:
     items = []
     for file in HERE.iterdir():
-        if file.name.startswith("_"):
+        if file.name.startswith("_") or file.suffix != ".py":
             continue
         
         capitalized = file.stem.capitalize()
