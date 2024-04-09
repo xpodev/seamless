@@ -7,7 +7,7 @@ from jsx.internal import short_uuid
 class CSSClass:
     def __init__(self, class_name: str, css_text: str = None):
         self.class_name = class_name
-        self.sub_rules = dict[str, dict[str, str]]()
+        self.sub_rules: dict[str, dict[str, str]] = {}
         self.uuid = short_uuid()
         if css_text is not None:
             self.add_rule("", css_text)
@@ -18,25 +18,23 @@ class CSSClass:
 
         self.sub_rules[rule].update(properties)
 
-    def export(self, minified=False):
+    def to_css_string(self, minified=False):
         rules = []
+        rules_format_string = (
+            ".{0}{1} {{\n{2}}}\n" if not minified else ".{0}{1}{{{2}}}"
+        )
+        single_rule_format_string = "\t{0}: {1}\n" if not minified else "{0}:{1}"
         for key, rule in self.sub_rules.items():
             rule_text = ""
             for attr, value in rule.items():
                 value = value.strip()
                 if not value.endswith(";"):
                     value += ";"
-                if minified:
-                    rule_text += f"{attr}:{value}"
-                else:
-                    rule_text += f"  {attr}: {value}\n"
+                rule_text += single_rule_format_string.format(attr, value)
 
-            if minified:
-                rules.append(f".{self.uuid}{key}{{{rule_text}}}")
-            else:
-                rules.append(f".{self.uuid}{key} {{\n{rule_text}}}")
+            rules.append(rules_format_string.format(self.uuid, key, rule_text))
 
-        join_string = "" if minified else "\n\n"
+        join_string = "" if minified else "\n"
         return join_string.join(rules)
 
     def __str__(self):
@@ -47,7 +45,7 @@ class CSSModule:
     def __init__(self, module_name):
         css = cssutils.parseFile(module_name)
         self.module_name = module_name
-        self.classes = dict[str, CSSClass]()
+        self.classes: dict[str, CSSClass] = {}
         for rule in css:
             if rule.type == rule.STYLE_RULE:
                 selectors = rule.selectorList
@@ -60,7 +58,11 @@ class CSSModule:
                 }
 
                 base_name = first_selector.seq[0].value.removeprefix(".")
-                css_class = self.classes[base_name] if base_name in self.classes else CSSClass(base_name)
+                css_class = (
+                    self.classes[base_name]
+                    if base_name in self.classes
+                    else CSSClass(base_name)
+                )
                 for selector in selectors:
                     css_class.add_rule(
                         selector.selectorText.replace(f".{base_name}", ""), style_dict
@@ -68,18 +70,22 @@ class CSSModule:
 
                 self.classes[base_name] = css_class
 
-    def __getattr__(self, __name: str) -> str:
-        return str(self.classes[__name])
-    
-    def export(self, minified=False):
+    def __getattr__(self, __name: str):
+        if __name not in self.classes:
+            raise AttributeError(f"CSS class {__name} not found in {self.module_name}")
+        return self.classes[__name].uuid
+
+    def to_css_string(self, minified=False):
         join_string = "" if minified else "\n\n"
-        return join_string.join(css_class.export(minified) for css_class in self.classes.values())
+        return join_string.join(
+            css_class.to_css_string(minified) for css_class in self.classes.values()
+        )
 
 
 class CSSModulesManager:
     def __init__(self):
-        self.modules = dict[str, CSSModule]()
-        self.folder = Path.cwd()
+        self.modules: dict[str, CSSModule] = {}
+        self.folder: Path = Path.cwd()
 
     def module(self, css_path: PathLike):
         """
@@ -91,12 +97,14 @@ class CSSModulesManager:
             self.modules[css_path] = CSSModule(css_path)
         return self.modules[css_path]
 
-    def export(self, minified=False):
+    def to_css_string(self, minified=False):
         """
         Get the CSS output of all the CSS modules.
         """
         join_string = "" if minified else "\n\n"
-        return join_string.join(css_module.export(minified) for css_module in self.modules.values())
+        return join_string.join(
+            css_module.to_css_string(minified) for css_module in self.modules.values()
+        )
 
     def set_root_folder(self, folder: PathLike):
         """
@@ -117,3 +125,5 @@ class CSSModulesManager:
 
 
 CSS = CSSModulesManager()
+
+__all__ = ["CSS"]

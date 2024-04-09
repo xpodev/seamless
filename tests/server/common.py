@@ -8,7 +8,7 @@ def index():
 
 
 def css_file(minified=False):
-    return CSS.export(minified)
+    return CSS.to_css_string(minified)
 
 
 def db_memory():
