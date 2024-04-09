@@ -1,5 +1,5 @@
-class PyxError(Exception):
+class Error(Exception):
     ...
 
-class RenderError(PyxError):
+class RenderError(Error):
     ...
