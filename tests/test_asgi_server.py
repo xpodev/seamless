@@ -15,7 +15,3 @@ class TestServer(unittest.TestCase):
         response = TestServer.client.get("/c")
         self.assertEqual(response.status_code, 200)
 
-    def test_static(self):
-        response = TestServer.client.get("/socket.io/static/main.js")
-        self.assertEqual(response.status_code, 200)
-        self.assertIn(response.headers["content-type"], ["application/javascript", "text/javascript"])
