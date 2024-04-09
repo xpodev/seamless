@@ -1,5 +1,7 @@
-from typing import TYPE_CHECKING, TypeVar, Generic, Unpack
+from typing import TYPE_CHECKING, Iterable, TypeVar, Generic, Unpack
 from abc import abstractmethod
+
+from ..types import Primitive, Renderable
 
 from ..server.database import DB
 
@@ -25,8 +27,13 @@ _PROPS_MAP = {
 
 
 class Element(Generic[PropsType]):
-    def __init__(self, *children: "ChildrenType", **kwargs: Unpack[PropsType]):
-        self.children = children
+    def __init__(
+        self,
+        *args: "ChildrenType",
+        children: Iterable[Renderable | Primitive] = [],
+        **kwargs: Unpack[PropsType],
+    ):
+        self.children = list(args or children)
         self.props = kwargs
 
     @property
@@ -60,3 +67,7 @@ class Element(Generic[PropsType]):
             props_copy["jsx:events"] = ",".join(jsx_events)
 
         return props_copy
+
+    def __call__(self, *children: "ChildrenType"):
+        self.children = children
+        return self

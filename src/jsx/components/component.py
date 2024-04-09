@@ -23,3 +23,28 @@ class ContainerComponent(Component):
 
     def __init__(self, *children: "ChildrenType") -> None:
         self.children = children
+
+    # def __new__(cls, *children, **kwargs):
+    #     if cls is ContainerComponent:
+    #         raise TypeError("ContainerComponent cannot be instantiated")
+        
+    #     result = object.__new__(cls)
+    #     ContainerComponent.__init__(result, *children)
+    #     cls.__init__(result, **kwargs)
+    #     return result
+
+    def __init_subclass__(cls) -> None:
+        if cls.__init__ is ContainerComponent.__init__:
+            return
+        
+        original_init = cls.__init__
+
+        def __init__(self, *args, children=None, **kwargs):
+            ContainerComponent.__init__(self, *(children or args))
+            original_init(self, **kwargs)
+        
+        cls.__init__ = __init__
+            
+    def __call__(self, *children: "ChildrenType"):
+        self.children = children
+        return self
