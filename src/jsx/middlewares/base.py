@@ -44,12 +44,7 @@ class BaseMiddleware:
 
     def _make_handler(self, handler):
         def _handler(sid, *data):
-            result = handler(sid, *data)
-            if result is None:
-                return
-
-            response_event, *response_data = result
-            self._emit(response_event, *response_data, to=sid)
+            return "OK", handler(sid, *data)
 
         return _handler
 
@@ -58,19 +53,18 @@ class BaseMiddleware:
         try:
             DB.invoke_element_event(component_id, sid, event, event_data)
         except KeyError:
-            raise Exception(
-                f"Element {component_id} not found"
-            )
+            raise Exception(f"Element {component_id} not found")
 
     def _handle_disconnect(self, sid: str):
         DB.release_elements(sid)
+
     def _handle_connect(self, sid: str, env):
         cookie_string = env.get("HTTP_COOKIE", "")
         if not cookie_string:
             self._disconnect(sid)
 
         cookies = Cookies(env.get("HTTP_COOKIE", ""))
-        claim_id = cookies["_jsx_claimId"]
+        claim_id = cookies[CLAIM_COOKIE_NAME]
         if not claim_id:
             self._disconnect(sid)
 
@@ -148,11 +142,14 @@ class BaseMiddleware:
 
             def _method(*args, **kwargs):
                 if iscoroutinefunction(method):
-                    return asyncio.get_running_loop().create_task(method(*args, **kwargs))
+                    return asyncio.get_running_loop().create_task(
+                        method(*args, **kwargs)
+                    )
                 else:
+
                     async def _wrapper():
                         return method(*args, **kwargs)
-                    
+
                     return _wrapper()
 
         else:
@@ -178,12 +175,12 @@ class BaseAsyncMiddleware(BaseMiddleware):
 
     def _make_handler(self, handler):
         async def _handler(sid, *data):
-            result = handler(sid, *data)
-            if result is None:
-                return
+            if iscoroutinefunction(handler):
+                result = await handler(sid, *data)
+            else:
+                result = handler(sid, *data)
 
-            response_event, *response_data = result
-            await self._emit(response_event, *response_data, to=sid)
+            return "OK", result
 
         return _handler
 
