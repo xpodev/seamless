@@ -1,7 +1,7 @@
 from socketio import Server, WSGIApp
 
-from .base import BaseMiddleware
-from ..server.request import set_request, HTTPRequest, request
+from .base import BaseMiddleware, CLAIM_COOKIE_NAME
+from ..server.request import HTTPRequest
 
 
 class WSGIMiddleware(BaseMiddleware):
@@ -29,7 +29,7 @@ class WSGIMiddleware(BaseMiddleware):
             return self.static_handler(env, start_response)
 
         def c(status: str, headers: list, *args):
-            headers.extend(self._make_cookie_header("_jsx_claimId", request.id))
+            headers.extend(self._make_cookie_header(CLAIM_COOKIE_NAME, request.id))
             start_response(status, headers, *args)
 
         return self.app(env, c)

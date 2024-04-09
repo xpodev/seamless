@@ -15,6 +15,9 @@ from ..server.request import WSRequest, request as _request
 from ..internal import Cookies
 
 
+CLAIM_COOKIE_NAME = "_slarf_claimId"
+
+
 class BaseMiddleware:
     STATIC_FOLDER = Path(__file__).parent.parent / "server/static"
 

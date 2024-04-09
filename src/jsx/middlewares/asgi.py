@@ -1,7 +1,7 @@
 from functools import partial
 from socketio import AsyncServer, ASGIApp
 
-from .base import BaseAsyncMiddleware
+from .base import BaseAsyncMiddleware, CLAIM_COOKIE_NAME
 from ..server.request import HTTPRequest
 
 
@@ -50,15 +50,15 @@ class ASGIMiddleware(BaseAsyncMiddleware):
                         message["headers"] = []
 
                     message["headers"].extend(
-                        self._make_cookie_header("_jsx_claimId", request.id)
+                        self._make_cookie_header(CLAIM_COOKIE_NAME, request.id)
                     )
 
                 elif request.path.startswith(self.socket_path):
-                    if "_jsx_claimId" in request.cookies:
+                    if CLAIM_COOKIE_NAME in request.cookies:
                         if "headers" not in message:
                             message["headers"] = []
 
-                        message["headers"].extend(self._remove_cookie("_jsx_claimId"))
+                        message["headers"].extend(self._remove_cookie(CLAIM_COOKIE_NAME))
 
                 await send(message)
 
