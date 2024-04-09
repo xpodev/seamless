@@ -1,39 +1,37 @@
 import React from 'react';
 
-import BaseJSX, { type PyJSXElement, type Primitive } from 'slarf';
+import Slarf, { type SlarfElement, type Primitive } from 'slarf';
 import { SlarfOptions } from 'slarf/types';
 import { capitalizeFirstLetter } from 'slarf/utils';
 
 type ReactElement = ReturnType<typeof React.createElement<Record<string, any>>>;
 
+export let SlarfContext: React.Context<SlarfReact>;
 
-export let PyJSXContext: React.Context<PyJSX>;
-
-
-export function createContext(config?: SlarfOptions): React.Context<PyJSX> {
-    if (!PyJSXContext) {
-        PyJSXContext = React.createContext(new PyJSX(config));
+export function createContext(config?: SlarfOptions): React.Context<SlarfReact> {
+    if (!SlarfContext) {
+        SlarfContext = React.createContext(new SlarfReact(config));
     }
 
-    return PyJSXContext;
+    return SlarfContext;
 }
 
-class PyJSX extends BaseJSX {
-    private convertToReact(element: PyJSXElement | Primitive): ReactElement | Primitive {
+class SlarfReact extends Slarf {
+    private convertToReact(element: SlarfElement | Primitive): ReactElement | Primitive {
         if (this.isPrimitive(element)) {
             return element;
         }
 
-        if ('jsx:id' in element.props) {
-            const events: string[] = element.props['jsx:events']?.split(',') || [];
+        if ('slarf:id' in element.props) {
+            const events: string[] = element.props['slarf:events']?.split(',') || [];
             events.forEach((event) => {
                 event = capitalizeFirstLetter(event);
                 element.props[`on${event}`] = (e: Event) => {
                     this.emit(
                         'dom_event',
-                        `${element.props['jsx:id']}:${event}`,
+                        `${element.props['slarf:id']}:${event}`,
                         {
-                            jsxId: element.props['jsx:id'],
+                            slarfId: element.props['slarf:id'],
                             event: this.serializeEventObject(e),
                         }
                     );
@@ -43,12 +41,12 @@ class PyJSX extends BaseJSX {
 
         const children = (
             Array.isArray(element.children) ? element.children : [element.children]
-        ).map((v) => this.convertToReact(v));
+        ).map((child: SlarfElement | Primitive) => this.convertToReact(child));
         return React.createElement(element.type, element.props, ...children);
     }
 }
 
-function canRender(component: unknown): component is PyJSXElement {
+function canRender(component: unknown): component is SlarfElement {
     return typeof component === 'object'
         && component !== null
         && Object.prototype.hasOwnProperty.call(component, 'type')
@@ -63,14 +61,14 @@ function render(component: any) {
     return component;
 }
 
-interface PyComponentProps {
+interface SlarfComponentProps {
     name: string;
     props?: Record<string, any>;
 }
 
-export function PyComponent({ name, props = {} }: PyComponentProps) {
-    const componentsApi = React.useContext(PyJSXContext);
-    const [component, setComponent] = React.useState<PyJSXElement | Primitive>(null);
+export function SlarfComponent({ name, props = {} }: SlarfComponentProps) {
+    const componentsApi = React.useContext(SlarfContext);
+    const [component, setComponent] = React.useState<SlarfElement | Primitive>(null);
 
     React.useEffect(() => {
         const fetchComponent = async () => {

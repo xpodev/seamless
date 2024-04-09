@@ -1,7 +1,7 @@
 {
   "name": "@slarf/react",
   "version": "0.0.1",
-  "description": "Python JSX for React.js",
+  "description": "Slarf integration with React",
   "main": "dist/index.js",
   "dependencies": {
     "react": "^18.2.0",
