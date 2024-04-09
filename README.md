@@ -67,10 +67,10 @@ class Person(Component):
       on_submit=self.save_age
     )
 
-  def set_age(self, event_data: JSXChangeEvent):
+  def set_age(self, event_data: ChangeEvent):
     self.age = event_data.value
 
-  def save_age(self, event_data: JSXSubmitEvent):
+  def save_age(self, event_data: SubmitEvent):
     user = get_user()
     user.age = self.age
     save(user)
