@@ -17,6 +17,9 @@
     },
     "scripts": {
       "build": "tsc -b ./packages",
+      "build:all": "tsc -b ./packages && npm run build:browser && npm run build:react",
+      "build:browser": "webpack --config ./packages/core/webpack.config.js",
+      "build:react": "webpack --config ./packages/react/webpack.config.js",
       "watch": "tsc -b ./packages -w"
     }
   }

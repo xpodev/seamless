@@ -1,10 +1,10 @@
 const path = require('path');
-const TersePlugin = require('terser-webpack-plugin');
+const TerserPlugin = require('terser-webpack-plugin');
 
-const staticPath = path.resolve(__dirname, 'src/jsx/server/static');
+const here = path.resolve(__dirname);
 
 module.exports = {
-  entry: `./ts/main.ts`,
+  entry: path.resolve(here, 'src/index.ts'),
   module: {
     rules: [
       {
@@ -16,17 +16,15 @@ module.exports = {
   },
   resolve: {
     extensions: ['.tsx', '.ts', '.js'],
-    alias: {
-      '~': staticPath,
-    },
   },
   output: {
-    filename: 'main.js',
-    path: staticPath
+    filename: 'index.js',
+    path: path.resolve(here, 'umd'),
+    library: 'Slarf'
   },
   optimization: {
     minimizer: [
-      new TersePlugin({
+      new TerserPlugin({
         terserOptions: {
           format: {
             comments: false,
@@ -36,4 +34,4 @@ module.exports = {
       }),
     ],
   },
-};
+}

@@ -13,6 +13,9 @@
             "slarf/*": [
                 "./core/src/*"
             ],
+            "slarf": [
+                "./core/src/index.ts"
+            ],
         },
     },
     "include": [
