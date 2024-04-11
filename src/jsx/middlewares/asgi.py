@@ -12,8 +12,11 @@ class ASGIMiddleware(BaseAsyncMiddleware):
 
         if scope["type"] == "http":
             request = HTTPRequest.make(scope, type="asgi")
-            
+
             async def _send(message):
+                if message["type"] != "http.response.start":
+                    return await send(message)
+
                 if self._is_render_request():
                     if "headers" not in message:
                         message["headers"] = []
@@ -27,7 +30,9 @@ class ASGIMiddleware(BaseAsyncMiddleware):
                         if "headers" not in message:
                             message["headers"] = []
 
-                        message["headers"].append(self._remove_cookie(CLAIM_COOKIE_NAME))
+                        message["headers"].append(
+                            self._remove_cookie(CLAIM_COOKIE_NAME)
+                        )
 
                 await send(message)
 
