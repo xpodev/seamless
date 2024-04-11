@@ -1,17 +1,17 @@
 from functools import wraps
 from inspect import iscoroutinefunction
 from pathlib import Path
-from fastapi import FastAPI
-from fastapi.responses import Response
+from fastapi import FastAPI, Response
+from fastapi.responses import FileResponse
 from jsx import *
-from jsx.middlewares import ASGIMiddleware
+from jsx.middlewares.asgi import ASGIMiddleware
 from jsx.styling import CSS
-from .server.common import Page
+from .server.common import Card, Page, SuperCard
 
 CSS.set_root_folder(Path(__file__).parent / "server/static")
+
+
 app = FastAPI()
-
-
 app.add_middleware(
     ASGIMiddleware,
 )
@@ -49,14 +49,29 @@ def get(path: str, **kwargs):
     return wrapper
 
 
+def click_handler(*args, **kwargs):
+    print("Button clicked")
+
+
 def card():
-    styles = CSS.module("card.css")
-    return Div("Hello, world!", class_name=styles.card)
+    return SuperCard(
+        Div(
+            H1("Hello, world!"),
+            P("This is a JSX component"),
+            Button("Click me", on_click=click_handler),
+        ),
+        rounded=True,
+        is_super=True,
+    )
 
 
 @get("/")
-async def index():
+def index():
     return card()
+
+@app.get("/static/main.js")
+def socket_io_static():
+    return FileResponse(Path(__file__).parent / "server/static/main.js")
 
 
 @app.get("/static/main.css")
@@ -65,11 +80,5 @@ def css_file():
 
 
 @app.get("/static/main.min.css")
-def css_file():
+def css_file_min():
     return Response(CSS.to_css_string(minified=True), media_type="text/css")
-
-
-if __name__ == "__main__":
-    import uvicorn
-
-    uvicorn.run(app, host="0.0.0.0", port=8000)

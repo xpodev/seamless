@@ -26,7 +26,7 @@ class Page(ContainerComponent):
             Html(
                 Head(
                     Title("JSX"),
-                    Script(src="/socket.io/static/main.js"),
+                    Script(src="/static/main.js"),
                     Link(rel="stylesheet", href="/static/main.css"),
                 ),
                 Body(
@@ -66,3 +66,34 @@ class SampleComponent(Component):
 
     def click(self, event):
         print("clicked", event)
+
+
+class Card(ContainerComponent):
+    def __init__(self, rounded=True) -> None:
+        self.rounded = rounded
+
+    def render(self):
+        styles = CSS.module("card.css")
+        return Div(
+            class_name=styles.card,
+            style={"border-radius": "5px"} if self.rounded else None
+        )(
+            *self.children
+        )
+
+
+class SuperCard(Card):
+    def __init__(self, rounded=True, is_super=False) -> None:
+        self.rounded = rounded
+        self.is_super = is_super
+
+
+    def render(self):
+        styles = CSS.module("card.css")
+        return Div(
+            class_name=styles.card,
+            style={"border-radius": "10px"} if self.rounded else None
+        )(
+            Div("Super card!" if self.is_super else "Card!"),
+            *self.children
+        )
