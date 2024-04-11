@@ -2,11 +2,9 @@
 
 [![PyPI version](https://badge.fury.io/py/jsx.svg?)](https://pypi.org/project/jsx)
 
-![build](https://github.com/xpodev/pyrl/actions/workflows/python-publish.yml/badge.svg)
 ![test](https://github.com/xpodev/pyrl/actions/workflows/python-test.yml/badge.svg)
 
 JSX is a Python package for creating and manipulating HTML components. It is working similar to React.js, but in Python.
-
 
 ## Usage
 
@@ -42,7 +40,7 @@ def hello_world():
 ### Server actions
 It's possible to pass a python function as component props.
 
-The current version works with `ASGIApp` and `WSGIApp`.
+The current version works with `ASGIApp`.
 ```python
 class Person(Component):
   def __init__(self, name: str, age: float):
