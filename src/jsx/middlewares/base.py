@@ -10,12 +10,12 @@ from socketio import AsyncServer
 
 from ..server.database import DB
 from ..server.ws_router import ws_router
-from ..server.request import WSRequest, request as _request
+from ..server.request import WSRequest, request as _request, set_request
 
 from ..internal import Cookies
 
 
-CLAIM_COOKIE_NAME = "_slarf_claimId"
+CLAIM_COOKIE_NAME = "_slarf_claim_id"
 
 
 class BaseMiddleware:
@@ -75,7 +75,9 @@ class BaseMiddleware:
         def wrapper(sid, *args, **kwargs):
             try:
                 WSRequest.make(sid)
-                return handler(sid, *args, **kwargs)
+                result = handler(sid, *args, **kwargs)
+                set_request(None)
+                return result
             except Exception as e:
                 self._emit("error", str(e), to=sid)
 
@@ -187,7 +189,9 @@ class BaseAsyncMiddleware(BaseMiddleware):
         async def wrapper(sid, *args, **kwargs):
             try:
                 WSRequest.make(sid)
-                return await handler(sid, *args, **kwargs)
+                result = await handler(sid, *args, **kwargs)
+                set_request(None)
+                return result
             except Exception as e:
                 await self.server.emit("error", str(e), to=sid)
                 raise e
