@@ -1,9 +1,9 @@
 from typing import TYPE_CHECKING, Iterable, TypeVar, Generic, Unpack
 from abc import abstractmethod
 
-from ..types import Primitive, Renderable
+from .types import Primitive, Renderable
 
-from ..server.database import DB
+from .server.database import DB
 
 if TYPE_CHECKING:
     from jsx.types import ChildrenType
@@ -63,8 +63,8 @@ class Element(Generic[PropsType]):
                 del props_copy[key]
 
         if len(jsx_events) > 0:
-            props_copy["jsx:id"] = DB.element_ids[self]
-            props_copy["jsx:events"] = ",".join(jsx_events)
+            props_copy["slarf:id"] = DB.element_ids[self]
+            props_copy["slarf:events"] = ",".join(jsx_events)
 
         return props_copy
 

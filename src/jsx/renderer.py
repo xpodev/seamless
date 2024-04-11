@@ -5,7 +5,7 @@ from uuid import uuid4 as uuid
 from .server.request import request as _request
 from .errors import RenderError
 from .components.component import Component
-from .html.element import Element
+from .element import Element
 
 if TYPE_CHECKING:
     from .types import Renderable, Primitive

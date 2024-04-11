@@ -1,5 +1,5 @@
 from typing import TYPE_CHECKING, Unpack
-from .element import Element
+from ..element import Element
 
 if TYPE_CHECKING:
     from ..types.html import HTMLDivElement
