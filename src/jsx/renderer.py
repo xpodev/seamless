@@ -3,7 +3,6 @@ from typing import TYPE_CHECKING, Any
 from uuid import uuid4 as uuid
 
 from .server.request import request as _request
-
 from .errors import RenderError
 from .components.component import Component
 from .html.element import Element
@@ -30,7 +29,7 @@ def _render(element: "Renderable | Primitive", *, prettify=False, tab_indent=1) 
 
     props = {k: v for k, v in element.props_dict().items() if v not in [None, False]}
 
-    props_string = render_props(props, element)
+    props_string = render_props(props)
     open_tag = f"{tag_name} {props_string}".strip()
 
     if element.inline:
@@ -78,29 +77,8 @@ def render_json(element: "Renderable | Primitive"):
     }
 
 
-def render_props(props: dict[str, Any], element: Element) -> str:
-    DB = _db()
-
-    props_strings = []
-    for key, value in props.items():
-        if callable(value):
-            event = key.removeprefix("on_")
-            DB.add_element_event(element, event, value)
-        elif value is True:
-            props_strings.append(key)
-        else:
-            props_strings.append(f'{key}="{escape(str(value))}"')
-
-    if element in DB.element_ids:
-        subscriptable = DB.get_element(element)
-        props_strings.append(
-            f'jsx:id="{subscriptable.id}" jsx:events="{",".join(subscriptable.events)}"'
-        )
-
-    return " ".join(props_strings)
-
-
-def _db():
-    from .server.database import DB
-
-    return DB
+def render_props(props: dict[str, Any]) -> str:
+    return " ".join(
+        key if value is True else f'{key}="{escape(str(value))}"'
+        for key, value in props.items()
+    )
