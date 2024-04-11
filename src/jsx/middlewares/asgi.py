@@ -18,7 +18,7 @@ class ASGIMiddleware(BaseAsyncMiddleware):
                     if "headers" not in message:
                         message["headers"] = []
 
-                    message["headers"].extend(
+                    message["headers"].append(
                         self._make_cookie_header(CLAIM_COOKIE_NAME, request.id)
                     )
 
@@ -27,7 +27,7 @@ class ASGIMiddleware(BaseAsyncMiddleware):
                         if "headers" not in message:
                             message["headers"] = []
 
-                        message["headers"].extend(self._remove_cookie(CLAIM_COOKIE_NAME))
+                        message["headers"].append(self._remove_cookie(CLAIM_COOKIE_NAME))
 
                 await send(message)
 

@@ -125,17 +125,15 @@ class BaseMiddleware:
         if same_site:
             cookie_value += f" SameSite={same_site};"
 
-        return [(b"Set-Cookie", cookie_value.encode())]
+        return (b"Set-Cookie", cookie_value.encode())
 
     def _remove_cookie(self, name: str, path: str = None):
         if path is None:
             path = self.socket_path
-        return [
-            (
-                b"Set-Cookie",
-                f"{name}=; Path={path}; Expires=Thu, 01 Jan 1970 00:00:00 GMT;".encode(),
-            )
-        ]
+        return (
+            b"Set-Cookie",
+            f"{name}=; Path={path}; Expires=Thu, 01 Jan 1970 00:00:00 GMT;".encode(),
+        )
 
     def _make_method(self, method):
         if self._is_async_server():
