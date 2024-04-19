@@ -24,15 +24,6 @@ class ContainerComponent(Component):
     def __init__(self, *children: "ChildrenType") -> None:
         self.children = children
 
-    # def __new__(cls, *children, **kwargs):
-    #     if cls is ContainerComponent:
-    #         raise TypeError("ContainerComponent cannot be instantiated")
-        
-    #     result = object.__new__(cls)
-    #     ContainerComponent.__init__(result, *children)
-    #     cls.__init__(result, **kwargs)
-    #     return result
-
     def __init_subclass__(cls) -> None:
         if cls.__init__ is ContainerComponent.__init__:
             return
