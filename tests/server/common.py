@@ -2,6 +2,8 @@ from jsx.html import *
 from jsx import Component, ContainerComponent, render
 from jsx.styling import CSS
 from jsx.server.database import DB
+from jsx.types.events import MouseEvent
+
 
 def index():
     return render(Page(SampleComponent(name="world")))
@@ -15,7 +17,7 @@ def db_memory():
     return {
         "elements": len(DB.elements),
         "ids": len(DB.element_ids),
-        "unclaimed": list(DB._all_unclaimed.keys())
+        "unclaimed": list(DB._all_unclaimed.keys()),
     }
 
 
@@ -64,7 +66,7 @@ class SampleComponent(Component):
             AnotherComponent(name="world"),
         )
 
-    def click(self, event):
+    def click(self, event: dict[str, str]):
         print("clicked", event)
 
 
@@ -76,10 +78,8 @@ class Card(ContainerComponent):
         styles = CSS.module("card.css")
         return Div(
             class_name=styles.card,
-            style={"border-radius": "5px"} if self.rounded else None
-        )(
-            *self.children
-        )
+            style={"border-radius": "5px"} if self.rounded else None,
+        )(*self.children)
 
 
 class SuperCard(Card):
@@ -87,13 +87,9 @@ class SuperCard(Card):
         self.rounded = rounded
         self.is_super = is_super
 
-
     def render(self):
         styles = CSS.module("card.css")
         return Div(
             class_name=styles.card,
-            style={"border-radius": "10px"} if self.rounded else None
-        )(
-            Div("Super card!" if self.is_super else "Card!"),
-            *self.children
-        )
+            style={"border-radius": "10px"} if self.rounded else None,
+        )(Div("Super card!" if self.is_super else "Card!"), *self.children)

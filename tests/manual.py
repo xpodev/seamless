@@ -6,7 +6,7 @@ from fastapi.responses import FileResponse
 from jsx import *
 from jsx.middlewares.asgi import ASGIMiddleware
 from jsx.styling import CSS
-from .server.common import Card, Page, SuperCard
+from .server.common import Card, Page, SuperCard, SampleComponent
 
 CSS.set_root_folder(Path(__file__).parent / "server/static")
 
@@ -54,20 +54,13 @@ def click_handler(*args, **kwargs):
 
 
 def card():
-    return SuperCard(
-        Div(
-            H1("Hello, world!"),
-            P("This is a JSX component"),
-            Button("Click me", on_click=click_handler),
-        ),
-        rounded=True,
-        is_super=True,
-    )
+    return SampleComponent("world")
 
 
 @get("/")
 def index():
     return card()
+
 
 @app.get("/static/main.js")
 def socket_io_static():
