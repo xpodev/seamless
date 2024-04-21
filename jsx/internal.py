@@ -49,3 +49,41 @@ def short_uuid(length=12):
     short_uuid = base62_uuid[:length]
 
     return short_uuid
+
+
+def validate_data(func, *args):
+    try:
+        from pydantic import BaseModel
+
+        def make_model(cls, data):
+            if not issubclass(cls, BaseModel):
+                return data
+
+            return cls.model_validate(data)
+
+    except ImportError:
+
+        def make_model(cls, data):
+            from dataclasses import is_dataclass
+
+            if is_dataclass(cls):
+                return cls(**data)
+
+            return data
+
+    import inspect
+
+    signature = inspect.signature(func)
+    parameters = signature.parameters
+    if not parameters:
+        return args
+
+    args = list(args)
+    for i, parameter in enumerate(parameters.values()):
+        cls = parameter.annotation
+        if not isinstance(cls, type):
+            continue
+
+        args[i] = make_model(cls, args[i])
+
+    return args

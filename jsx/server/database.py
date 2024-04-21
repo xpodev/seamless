@@ -2,6 +2,7 @@ from typing import Any, Callable, TYPE_CHECKING
 from uuid import uuid4 as uuid
 from threading import Timer
 
+from jsx.internal import validate_data
 from .request import request, RequestType
 
 if TYPE_CHECKING:
@@ -58,9 +59,10 @@ class SubscriptableElement:
     def events(self):
         return self._events.keys()
 
-    def __call__(self, event: str, *args: Any, **kwds: Any) -> Any:
+    def __call__(self, event: str, *args: Any, **kwargs: Any) -> Any:
         if event in self._events:
-            return self._events[event](*args, **kwds)
+            args = validate_data(self._events[event], *args)
+            return self._events[event](*args, **kwargs)
 
 
 class ElementsDatabase:

@@ -37,7 +37,6 @@ class BaseMiddleware:
     def _setup_events(self):
         self.server.on("disconnect", self._handle_disconnect)
         self.server.on("connect", self._handle_connect)
-        self.on("dom_event", self._make_method(self.dom_event))
 
         for command, handler in ws_router.items():
             self.on(command, self._make_handler(handler))
@@ -47,13 +46,6 @@ class BaseMiddleware:
             return "OK", handler(sid, *data)
 
         return _handler
-
-    def dom_event(self, sid, data: str, event_data):
-        component_id, event = data.split(":")
-        try:
-            DB.invoke_element_event(component_id, sid, event, event_data)
-        except KeyError:
-            raise Exception(f"Element {component_id} not found")
 
     def _handle_disconnect(self, sid: str):
         DB.release_elements(sid)
@@ -161,6 +153,8 @@ class BaseMiddleware:
 
     def _is_render_request(self):
         request = _request()
+        if not request:
+            return False
         return request.id is not None
 
 
