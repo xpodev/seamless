@@ -14,10 +14,10 @@ def get_component(sid: str, name: str, props={}):
     return render_json(cls(**props))
 
 
-def dom_event(sid: str, data: str, event_data):
+async def dom_event(sid: str, data: str, event_data):
     element_id, event = data.split(":")
     try:
-        DB.invoke_element_event(element_id, sid, event, event_data)
+        await DB.invoke_element_event(element_id, sid, event, event_data)
     except KeyError:
         raise Exception(f"Element {element_id} not found")
 

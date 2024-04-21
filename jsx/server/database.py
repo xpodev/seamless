@@ -1,3 +1,4 @@
+from inspect import iscoroutinefunction
 from typing import Any, Callable, TYPE_CHECKING
 from uuid import uuid4 as uuid
 from threading import Timer
@@ -59,10 +60,13 @@ class SubscriptableElement:
     def events(self):
         return self._events.keys()
 
-    def __call__(self, event: str, *args: Any, **kwargs: Any) -> Any:
+    async def __call__(self, event: str, *args: Any, **kwargs: Any) -> Any:
         if event in self._events:
-            args = validate_data(self._events[event], *args)
-            return self._events[event](*args, **kwargs)
+            callback = self._events[event]
+            args = validate_data(callback, *args)
+            if iscoroutinefunction(callback):
+                return await callback(*args, **kwargs)
+            return callback(*args, **kwargs)
 
 
 class ElementsDatabase:
@@ -104,13 +108,13 @@ class ElementsDatabase:
         element_id = self.element_ids[element]
         return self.all[element_id]
 
-    def invoke_element_event(self, element_id: str, socket_id: str, event: str, *data):
+    async def invoke_element_event(self, element_id: str, socket_id: str, event: str, *data):
         subscriptable = self.elements[element_id]
         if subscriptable:
             if not subscriptable.socket_id == socket_id:
                 raise Exception("Element not found")
 
-            subscriptable(event, *data)
+            await subscriptable(event, *data)
 
     def claim_http_elements(self, http_id, socket_id):
         if http_id not in self._unclaimed_elements:
