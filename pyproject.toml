@@ -12,7 +12,11 @@ classifiers = [
     "License :: OSI Approved :: MIT License",
     "Operating System :: OS Independent",
 ]
+dynamic = ["dependencies"]
 
 [project.urls]
 Homepage = "https://github.com/xpodev/jsx"
 Issues = "https://github.com/xpodev/jsx/issues"
+
+[tool.setuptools.dynamic]
+dependencies = {file = ["requirements.txt"]}
