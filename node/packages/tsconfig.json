@@ -1,0 +1,32 @@
+{
+    "compilerOptions": {
+        "rootDir": ".",
+        "forceConsistentCasingInFileNames": true,
+        "strict": true,
+        "esModuleInterop": true,
+        "skipLibCheck": true,
+        "declaration": true,
+        "paths": {
+            "@slarf/*": [
+                "./*"
+            ],
+            "slarf/*": [
+                "./core/src/*"
+            ],
+            "slarf": [
+                "./core/src/index.ts"
+            ],
+        },
+    },
+    "include": [
+        "./packages/*/src"
+    ],
+    "references": [
+        {
+            "path": "./core"
+        },
+        {
+            "path": "./react"
+        }
+    ]
+}
