@@ -1,10 +1,15 @@
 # Python JSX
 
-[![PyPI version](https://badge.fury.io/py/jsx.svg?)](https://pypi.org/project/jsx)
+[![PyPI version](https://badge.fury.io/py/jsx.svg)](https://pypi.org/project/jsx)
 
 ![test](https://github.com/xpodev/pyrl/actions/workflows/python-test.yml/badge.svg)
 
 JSX is a Python package for creating and manipulating HTML components. It is working similar to React.js, but in Python.
+
+## Installation
+```sh
+pip install jsx
+```
 
 ## Usage
 
