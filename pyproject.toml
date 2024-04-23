@@ -1,6 +1,6 @@
 [project]
 name = "jsx"
-version = "0.6.1"
+version = "0.6.2"
 authors = [
   { name="Xpo Development", email="dev@xpo.dev" },
 ]
@@ -18,8 +18,8 @@ dynamic = ["dependencies"]
 Homepage = "https://github.com/xpodev/jsx"
 Issues = "https://github.com/xpodev/jsx/issues"
 
-[tool.setuptools.packages.find]
-where = ["jsx"]
+[tool.setuptools]
+py-modules = ["jsx"]
 
 [tool.setuptools.dynamic]
 dependencies = {file = ["requirements.txt"]}
