@@ -18,5 +18,8 @@ dynamic = ["dependencies"]
 Homepage = "https://github.com/xpodev/jsx"
 Issues = "https://github.com/xpodev/jsx/issues"
 
+[tool.setuptools]
+packages = ["jsx"]
+
 [tool.setuptools.dynamic]
 dependencies = {file = ["requirements.txt"]}
