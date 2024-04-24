@@ -1,6 +1,6 @@
 [project]
 name = "jsx"
-version = "0.6.3"
+version = "0.6.4"
 authors = [
   { name="Xpo Development", email="dev@xpo.dev" },
 ]

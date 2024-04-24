@@ -1,5 +1,5 @@
-from jsx import Component, ContainerComponent
-from jsx.html import Div, H3, Hr
+from jsx import Component, ContainerComponent, Div, H3, Hr, Link
+from jsx.components import Page as _Page
 
 
 class Plugin(Component):
@@ -51,3 +51,9 @@ class App(Component):
             Hr(),
             Div("Card content"),
         )
+
+
+class Page(_Page):
+    def head(self):
+        yield from super().head()
+        yield Link(rel="stylesheet", href="/static/style.css")

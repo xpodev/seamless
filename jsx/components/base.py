@@ -31,6 +31,7 @@ class ContainerComponent(Component):
         original_init = cls.__init__
 
         def __init__(self, *args, children=None, **kwargs):
+            children = getattr(self, "children", None) or children
             ContainerComponent.__init__(self, *(children or args))
             original_init(self, **kwargs)
         
