@@ -1,6 +1,8 @@
 from typing import Literal, TypedDict
-from jsx import (
+from .base import (
     ContainerComponent,
+)
+from ..html import (
     Fragment,
     Html,
     Head,
