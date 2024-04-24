@@ -1,5 +1,6 @@
 from jsx.html import *
 from jsx import Component, ContainerComponent, render
+from jsx.components import Page as _Page
 from jsx.styling import CSS
 from jsx.server.database import DB
 from jsx.types.events import MouseEvent
@@ -21,24 +22,11 @@ def db_memory():
     }
 
 
-class Page(ContainerComponent):
-    def render(self):
-        return Fragment(
-            "<!DOCTYPE html>",
-            Html(
-                Head(
-                    Title("JSX"),
-                    Script(src="/static/main.js"),
-                    Link(rel="stylesheet", href="/static/main.css"),
-                ),
-                Body(
-                    Div(
-                        *self.children,
-                        id="root",
-                    )
-                ),
-            ),
-        )
+class Page(_Page):
+    def head(self):
+        yield from super().head()
+        yield Script(src="/static/main.js")
+        yield Link(rel="stylesheet", href="/static/main.css")
 
 
 class AnotherComponent(Component):
