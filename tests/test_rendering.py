@@ -1,6 +1,6 @@
-from jsx.html import Div
-from jsx.renderer import render, render_json
-from jsx import Element, Component
+from seamless.html import Div
+from seamless.renderer import render, render_json
+from seamless import Element, Component
 
 import unittest
 

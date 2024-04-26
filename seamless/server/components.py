@@ -1,7 +1,7 @@
 from typing import TYPE_CHECKING
 
 if TYPE_CHECKING:
-    from jsx import Component
+    from seamless import Component
 
 
 class ComponentsRepository:

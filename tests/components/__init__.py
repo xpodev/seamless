@@ -1,5 +1,5 @@
-from jsx import Component, ContainerComponent, Div, H3, Hr, Link
-from jsx.components import Page as _Page
+from seamless import Component, ContainerComponent, Div, H3, Hr, Link
+from seamless.components import Page as _Page
 
 
 class Plugin(Component):

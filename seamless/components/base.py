@@ -3,7 +3,7 @@ from typing import TYPE_CHECKING, Final
 
 
 if TYPE_CHECKING:
-    from jsx.types import RenderResult, ChildrenType
+    from seamless.types import RenderResult, ChildrenType
 
 
 class Component:
@@ -12,7 +12,7 @@ class Component:
         raise NotImplementedError(f"{type(self).__name__}.render() is not implemented")
     
     def __init_subclass__(cls) -> None:
-        from jsx.server.components import COMPONENTS_REPOSITORY
+        from seamless.server.components import COMPONENTS_REPOSITORY
 
         if not getattr(cls.render, "__isabstractmethod__", False):
             COMPONENTS_REPOSITORY.add_component(cls)

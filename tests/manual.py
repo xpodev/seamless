@@ -3,9 +3,9 @@ from inspect import iscoroutinefunction
 from pathlib import Path
 from fastapi import FastAPI, Response
 from fastapi.responses import FileResponse
-from jsx import *
-from jsx.middlewares.asgi import ASGIMiddleware
-from jsx.styling import CSS
+from seamless import *
+from seamless.middlewares.asgi import ASGIMiddleware
+from seamless.styling import CSS
 from .server.common import Card, Page, SuperCard, SampleComponent
 
 CSS.set_root_folder(Path(__file__).parent / "server/static")

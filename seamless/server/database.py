@@ -3,7 +3,7 @@ from typing import Any, Callable, TYPE_CHECKING
 from uuid import uuid4 as uuid
 from threading import Timer
 
-from jsx.internal import validate_data
+from seamless.internal import validate_data
 from .request import request, RequestType
 
 if TYPE_CHECKING:
