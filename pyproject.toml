@@ -1,6 +1,6 @@
 [project]
 name = "python-seamless"
-version = "0.6.4"
+version = "0.7.0"
 authors = [
   { name="Xpo Development", email="dev@xpo.dev" },
 ]
