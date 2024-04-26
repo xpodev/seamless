@@ -1,5 +1,5 @@
 import unittest
-from jsx.renderer import render
+from seamless.renderer import render
 from .components import App, Page
 
 

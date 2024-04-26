@@ -2,7 +2,7 @@ from enum import Enum
 from dataclasses import dataclass
 from urllib.parse import parse_qs
 
-from jsx.internal import Cookies
+from seamless.internal import Cookies
 
 
 class RequestType(Enum):

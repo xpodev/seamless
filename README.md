@@ -1,20 +1,20 @@
-# Python JSX
+# Seamless
 
-[![PyPI version](https://badge.fury.io/py/jsx.svg)](https://pypi.org/project/jsx)
+[![PyPI version](https://badge.fury.io/py/python-seamless.svg)](https://pypi.org/project/python-seamless)
 
 ![test](https://github.com/xpodev/pyrl/actions/workflows/python-test.yml/badge.svg)
 
-JSX is a Python package for creating and manipulating HTML components. It is working similar to React.js, but in Python.
+Seamless is a Python package for creating and manipulating HTML components. It is working similar to React.js, but in Python.
 
 ## Installation
 ```sh
-pip install jsx
+pip install python-seamless
 ```
 
 ## Usage
 
 ```python
-from jsx import Div, H1, P, Component, Style
+from seamless import Div, H1, P, Component, Style
 
 class MyComponent(Component):
   def render(self):
@@ -26,7 +26,7 @@ class MyComponent(Component):
         ),
       ),
       P(
-        "Welcome to JSX!"
+        "Welcome to Seamless!"
       ),
       style=Style(
         text_align="center"
@@ -35,7 +35,7 @@ class MyComponent(Component):
 ```
 ```python
 from .components import MyComponent
-from jsx.renderer import render
+from seamless.renderer import render
 
 @app.get("/")
 def hello_world():
@@ -85,15 +85,15 @@ To call a function on the server include this script in your file
 Import the middleware and mount it to your app
 ```python
 from fastapi import FastAPI
-from jsx.middlewares import ASGIMiddleware as JSXMiddleware
+from seamless.middlewares import ASGIMiddleware as SeamlessMiddleware
 
 app = FastAPI()
-app.add_middleware(JSXMiddleware)
+app.add_middleware(SeamlessMiddleware)
 ```
-You can pass the following config to the middleware to change the socket path of all jsx endpoints.
+You can pass the following config to the middleware to change the socket path of all seamless endpoints.
 ```python
 app.add_middleware(
-  JSXMiddleware,
+  SeamlessMiddleware,
   socket_path="/my/custom/path"
 )
 ```

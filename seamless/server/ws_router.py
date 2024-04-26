@@ -1,6 +1,6 @@
 from enum import Enum
 from .database import DB
-from jsx.renderer import render_json
+from seamless.renderer import render_json
 from .components import COMPONENTS_REPOSITORY
 
 

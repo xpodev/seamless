@@ -1,7 +1,7 @@
 from os import PathLike
 from pathlib import Path
 import cssutils
-from jsx.internal import short_uuid
+from seamless.internal import short_uuid
 
 
 class CSSClass:

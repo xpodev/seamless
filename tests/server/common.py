@@ -1,9 +1,9 @@
-from jsx.html import *
-from jsx import Component, ContainerComponent, render
-from jsx.components import Page as _Page
-from jsx.styling import CSS
-from jsx.server.database import DB
-from jsx.types.events import MouseEvent
+from seamless.html import *
+from seamless import Component, ContainerComponent, render
+from seamless.components import Page as _Page
+from seamless.styling import CSS
+from seamless.server.database import DB
+from seamless.types.events import MouseEvent
 
 
 def index():
@@ -49,7 +49,7 @@ class SampleComponent(Component):
     def render(self):
         return Div(
             H1(f"Hello, {self.name}!"),
-            P("This is a JSX component"),
+            P("This is a Seamless component"),
             Button("Click me", on_click=self.click),
             AnotherComponent(name="world"),
         )

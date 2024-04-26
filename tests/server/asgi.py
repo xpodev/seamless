@@ -4,7 +4,7 @@ from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.responses import HTMLResponse, JSONResponse, Response
 
-from jsx.middlewares import ASGIMiddleware
+from seamless.middlewares import ASGIMiddleware
 from .common import index, db_memory, css_file
 
 HERE = Path(__file__).parent
