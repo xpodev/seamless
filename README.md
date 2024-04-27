@@ -1,6 +1,6 @@
 # Seamless
 
-[![PyPI version](https://badge.fury.io/py/python-seamless.svg)](https://pypi.org/project/python-seamless)
+[![PyPI version](https://badge.fury.io/py/python-seamless.svg?)](https://pypi.org/project/python-seamless)
 
 ![test](https://github.com/xpodev/pyrl/actions/workflows/python-test.yml/badge.svg)
 
