@@ -61,8 +61,8 @@ class Element(Generic[PropsType]):
                 del props_copy[key]
 
         if len(seamless_events) > 0:
-            props_copy["slarf:id"] = DB.element_ids[self]
-            props_copy["slarf:events"] = ",".join(seamless_events)
+            props_copy["seamless:id"] = DB.element_ids[self]
+            props_copy["seamless:events"] = ",".join(seamless_events)
 
         return props_copy
 

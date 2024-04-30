@@ -15,7 +15,7 @@ from ..server.request import WSRequest, request as _request, set_request
 from ..internal import Cookies
 
 
-CLAIM_COOKIE_NAME = "_slarf_claim_id"
+CLAIM_COOKIE_NAME = "_seamless_claim_id"
 
 
 class BaseMiddleware:
