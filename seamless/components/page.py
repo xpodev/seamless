@@ -10,8 +10,12 @@ from ..html import (
 )
 
 
-class _HeadProps(TypedDict):
+class _HtmlProps(TypedDict):
     lang: str
+
+
+class _HeadProps(TypedDict):
+    ...
 
 
 class _BodyProps(TypedDict):
@@ -21,13 +25,15 @@ class _BodyProps(TypedDict):
 class Page(Component):
     def __init__(
         self,
-        title=None,
         *,
+        title=None,
+        html_props: _HtmlProps = None,
         head_props: _HeadProps = None,
         body_props: _BodyProps = None,
     ):
         self.title = title
-        self._head_props = head_props or {"lang": "en"}
+        self._html_props = html_props or {"lang": "en"}
+        self._head_props = head_props or {}
         self._body_props = body_props or {"dir": "ltr"}
 
     def head(self):
@@ -49,7 +55,7 @@ class Page(Component):
     def render(self):
         return Fragment(
             "<!DOCTYPE html>",
-            Html(
+            Html(**self._head_props)(
                 Head(**self._head_props)(*self.head()),
                 Body(**self._body_props)(*self.body()),
             ),
