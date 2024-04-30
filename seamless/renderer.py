@@ -11,16 +11,16 @@ if TYPE_CHECKING:
     from .types import Renderable, Primitive
 
 
-def render(element: "Renderable | Primitive", *, prettify=False, tab_indent=1) -> str:
+def render(element: "Renderable | Primitive", *, pretty=False, tab_indent=1) -> str:
     request = _request()
     if request is not None:
         request.id = str(uuid())
-    return _render(element, prettify=prettify, tab_indent=tab_indent)
+    return _render(element, pretty=pretty, tab_indent=tab_indent)
 
 
-def _render(element: "Renderable | Primitive", *, prettify=False, tab_indent=1) -> str:
+def _render(element: "Renderable | Primitive", *, pretty=False, tab_indent=1) -> str:
     if isinstance(element, Component):
-        element = _render(element.render(), prettify=prettify, tab_indent=tab_indent)
+        element = _render(element.render(), pretty=pretty, tab_indent=tab_indent)
 
     if not isinstance(element, Element):
         return str(element) if element is not None else ""
@@ -38,18 +38,18 @@ def _render(element: "Renderable | Primitive", *, prettify=False, tab_indent=1) 
             raise RenderError("Inline components cannot have children")
         return f"<{open_tag}>"
 
-    tab = "  " * tab_indent if prettify else ""
-    children_join_string = f"\n{tab}" if prettify else ""
+    tab = "  " * tab_indent if pretty else ""
+    children_join_string = f"\n{tab}" if pretty else ""
     children = [
-        _render(child, prettify=prettify, tab_indent=tab_indent + 1)
+        _render(child, pretty=pretty, tab_indent=tab_indent + 1)
         for child in element.children
     ]
-    if prettify:
+    if pretty:
         children.insert(0, "")
 
     children = children_join_string.join(children)
 
-    if prettify:
+    if pretty:
         children += f"\n{tab[:-2]}"
 
     if not tag_name:
