@@ -22,7 +22,7 @@ class _BodyProps(TypedDict):
     dir: Literal["ltr", "rtl"]
 
 
-class Page(Component):
+class Page(Component, name="SeamlessBasePage"):
     def __init__(
         self,
         *,

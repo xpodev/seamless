@@ -8,8 +8,8 @@ class ComponentsRepository:
     def __init__(self):
         self.components = {}
 
-    def add_component(self, component: "Component"):
-        self.components[component.__name__] = component
+    def add_component(self, component: "Component", name: str):
+        self.components[name] = component
 
     def get_component(self, component_name: str) -> "Component":
         return self.components[component_name]

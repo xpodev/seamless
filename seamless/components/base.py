@@ -16,16 +16,17 @@ class Component:
     def render(self) -> "RenderResult":
         raise NotImplementedError(f"{type(self).__name__}.render() is not implemented")
 
-    def __init_subclass__(cls) -> None:
+    def __init_subclass__(cls, *, name: str = None, **kwargs) -> None:
+        super().__init_subclass__(**kwargs)
 
         if cls is not Component:
             from ..server.components import COMPONENTS_REPOSITORY
 
-            COMPONENTS_REPOSITORY.add_component(cls)
+            COMPONENTS_REPOSITORY.add_component(cls, name or cls.__name__)
 
         if cls.__init__ is Component.__init__:
             return
-        
+
         original_init = cls.__init__
 
         def __init__(self, *args, children=None, **kwargs):
