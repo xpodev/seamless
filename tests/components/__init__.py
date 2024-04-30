@@ -1,4 +1,4 @@
-from seamless import Component, ContainerComponent, Div, H3, Hr, Link
+from seamless import Component, Div, H3, Hr, Link
 from seamless.components import Page as _Page
 
 
@@ -25,7 +25,7 @@ class PluginList(Component):
         )
 
 
-class Card(ContainerComponent):
+class Card(Component):
     def render(self):
         return Div(
             *self.children,
@@ -34,9 +34,6 @@ class Card(ContainerComponent):
 
 
 class CardTitle(Component):
-    def __init__(self, *children):
-        self.children = children
-
     def render(self):
         return H3(
             *self.children,

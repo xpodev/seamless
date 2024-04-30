@@ -1,7 +1,5 @@
 from typing import Literal, TypedDict
-from .base import (
-    ContainerComponent,
-)
+from .base import Component
 from ..html import (
     Fragment,
     Html,
@@ -20,7 +18,7 @@ class _BodyProps(TypedDict):
     dir: Literal["ltr", "rtl"]
 
 
-class Page(ContainerComponent):
+class Page(Component):
     def __init__(
         self,
         title=None,

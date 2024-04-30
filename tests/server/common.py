@@ -1,5 +1,5 @@
 from seamless.html import *
-from seamless import Component, ContainerComponent, render
+from seamless import Component, render
 from seamless.components import Page as _Page
 from seamless.styling import CSS
 from seamless.server.database import DB
@@ -58,7 +58,7 @@ class SampleComponent(Component):
         print("clicked", event)
 
 
-class Card(ContainerComponent):
+class Card(Component):
     def __init__(self, rounded=True) -> None:
         self.rounded = rounded
 
