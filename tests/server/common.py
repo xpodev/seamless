@@ -63,7 +63,7 @@ class Card(Component):
         self.rounded = rounded
 
     def render(self):
-        styles = CSS.module("card.css")
+        styles = CSS.module("./static/card.css")
         return Div(
             class_name=styles.card,
             style={"border-radius": "5px"} if self.rounded else None,
@@ -76,7 +76,7 @@ class SuperCard(Card):
         self.is_super = is_super
 
     def render(self):
-        styles = CSS.module("card.css")
+        styles = CSS.module("./static/card.css")
         return Div(
             class_name=styles.card,
             style={"border-radius": "10px"} if self.rounded else None,

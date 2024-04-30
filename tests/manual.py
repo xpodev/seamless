@@ -8,9 +8,6 @@ from seamless.middlewares.asgi import ASGIMiddleware
 from seamless.styling import CSS
 from .server.common import Card, Page, SuperCard, SampleComponent
 
-CSS.set_root_folder(Path(__file__).parent / "server/static")
-
-
 app = FastAPI()
 app.add_middleware(
     ASGIMiddleware,
@@ -54,7 +51,10 @@ def click_handler(*args, **kwargs):
 
 
 def card():
-    return SampleComponent("world")
+    return SuperCard(is_super=True)(
+        SampleComponent(name="world"),
+        Button("Click me"),
+    )
 
 
 @get("/")
