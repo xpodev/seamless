@@ -21,6 +21,16 @@ def _class_name_mapper(class_name):
 _PROPS_MAP = {
     "class_name": _class_name_mapper,
     "html_for": "for",
+    "accept_charset": "accept-charset",
+    "http_equiv": "http-equiv",
+    "access_key": "accesskey",
+    "content_editable": "contenteditable",
+    "cross_origin": "crossorigin",
+    "tab_index": "tabindex",
+    "use_map": "usemap",
+    "col_span": "colspan",
+    "row_span": "rowspan",
+    "char_set": "charset",
 }
 
 
