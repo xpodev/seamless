@@ -1,7 +1,5 @@
-from typing import TYPE_CHECKING, Iterable, TypeVar, Generic, Unpack
+from typing import TYPE_CHECKING, TypeVar, Generic, Unpack
 from abc import abstractmethod
-
-from .types import Primitive, Renderable
 
 from .server.database import DB
 
@@ -30,10 +28,10 @@ class Element(Generic[PropsType]):
     def __init__(
         self,
         *args: "ChildrenType",
-        children: Iterable[Renderable | Primitive] = [],
+        children: ChildrenType = None,
         **kwargs: Unpack[PropsType],
     ):
-        self.children = list(args or children)
+        self.children = tuple(children or args)
         self.props = kwargs
 
     @property
