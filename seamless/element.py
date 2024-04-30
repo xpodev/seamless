@@ -28,7 +28,7 @@ class Element(Generic[PropsType]):
     def __init__(
         self,
         *args: "ChildrenType",
-        children: ChildrenType = None,
+        children: "ChildrenType" = None,
         **kwargs: Unpack[PropsType],
     ):
         self.children = tuple(children or args)
