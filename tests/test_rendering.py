@@ -1,5 +1,5 @@
 from seamless.html import Div
-from seamless.renderer import render, render_json
+from seamless.renderer import render, to_dict
 from seamless import Element, Component
 
 import unittest
@@ -73,7 +73,7 @@ class TestRender(unittest.TestCase):
 
     def test_render_json(self):
         self.assertEqual(
-            render_json(Div()), {"type": "div", "children": [], "props": {}}
+            to_dict(Div()), {"type": "div", "children": [], "props": {}}
         )
 
     def test_render_json_component(self):
@@ -82,7 +82,7 @@ class TestRender(unittest.TestCase):
                 return Div()
 
         self.assertEqual(
-            render_json(MyComponent()), {"type": "div", "children": [], "props": {}}
+            to_dict(MyComponent()), {"type": "div", "children": [], "props": {}}
         )
 
     def test_render_json_element(self):
@@ -90,13 +90,13 @@ class TestRender(unittest.TestCase):
             tag_name = "my-element"
 
         self.assertEqual(
-            render_json(MyElement()),
+            to_dict(MyElement()),
             {"type": "my-element", "children": [], "props": {}},
         )
 
     def test_render_json_nested(self):
         self.assertEqual(
-            render_json(Div(Div())),
+            to_dict(Div(Div())),
             {
                 "type": "div",
                 "children": [{"type": "div", "children": [], "props": {}}],
@@ -106,13 +106,13 @@ class TestRender(unittest.TestCase):
 
     def test_render_json_text(self):
         self.assertEqual(
-            render_json(Div("Hello")),
+            to_dict(Div("Hello")),
             {"type": "div", "children": ["Hello"], "props": {}},
         )
 
     def test_render_json_attributes(self):
         self.assertEqual(
-            render_json(Div(id="my-id")),
+            to_dict(Div(id="my-id")),
             {"type": "div", "children": [], "props": {"id": "my-id"}},
         )
 
@@ -134,7 +134,7 @@ class TestRender(unittest.TestCase):
                 )
 
         self.assertEqual(
-            render_json(MyComponent2()),
+            to_dict(MyComponent2()),
             {
                 "type": "div",
                 "children": [

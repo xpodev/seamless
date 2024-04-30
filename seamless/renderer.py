@@ -58,9 +58,9 @@ def _render(element: "Renderable | Primitive", *, prettify=False, tab_indent=1) 
     return f"<{open_tag}>{children}</{tag_name}>"
 
 
-def render_json(element: "Renderable | Primitive"):
+def to_dict(element: "Renderable | Primitive"):
     if isinstance(element, Component):
-        element = render_json(element.render())
+        element = to_dict(element.render())
 
     if not isinstance(element, Element):
         return element
@@ -69,7 +69,7 @@ def render_json(element: "Renderable | Primitive"):
         "type": element.tag_name,
         "children": list(
             map(
-                render_json,
+                to_dict,
                 element.children,
             )
         ),

@@ -1,6 +1,6 @@
 from enum import Enum
 from .database import DB
-from seamless.renderer import render_json
+from seamless.renderer import to_dict
 from .components import COMPONENTS_REPOSITORY
 
 
@@ -11,7 +11,7 @@ class WSRouterCommands(str, Enum):
 
 def get_component(sid: str, name: str, props={}):
     cls = COMPONENTS_REPOSITORY.get_component(name)
-    return render_json(cls(**props))
+    return to_dict(cls(**props))
 
 
 async def dom_event(sid: str, data: str, event_data):
