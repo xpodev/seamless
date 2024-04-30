@@ -1,3 +1,4 @@
+import inspect
 from os import PathLike
 from pathlib import Path
 import cssutils
@@ -117,6 +118,11 @@ class CSSModulesManager:
 
     def _full_path(self, css_path: PathLike):
         if isinstance(css_path, str):
+            if css_path.startswith("./"):
+                frame = inspect.stack()[2]
+                module = inspect.getmodule(frame[0])
+                css_path = Path(module.__file__).parent / css_path
+
             css_path = Path(css_path)
 
         if not css_path.is_absolute():
