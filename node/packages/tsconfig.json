@@ -7,14 +7,8 @@
         "skipLibCheck": true,
         "declaration": true,
         "paths": {
-            "@slarf/*": [
-                "./*"
-            ],
-            "slarf/*": [
-                "./core/src/*"
-            ],
-            "slarf": [
-                "./core/src/index.ts"
+            "seamless-*": [
+                "./*/src"
             ],
         },
     },

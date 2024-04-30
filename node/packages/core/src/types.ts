@@ -1,6 +1,6 @@
 import type { SocketOptions, ManagerOptions } from 'socket.io-client';
 
-export interface SlarfOptions {
+export interface SeamlessOptions {
     socketOptions?: Partial<ManagerOptions & SocketOptions>;
     /**
      * A function that serializes the event object before sending it to the server

@@ -1,7 +1,7 @@
 {
-  "name": "@slarf/core",
+  "name": "seamless-core",
   "version": "0.0.1",
-  "description": "JavaScript integration for Slarf",
+  "description": "JavaScript integration for Seamless",
   "main": "dist/index.js",
   "devDependencies": {
     "typescript": "^5.3.3"

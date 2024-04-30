@@ -1,42 +1,74 @@
 import io from "socket.io-client";
-import { SlarfOptions } from "./types";
+import { SeamlessOptions } from "./types";
+export { SeamlessOptions };
 
 export type Primitive = string | number | boolean | null;
 
-export interface SlarfElement {
+export interface SeamlessElement {
   type: string;
   props: Record<string, any>;
-  children: Array<SlarfElement | Primitive> | null;
+  children: Array<SeamlessElement | Primitive> | null;
 }
 
-class Slarf {
+class Seamless {
   private readonly socket;
   private readonly eventObjectTransformer: (
     originalEvent: Event,
     outEvent: any
   ) => any;
 
-  constructor(config?: SlarfOptions) {
+  constructor(config?: SeamlessOptions) {
     this.socket = io({
       reconnectionDelayMax: 10000,
       ...config?.socketOptions,
     });
     this.eventObjectTransformer =
       config?.eventObjectTransformer || ((_, outEvent) => outEvent);
-    const allSlarfElements = document.querySelectorAll<HTMLElement>("[slarf\\:id]");
-    allSlarfElements.forEach(this.attachEventListeners.bind(this));
+    const allSeamlessElements =
+      document.querySelectorAll<HTMLElement>("[seamless\\:id]");
+    allSeamlessElements.forEach(this.attachEventListeners.bind(this));
+  }
+
+  render(component: SeamlessElement, parentElement: any): void;
+  render(component: SeamlessElement, parentElement: HTMLElement): void {
+    const domElement = this.toDOMElement(component);
+    parentElement.appendChild(domElement);
+  }
+
+  private toDOMElement(
+    element: SeamlessElement | Primitive
+  ): HTMLElement | Text {
+    if (this.isPrimitive(element)) {
+      return document.createTextNode(element?.toString() || "");
+    }
+
+    const domElement = document.createElement(element.type);
+    Object.entries(element.props).forEach(([key, value]) => {
+      domElement.setAttribute(key, value);
+    });
+
+    if (domElement.hasAttribute("seamless:id")) {
+      this.attachEventListeners(domElement);
+    }
+
+    const children = Array.isArray(element.children)
+      ? element.children.map(this.toDOMElement.bind(this))
+      : [];
+    children.forEach((child) => domElement.appendChild(child));
+    return domElement;
   }
 
   private attachEventListeners(element: HTMLElement) {
-    const slarfId = element.getAttribute("slarf:id");
-    const slarfEvents = element.getAttribute("slarf:events")?.split(",") || [];
-    slarfEvents.forEach((event) => {
+    const seamlessId = element.getAttribute("seamless:id");
+    const seamlessEvents =
+      element.getAttribute("seamless:events")?.split(",") || [];
+    seamlessEvents.forEach((event) => {
       element.addEventListener(event, (e: Event) => {
         const outEvent = this.eventObjectTransformer(
           e,
           this.serializeEventObject(e)
         );
-        this.socket.emit("dom_event", `${slarfId}:${event}`, outEvent);
+        this.socket.emit("dom_event", `${seamlessId}:${event}`, outEvent);
       });
     });
   }
@@ -51,7 +83,7 @@ class Slarf {
   }
 
   async getComponent(name: string, props: Record<string, any>) {
-    return await this.sendWaitResponse<SlarfElement | Primitive>(
+    return await this.sendWaitResponse<SeamlessElement | Primitive>(
       "component",
       name,
       props
@@ -59,11 +91,11 @@ class Slarf {
   }
 
   registerEventListener(
-    slarfId: string,
+    seamlessId: string,
     event: string,
     callback: (e: any) => any
   ) {
-    this.socket.on(`${slarfId}:${event}`, callback);
+    this.socket.on(`${seamlessId}:${event}`, callback);
   }
 
   emit(event: string, ...args: any[]) {
@@ -91,4 +123,4 @@ class Slarf {
   }
 }
 
-export default Slarf;
+export default Seamless;
