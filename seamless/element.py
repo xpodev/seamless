@@ -1,37 +1,13 @@
 from typing import TYPE_CHECKING, TypeVar, Generic, Unpack
 from abc import abstractmethod
 
-from .server.database import DB
+from .rendering.props import transform_props
 
 if TYPE_CHECKING:
     from seamless.types import ChildrenType
 
 
 PropsType = TypeVar("PropsType")
-
-
-def _class_name_mapper(class_name):
-    if isinstance(class_name, list):
-        class_name = " ".join(class_name)
-
-    class_name = str(class_name)
-    return {"class": " ".join(class_name.split())}
-
-
-_PROPS_MAP = {
-    "class_name": _class_name_mapper,
-    "html_for": "for",
-    "accept_charset": "accept-charset",
-    "http_equiv": "http-equiv",
-    "access_key": "accesskey",
-    "content_editable": "contenteditable",
-    "cross_origin": "crossorigin",
-    "tab_index": "tabindex",
-    "use_map": "usemap",
-    "col_span": "colspan",
-    "row_span": "rowspan",
-    "char_set": "charset",
-}
 
 
 class Element(Generic[PropsType]):
@@ -52,29 +28,7 @@ class Element(Generic[PropsType]):
     inline = False
 
     def props_dict(self):
-        props_copy = self.props.copy()
-        for key, value in _PROPS_MAP.items():
-            if key in props_copy:
-                if callable(value):
-                    props_copy.update(value(props_copy.pop(key)))
-                else:
-                    props_copy[value] = props_copy.pop(key)
-
-        seamless_events = []
-        for key, value in list(props_copy.items()):
-            if key.startswith("on_") and callable(value):
-                props_copy[key] = None
-                key = key.removeprefix("on_")
-                DB.add_element_event(self, key, value)
-                seamless_events.append(key)
-            if value is None or value is False:
-                del props_copy[key]
-
-        if len(seamless_events) > 0:
-            props_copy["seamless:id"] = DB.element_ids[self]
-            props_copy["seamless:events"] = ",".join(seamless_events)
-
-        return props_copy
+        return transform_props(self.props)
 
     def __call__(self, *children: "ChildrenType"):
         self.children = children

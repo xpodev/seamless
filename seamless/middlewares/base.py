@@ -48,7 +48,7 @@ class BaseMiddleware:
         return _handler
 
     def _handle_disconnect(self, sid: str):
-        DB.release_elements(sid)
+        DB.release_actions(sid)
 
     def _handle_connect(self, sid: str, env):
         cookie_string = env.get("HTTP_COOKIE", "")
@@ -60,7 +60,7 @@ class BaseMiddleware:
         if not claim_id:
             self._disconnect(sid)
 
-        DB.claim_http_elements(claim_id, sid)
+        DB.claim_http_actions(claim_id, sid)
 
     def on(self, event, handler):
         @wraps(handler)
