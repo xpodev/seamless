@@ -13,7 +13,7 @@ class Cookies:
             return
 
         for cookie in cookie_string.split(";"):
-            key, value = cookie.split("=")
+            key, value = cookie.split("=", maxsplit=1)
             self.cookies[key.strip()] = value.strip()
 
     def __getitem__(self, key: str):
