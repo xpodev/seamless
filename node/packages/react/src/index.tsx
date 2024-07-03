@@ -1,37 +1,41 @@
 import React from 'react';
 
-import Slarf, { type SlarfElement, type Primitive } from 'slarf';
-import { SlarfOptions } from 'slarf/types';
-import { capitalizeFirstLetter } from 'slarf/utils';
+import Seamless, {
+    type SeamlessElement,
+    type Primitive,
+    type SeamlessOptions
+} from 'seamless-core';
+
+import { capitalizeFirstLetter } from './utils';
 
 type ReactElement = ReturnType<typeof React.createElement<Record<string, any>>>;
 
-export let SlarfContext: React.Context<SlarfReact>;
+export let SeamlessContext: React.Context<SeamlessReact>;
 
-export function createContext(config?: SlarfOptions): React.Context<SlarfReact> {
-    if (!SlarfContext) {
-        SlarfContext = React.createContext(new SlarfReact(config));
+export function createContext(config?: SeamlessOptions): React.Context<SeamlessReact> {
+    if (!SeamlessContext) {
+        SeamlessContext = React.createContext(new SeamlessReact(config));
     }
 
-    return SlarfContext;
+    return SeamlessContext;
 }
 
-class SlarfReact extends Slarf {
-    private convertToReact(element: SlarfElement | Primitive): ReactElement | Primitive {
+class SeamlessReact extends Seamless {
+    render(element: SeamlessElement | Primitive, parentElement?: ReactElement): ReactElement {
         if (this.isPrimitive(element)) {
-            return element;
+            return React.createElement(React.Fragment, null, element);
         }
 
-        if ('slarf:id' in element.props) {
-            const events: string[] = element.props['slarf:events']?.split(',') || [];
+        if ('seamless:id' in element.props) {
+            const events: string[] = element.props['seamless:events']?.split(',') || [];
             events.forEach((event) => {
                 event = capitalizeFirstLetter(event);
                 element.props[`on${event}`] = (e: Event) => {
                     this.emit(
                         'dom_event',
-                        `${element.props['slarf:id']}:${event}`,
+                        `${element.props['seamless:id']}:${event}`,
                         {
-                            slarfId: element.props['slarf:id'],
+                            seamlessId: element.props['seamless:id'],
                             event: this.serializeEventObject(e),
                         }
                     );
@@ -41,43 +45,28 @@ class SlarfReact extends Slarf {
 
         const children = (
             Array.isArray(element.children) ? element.children : [element.children]
-        ).map((child: SlarfElement | Primitive) => this.convertToReact(child));
+        ).map((child: SeamlessElement | Primitive) => this.render(child));
         return React.createElement(element.type, element.props, ...children);
     }
 }
 
-function canRender(component: unknown): component is SlarfElement {
-    return typeof component === 'object'
-        && component !== null
-        && Object.prototype.hasOwnProperty.call(component, 'type')
-        && Object.prototype.hasOwnProperty.call(component, 'props');
-}
-
-function render(component: any) {
-    if (canRender(component)) {
-        const children: ReactElement[] = Array.isArray(component.children) ? component.children.map(render) : [];
-        return React.createElement(component.type, component.props, ...children);
-    }
-    return component;
-}
-
-interface SlarfComponentProps {
+interface SeamlessComponentProps {
     name: string;
     props?: Record<string, any>;
 }
 
-export function SlarfComponent({ name, props = {} }: SlarfComponentProps) {
-    const componentsApi = React.useContext(SlarfContext);
-    const [component, setComponent] = React.useState<SlarfElement | Primitive>(null);
+export function SeamlessComponent({ name, props = {} }: SeamlessComponentProps) {
+    const componentsApi = React.useContext(SeamlessContext);
+    const [component, setComponent] = React.useState<ReactElement>(<></>);
 
     React.useEffect(() => {
         const fetchComponent = async () => {
             const component = await componentsApi.getComponent(name, props);
-            setComponent(component);
+            setComponent(componentsApi.render(component));
         };
 
         fetchComponent();
     }, [name, props, componentsApi]);
 
-    return component && render(component);
+    return component;
 }

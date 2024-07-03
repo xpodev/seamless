@@ -1,5 +1,4 @@
 from functools import wraps
-from mimetypes import guess_type
 from pathlib import Path
 from inspect import iscoroutinefunction
 
@@ -8,14 +7,14 @@ import asyncio
 from socketio.base_server import BaseServer
 from socketio import AsyncServer
 
-from ..server.database import DB
-from ..server.ws_router import ws_router
-from ..server.request import WSRequest, request as _request, set_request
+from ..context.database import DB
+from ..context.ws_router import ws_router
+from ..context.request import WSRequest, request as _request, set_request
 
-from ..internal import Cookies
+from ..internal import Cookies, warp_with_validation
 
 
-CLAIM_COOKIE_NAME = "_slarf_claim_id"
+CLAIM_COOKIE_NAME = "_seamless_claim_id"
 
 
 class BaseMiddleware:
@@ -39,7 +38,8 @@ class BaseMiddleware:
         self.server.on("connect", self._handle_connect)
 
         for command, handler in ws_router.items():
-            self.on(command, self._make_handler(handler))
+            wrapped = self._make_handler(handler)
+            self.on(command, wrapped)
 
     def _make_handler(self, handler):
         def _handler(sid, *data):
@@ -48,7 +48,7 @@ class BaseMiddleware:
         return _handler
 
     def _handle_disconnect(self, sid: str):
-        DB.release_elements(sid)
+        DB.release_actions(sid)
 
     def _handle_connect(self, sid: str, env):
         cookie_string = env.get("HTTP_COOKIE", "")
@@ -60,7 +60,7 @@ class BaseMiddleware:
         if not claim_id:
             self._disconnect(sid)
 
-        DB.claim_http_elements(claim_id, sid)
+        DB.claim(claim_id, sid)
 
     def on(self, event, handler):
         @wraps(handler)
@@ -74,10 +74,6 @@ class BaseMiddleware:
                 self._emit("error", str(e), to=sid)
 
         self.server.on(event, wrapper)
-
-    def _mime_type(self, filename: str):
-        mime_type, _ = guess_type(filename)
-        return mime_type or "text/plain"
 
     def _app_class(self):
         raise NotImplementedError("self._app_class is not implemented")

@@ -20,7 +20,7 @@ module.exports = {
   output: {
     filename: 'index.js',
     path: path.resolve(here, 'umd'),
-    library: 'Slarf'
+    library: 'Seamless'
   },
   optimization: {
     minimizer: [

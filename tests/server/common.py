@@ -1,8 +1,8 @@
 from seamless.html import *
-from seamless import Component, ContainerComponent, render
+from seamless import Component, render
 from seamless.components import Page as _Page
-from seamless.styling import CSS
-from seamless.server.database import DB
+from seamless.styling import CSS, Style
+from seamless.context.database import DB
 from seamless.types.events import MouseEvent
 
 
@@ -25,7 +25,7 @@ def db_memory():
 class Page(_Page):
     def head(self):
         yield from super().head()
-        yield Script(src="/static/main.js")
+        yield Script(src="/static/main.js", defer=True)
         yield Link(rel="stylesheet", href="/static/main.css")
 
 
@@ -58,12 +58,12 @@ class SampleComponent(Component):
         print("clicked", event)
 
 
-class Card(ContainerComponent):
+class Card(Component):
     def __init__(self, rounded=True) -> None:
         self.rounded = rounded
 
     def render(self):
-        styles = CSS.module("card.css")
+        styles = CSS.module("./static/card.css")
         return Div(
             class_name=styles.card,
             style={"border-radius": "5px"} if self.rounded else None,
@@ -76,8 +76,8 @@ class SuperCard(Card):
         self.is_super = is_super
 
     def render(self):
-        styles = CSS.module("card.css")
+        styles = CSS.module("./static/card.css")
         return Div(
             class_name=styles.card,
-            style={"border-radius": "10px"} if self.rounded else None,
+            style=Style(border_radius="5px") if self.rounded else None,
         )(Div("Super card!" if self.is_super else "Card!"), *self.children)

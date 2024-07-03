@@ -1,12 +1,12 @@
 {
-  "name": "@slarf/react",
+  "name": "seamless-react",
   "version": "0.0.1",
-  "description": "Slarf integration with React",
+  "description": "Python-Seamless integration with React",
   "main": "dist/index.js",
   "dependencies": {
     "react": "^18.2.0",
     "react-dom": "^18.2.0",
-    "slarf": "^0.0.1"
+    "seamless-core": "^0.0.1"
   },
   "devDependencies": {
     "@types/react": "^18.2.63",

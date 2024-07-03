@@ -1,6 +1,6 @@
 import type { SocketOptions, ManagerOptions } from 'socket.io-client';
 
-export interface SlarfOptions {
+export interface SeamlessOptions {
     socketOptions?: Partial<ManagerOptions & SocketOptions>;
     /**
      * A function that serializes the event object before sending it to the server
@@ -11,4 +11,19 @@ export interface SlarfOptions {
      * @returns The object that will be sent to the server
      */
     eventObjectTransformer?: (originalEvent: Event, outEvent: any) => any;
+}
+
+export interface OutEvent<T = any> {
+    type: string;
+    data: T;
+}
+
+export const enum PropertyType {
+    Raw = 'raw',
+    Function = 'function',
+}
+
+export interface PropertyData {
+    type: PropertyType;
+    value: any;
 }

@@ -1,5 +1,5 @@
-from .components import Component, ContainerComponent
+from .components import Component
 from .element import Element
 from .html import *
 from .styling import Style
-from .renderer import render
+from .rendering.html import render

@@ -2,6 +2,8 @@ name: Build frontend assets
 
 on:
   workflow_call:
+  release:
+    types: [published]
 
 permissions:
   contents: read
@@ -29,8 +31,7 @@ jobs:
         run: |
           yarn build
 
-      - name: Upload frontend assets
-        uses: actions/upload-artifact@v4
-        with:
-          name: frontend-assets
-          path: src/jsx/server/static
+      - name: Publish node packages
+        run: |
+          yarn publish --version ${{ github.event.release.tag_name }}
+
