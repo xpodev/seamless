@@ -1,26 +1,25 @@
 {
-    "name": "seamless-py",
-    "version": "0.0.1",
-    "description": "The JS package for python seamless",
-    "devDependencies": {
-      "@types/react": "^18.2.63",
-      "@types/react-dom": "^18.2.20",
-      "react": "^18.2.0",
-      "react-dom": "^18.2.0",
-      "socket.io-client": "4.7.4",
-      "terser-webpack-plugin": "^5.3.10",
-      "ts-loader": "^9.5.1",
-      "typescript": "^5.3.3",
-      "webpack": "^5.65.0",
-      "webpack-cli": "^4.9.1",
-      "webpack-dev-server": "^4.7.3"
-    },
-    "scripts": {
-      "build": "tsc -b ./packages",
-      "build:all": "tsc -b ./packages && npm run build:browser && npm run build:react",
-      "build:browser": "webpack --config ./packages/core/webpack.config.js",
-      "build:react": "webpack --config ./packages/react/webpack.config.js",
-      "watch": "tsc -b ./packages -w"
-    }
+  "name": "seamless-py",
+  "version": "0.0.1",
+  "description": "The JS package for python seamless",
+  "devDependencies": {
+    "@types/react": "^18.2.63",
+    "@types/react-dom": "^18.2.20",
+    "react": "^18.2.0",
+    "react-dom": "^18.2.0",
+    "socket.io-client": "4.7.4",
+    "terser-webpack-plugin": "^5.3.10",
+    "ts-loader": "^9.5.1",
+    "typescript": "^5.3.3",
+    "webpack": "^5.65.0",
+    "webpack-cli": "^4.9.1",
+    "webpack-dev-server": "^4.7.3"
+  },
+  "scripts": {
+    "build": "tsc -b ./packages",
+    "build:all": "tsc -b ./packages && npm run build:browser && npm run build:react",
+    "build:browser": "webpack --config ./packages/core/webpack.config.js",
+    "build:react": "webpack --config ./packages/react/webpack.config.js",
+    "watch": "tsc -b ./packages -w"
   }
-  
+}

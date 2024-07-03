@@ -4,7 +4,7 @@ from uuid import uuid4 as uuid
 from threading import Timer
 
 from seamless.errors import ActionError
-from seamless.internal import validate_data, TwoWayDict
+from seamless.internal import warp_with_validation
 from .request import request as _request, RequestType
 
 
@@ -15,13 +15,10 @@ class Action:
     def __init__(
         self,
         action: Callable,
+        id: str,
     ):
-        self._id = str(uuid())
+        self.id = id
         self.action = action  # TODO: make wrapper for action for data validation
-
-    @property
-    def id(self):
-        return self._id
 
     async def __call__(self, *args: Any, **kwargs: Any) -> Any:
         if iscoroutinefunction(self.action):
@@ -39,11 +36,14 @@ class ElementsDatabase:
         self.claim_time = claim_time
 
     def add_event(self, callback: Callable, scope=None):
-        if callback in self.actions_ids:
-            return self.actions_ids[callback]
+        action_id = str(hash(callback))
+        try:
+            return self.actions_ids[action_id]
+        except KeyError:
+            pass
 
         request = _request()
-        action = Action(callback)
+        action = Action(warp_with_validation(callback), action_id)
 
         if request.type == RequestType.HTTP:
             if request.id not in self._unclaimed_elements:
@@ -52,14 +52,14 @@ class ElementsDatabase:
             self._unclaimed_elements[request.id].append(action)
 
             def delete_unclaimed(claim_id):
-                del self._unclaimed_elements[claim_id]
+                if claim_id in self._unclaimed_elements:
+                    del self._unclaimed_elements[claim_id]
 
             timer = Timer(self.claim_time, delete_unclaimed, [request.id])
             self._unclaimed_elements_timeouts[request.id] = timer
             timer.start()
         else:
-            self.actions_ids[callback] = action
-            self.actions_ids[action.id] = action
+            self.actions_ids[action_id] = action
 
             if scope:
                 if scope not in self.events:
@@ -80,22 +80,22 @@ class ElementsDatabase:
 
         raise ActionError("Event not found")
 
-    def claim_http_actions(self, http_id, socket_id):
-        if http_id not in self._unclaimed_elements:
+    def claim(self, claim_id, client_id):
+        if claim_id not in self._unclaimed_elements:
             return
 
-        self._unclaimed_elements_timeouts[http_id].cancel()
-        del self._unclaimed_elements_timeouts[http_id]
+        self._unclaimed_elements_timeouts[claim_id].cancel()
+        del self._unclaimed_elements_timeouts[claim_id]
 
-        for action in self._unclaimed_elements[http_id]:
+        for action in self._unclaimed_elements[claim_id]:
             if ismethod(action.action):
-                if socket_id not in self.events:
-                    self.events[socket_id] = {}
-                self.events[socket_id][action.id] = action
+                if client_id not in self.events:
+                    self.events[client_id] = {}
+                self.events[client_id][action.id] = action
             else:
                 self.events[action.id] = action
 
-        del self._unclaimed_elements[http_id]
+        del self._unclaimed_elements[claim_id]
 
     def release_actions(self, socket_id: str):
         if socket_id not in self.events:

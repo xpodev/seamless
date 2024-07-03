@@ -2,7 +2,7 @@ from functools import partial
 from socketio import AsyncServer, ASGIApp
 
 from .base import BaseAsyncMiddleware, CLAIM_COOKIE_NAME
-from ..server.request import HTTPRequest
+from ..context.request import HTTPRequest
 
 
 class ASGIMiddleware(BaseAsyncMiddleware):

@@ -1,6 +1,8 @@
-from typing import Iterable
+from typing import Any, Iterable
 from uuid import uuid4
 from string import ascii_letters
+
+ascii_length = len(ascii_letters)
 
 
 class Cookies:
@@ -53,6 +55,14 @@ class TwoWayDict(dict):
         return dict.__len__(self) // 2
 
 
+class Promise:
+    def __init__(self, value):
+        self.value = value
+
+    def __await__(self):
+        return getattr(self.value, "__await__", lambda: self.value or iter(()))()
+
+
 def short_uuid(length=12):
     original_uuid = uuid4()
     hex_string = original_uuid.hex
@@ -66,39 +76,42 @@ def short_uuid(length=12):
     return short_uuid
 
 
-def validate_data(func, *args):
+def warp_with_validation(func):
     try:
-        from pydantic import BaseModel
-
-        def make_model(cls, data):
-            if not issubclass(cls, BaseModel):
-                return data
-
-            return cls.model_validate(data)
-
+        from pydantic import create_model, ValidationError
     except ImportError:
-
-        def make_model(cls, data):
-            from dataclasses import is_dataclass
-
-            if is_dataclass(cls):
-                return cls(**data)
-
-            return data
+        return func
 
     import inspect
 
     signature = inspect.signature(func)
     parameters = signature.parameters
     if not parameters:
-        return args
+        return func
 
-    args = list(args)
-    for i, parameter in enumerate(parameters.values()):
-        cls = parameter.annotation
-        if not isinstance(cls, type):
-            continue
+    func_parameters = {
+        name: (
+            parameter.annotation if parameter.annotation is not inspect._empty else Any,
+            parameter.default if parameter.default is not inspect._empty else None,
+        )
+        for name, parameter in parameters.items()
+    }
 
-        args[i] = make_model(cls, args[i])
+    model = create_model(
+        "SeamlessModel",
+        **func_parameters,
+    )
 
-    return args
+    async def wrapper(*args):
+        kwargs = {
+            parameter: args[i] for i, parameter in enumerate(func_parameters)
+        }
+
+        try:
+            data = model(**kwargs)
+        except ValidationError as e:
+            raise Exception(e.json(include_url=False))
+
+        return await Promise(func(**{name: getattr(data, name) for name in func_parameters}))
+
+    return wrapper

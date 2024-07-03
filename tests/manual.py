@@ -3,10 +3,13 @@ from inspect import iscoroutinefunction
 from pathlib import Path
 from fastapi import FastAPI, Response
 from fastapi.responses import FileResponse
+from pydantic import BaseModel
 from seamless import *
 from seamless.middlewares.asgi import ASGIMiddleware
 from seamless.styling import CSS
+from seamless.components import Page as BasePage
 from .server.common import Card, Page, SuperCard, SampleComponent
+from .components import Page as TestPage, App
 
 app = FastAPI()
 app.add_middleware(
@@ -16,8 +19,8 @@ app.add_middleware(
 
 def _make_response(response):
     if isinstance(response, (Component, Element)):
-        if not isinstance(response, Page):
-            response = Page(response)
+        if not isinstance(response, BasePage):
+            response = BasePage(response)
 
         response = Response(render(response), media_type="text/html")
 
@@ -50,16 +53,38 @@ def click_handler(*args, **kwargs):
     print("Button clicked")
 
 
-def card():
-    return SuperCard(is_super=True)(
+def card(super=True):
+    return (SuperCard(is_super=True) if super else Card())(
         SampleComponent(name="world"),
         Button("Click me"),
+        Form(on_submit=submit, action="#")(
+            Input(placeholder="Enter your name", name="name"),
+            Button("Submit"),
+        ),
     )
 
 
+from typing import Generic, TypeVar
+
+T = TypeVar("T")
+
+
+class SubmitEvent(BaseModel, Generic[T]):
+    type: str
+    data: T
+
+
+class MyForm(BaseModel):
+    name: str
+
+
+def submit(event: SubmitEvent[MyForm]):
+    print(f"Form submitted: name = {event.data.name}")
+
+
 @get("/")
-def index():
-    return card()
+def index(super: bool = True):
+    return TestPage(App())
 
 
 @app.get("/static/main.js")

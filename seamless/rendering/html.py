@@ -1,14 +1,14 @@
-from html import escape
-from typing import TYPE_CHECKING, Any
+from typing import TYPE_CHECKING
 from uuid import uuid4 as uuid
 
-from .server.request import request as _request
-from .errors import RenderError
-from .components.base import Component
-from .element import Element
+from ..context.request import request as _request
+from ..errors import RenderError
+from ..components.base import Component
+from ..element import Element
+from .props import render_props
 
 if TYPE_CHECKING:
-    from .types import Renderable, Primitive
+    from seamless.types import Renderable, Primitive
 
 
 def render(element: "Renderable | Primitive", *, pretty=False, tab_indent=1) -> str:
@@ -56,29 +56,3 @@ def _render(element: "Renderable | Primitive", *, pretty=False, tab_indent=1) ->
         return children
 
     return f"<{open_tag}>{children}</{tag_name}>"
-
-
-def to_dict(element: "Renderable | Primitive"):
-    if isinstance(element, Component):
-        element = to_dict(element.render())
-
-    if not isinstance(element, Element):
-        return element
-
-    return {
-        "type": element.tag_name,
-        "children": list(
-            map(
-                to_dict,
-                element.children,
-            )
-        ),
-        "props": element.props_dict(),
-    }
-
-
-def render_props(props: dict[str, Any]) -> str:
-    return " ".join(
-        key if value is True else f'{key}="{escape(str(value))}"'
-        for key, value in props.items()
-    )

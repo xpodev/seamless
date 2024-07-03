@@ -1,4 +1,4 @@
-from seamless.server.database import DB
+from seamless.context.database import DB
 
 EVENTS_NAMESPACE = "seamless:event"
 ELEMENT_ATTR = "seamless:element"

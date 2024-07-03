@@ -14,8 +14,7 @@ class _HtmlProps(TypedDict):
     lang: str
 
 
-class _HeadProps(TypedDict):
-    ...
+class _HeadProps(TypedDict): ...
 
 
 class _BodyProps(TypedDict):
@@ -55,8 +54,22 @@ class Page(Component, name="SeamlessBasePage"):
     def render(self):
         return Fragment(
             "<!DOCTYPE html>",
-            Html(**self._head_props)(
+            Html(**self._html_props)(
                 Head(**self._head_props)(*self.head()),
                 Body(**self._body_props)(*self.body()),
             ),
         )
+
+    def __init_subclass__(cls, title: str = None, **kwargs) -> None:
+        super().__init_subclass__(**kwargs)
+
+        if title is None:
+            return
+
+        original_init = cls.__init__
+
+        def __init__(self, *args, **kwargs):
+            kwargs["title"] = kwargs.get("title", title)
+            original_init(self, *args, **kwargs)
+
+        cls.__init__ = __init__

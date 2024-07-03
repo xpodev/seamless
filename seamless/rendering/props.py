@@ -1,12 +1,13 @@
+from html import escape
 from typing import Any
 from ..errors import RenderError
-from .transformers import _TRANSFORMERS
+from .transformers import TRANSFORMERS
 
 
 def transform_props(props: dict[str, Any]):
     props_copy = props.copy()
 
-    for matcher, transformer in _TRANSFORMERS:
+    for matcher, transformer in TRANSFORMERS:
         if isinstance(matcher, str):
             key = matcher
             if key in props_copy:
@@ -27,3 +28,10 @@ def transform_props(props: dict[str, Any]):
             )
 
     return props_copy
+
+
+def render_props(props: dict[str, Any]) -> str:
+    return " ".join(
+        key if value is True else f'{key}="{escape(str(value))}"'
+        for key, value in props.items()
+    )

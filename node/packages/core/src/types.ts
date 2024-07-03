@@ -12,3 +12,18 @@ export interface SeamlessOptions {
      */
     eventObjectTransformer?: (originalEvent: Event, outEvent: any) => any;
 }
+
+export interface OutEvent<T = any> {
+    type: string;
+    data: T;
+}
+
+export const enum PropertyType {
+    Raw = 'raw',
+    Function = 'function',
+}
+
+export interface PropertyData {
+    type: PropertyType;
+    value: any;
+}

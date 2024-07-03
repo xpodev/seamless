@@ -1,5 +1,6 @@
-from seamless import Component, Div, H3, Hr, Link
+from seamless import Component, Div, H3, Hr, Link, Button
 from seamless.components import Page as _Page
+from seamless.extra import Source
 
 
 class Plugin(Component):
@@ -54,3 +55,10 @@ class Page(_Page):
     def head(self):
         yield from super().head()
         yield Link(rel="stylesheet", href="/static/style.css")
+
+
+class AlertButton(Component):
+    def render(self):
+        return Button(on_click=Source("alert('Button clicked')"))(
+            "Click me",
+        )

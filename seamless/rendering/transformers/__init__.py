@@ -5,7 +5,7 @@ from .events_transformer import events_transformer as _events_transformer
 from .class_transformer import class_transformer as _class_transformer
 
 
-_TRANSFORMERS = [
+TRANSFORMERS = [
     _simple_transformer(),
     _events_transformer(),
 ]
@@ -41,7 +41,7 @@ def transformer_for(matcher: Callable[[str, Any], bool] | str):
     """
 
     def decorator(func: Callable[[str, Any, dict[str, Any]], dict[str, Any]]):
-        _TRANSFORMERS.append((matcher, func))
+        TRANSFORMERS.append((matcher, func))
         return func
 
     return decorator

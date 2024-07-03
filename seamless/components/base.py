@@ -20,7 +20,7 @@ class Component:
         super().__init_subclass__(**kwargs)
 
         if cls is not Component:
-            from ..server.components import COMPONENTS_REPOSITORY
+            from ..context.components import COMPONENTS_REPOSITORY
 
             COMPONENTS_REPOSITORY.add_component(cls, name or cls.__name__)
 
