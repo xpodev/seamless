@@ -115,3 +115,11 @@ def warp_with_validation(func):
         return await Promise(func(**{name: getattr(data, name) for name in func_parameters}))
 
     return wrapper
+
+
+def to_iter(value):
+    try:
+        return iter(value)
+    except TypeError:
+        return iter((value,))
+    
