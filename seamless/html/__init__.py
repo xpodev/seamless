@@ -52,6 +52,7 @@ from .small import Small
 from .source import Source
 from .span import Span
 from .strong import Strong
+from .style import Style
 from .sub import Sub
 from .sup import Sup
 from .table import Table
@@ -123,6 +124,7 @@ __all__ = [
 	"Source",
 	"Span",
 	"Strong",
+	"Style",
 	"Sub",
 	"Sup",
 	"Table",
