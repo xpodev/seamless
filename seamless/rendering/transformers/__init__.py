@@ -1,13 +1,17 @@
 from typing import Any, Callable
 
 from .simple_transformer import simple_transformer as _simple_transformer
-from .events_transformer import events_transformer as _events_transformer
+from .events_transformer import (
+    events_transformer as _events_transformer,
+    js_events_transformer as _js_events_transformer,
+)
 from .class_transformer import class_transformer as _class_transformer
 
 
 TRANSFORMERS = [
     _simple_transformer(),
     _events_transformer(),
+    _js_events_transformer(),
 ]
 
 
@@ -45,5 +49,6 @@ def transformer_for(matcher: Callable[[str, Any], bool] | str):
         return func
 
     return decorator
+
 
 transformer_for("class_name")(_class_transformer)

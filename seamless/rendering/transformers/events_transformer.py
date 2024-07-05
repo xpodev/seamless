@@ -18,3 +18,13 @@ def events_transformer():
         element_props[ELEMENT_ATTR] = True
 
     return matcher, event_transformer
+
+def js_events_transformer():
+    def matcher(key: str, value):
+        return key.startswith("on_") and isinstance(value, str)
+
+    def event_transformer(key: str, value, element_props):       
+        event_name = key.removeprefix("on_")
+        element_props[f"on{event_name}"] = value
+
+    return matcher, event_transformer
