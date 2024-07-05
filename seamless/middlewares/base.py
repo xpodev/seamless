@@ -43,7 +43,7 @@ class BaseMiddleware:
 
     def _make_handler(self, handler):
         def _handler(sid, *data):
-            return "OK", handler(sid, *data)
+            return handler(sid, *data)
 
         return _handler
 
@@ -170,7 +170,7 @@ class BaseAsyncMiddleware(BaseMiddleware):
             else:
                 result = handler(sid, *data)
 
-            return "OK", result
+            return result
 
         return _handler
 
