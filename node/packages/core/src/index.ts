@@ -113,7 +113,7 @@ class Seamless {
       }
 
       if (component.props) {
-        component.props = this.parseProps(component.props);
+        // component.props = this.parseProps(component.props);
       }
 
       if (component.children) {
