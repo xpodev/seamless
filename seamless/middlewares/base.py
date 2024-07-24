@@ -11,7 +11,7 @@ from ..context.database import DB
 from ..context.ws_router import ws_router
 from ..context.request import WSRequest, request as _request, set_request
 
-from ..internal import Cookies, warp_with_validation
+from ..internal import Cookies
 
 
 CLAIM_COOKIE_NAME = "_seamless_claim_id"
