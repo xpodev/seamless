@@ -16,7 +16,18 @@ class Source:
         return f"function {self.id}(){{{self.code}}}"
 
 
-@transformer_for(lambda _, value: isinstance(value, Source))
-def transform_source(key: str, source: Source, props):
+@transformer_for(lambda key, value: key == "init" and isinstance(value, Source))
+def transform_init_source(key: str, source: Source, props):
+    props["seamless:element"] = True
     props["seamless:id"] = source.id
-    props["seamless:source:init"] = source.code
+    props["seamless:init"] = source.code
+    del props[key]
+
+
+@transformer_for(lambda key, value: key.startswith("on_") and isinstance(value, Source))
+def transform_event_source(key: str, source: Source, props):
+    event_name = key.removeprefix("on_")
+
+    props["seamless:element"] = True
+    props["seamless:init"] = props.get("seamless:init", "") + f"\n{source.code}"
+    del props[key]
