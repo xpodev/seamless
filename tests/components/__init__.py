@@ -1,6 +1,6 @@
 from seamless import Component, Div, H3, Hr, Link, Button
 from seamless.components import Page as _Page
-from seamless.extra import Source
+from seamless.extra import JS
 
 
 class Plugin(Component):
@@ -59,6 +59,6 @@ class Page(_Page):
 
 class AlertButton(Component):
     def render(self):
-        return Button(on_click=Source("alert('Button clicked')"))(
+        return Button(on_click=JS("alert('Button clicked')"))(
             "Click me",
         )

@@ -1,5 +1,6 @@
-from .source import Source
+from .javascript import JavaScript, JS
 
 __all__ = [
-    "Source",
+    "JavaScript",
+    "JS",
 ]

@@ -1,7 +1,7 @@
 from seamless.html import *
 from seamless import Component, render
 from seamless.components import Page as _Page
-from seamless.styling import CSS, Style
+from seamless.styling import CSS, StyleObject
 from seamless.context.database import DB
 from seamless.types.events import MouseEvent
 
@@ -79,5 +79,5 @@ class SuperCard(Card):
         styles = CSS.module("./static/card.css")
         return Div(
             class_name=styles.card,
-            style=Style(border_radius="5px") if self.rounded else None,
+            style=StyleObject(border_radius="5px") if self.rounded else None,
         )(Div("Super card!" if self.is_super else "Card!"), *self.children)

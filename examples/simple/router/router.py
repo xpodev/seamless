@@ -3,7 +3,7 @@ from pathlib import Path
 
 from seamless import Component, Div, Fragment
 from seamless.internal import short_uuid
-from seamless.extra import Source
+from seamless.extra import JS
 
 from .route import Route
 
@@ -30,7 +30,7 @@ class Router(Component):
             router_js = f.read()
 
         return Fragment(
-            Div(id=router_id, init=Source(
+            Div(id=router_id, init=JS(
                 f"const routerContent = document.getElementById('{router_id}');\n" \
                 f"const routes = {dumps(routes)};\n" \
                 f"{router_js}"
