@@ -20,7 +20,6 @@ class Router(Component):
                 raise TypeError(f"Expected Route, got {type(route)}")
 
     def render(self):
-        router_id = short_uuid(8)
         routes = [
             {"path": route.path, "name": route.component.__seamless_name__}
             for route in self.children
@@ -30,8 +29,7 @@ class Router(Component):
             router_js = f.read()
 
         return Fragment(
-            Div(id=router_id, init=JS(
-                f"const routerContent = document.getElementById('{router_id}');\n" \
+            Div(init=JS(
                 f"const routes = {dumps(routes)};\n" \
                 f"{router_js}"
             ))
