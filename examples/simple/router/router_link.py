@@ -1,4 +1,5 @@
 from seamless import Component, A
+from seamless.extra import Source
 
 
 class RouterLink(Component):
@@ -8,5 +9,5 @@ class RouterLink(Component):
 
     def render(self):
         return A(
-            href=self.to, on_click=f"return navigateTo('{self.to}')", **self.kwargs
+            href=self.to, on_click=Source(f"return this.navigateTo('{self.to}')"), **self.kwargs
         )(*self.children)

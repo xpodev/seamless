@@ -1,8 +1,9 @@
 from json import dumps
 from pathlib import Path
 
-from seamless import Component, Script, Div, Fragment
+from seamless import Component, Div, Fragment
 from seamless.internal import short_uuid
+from seamless.extra import Source
 
 from .route import Route
 
@@ -29,10 +30,9 @@ class Router(Component):
             router_js = f.read()
 
         return Fragment(
-            Div(id=router_id),
-            Script(type="text/javascript")(
+            Div(id=router_id, init=Source(
                 f"const routerContent = document.getElementById('{router_id}');\n" \
                 f"const routes = {dumps(routes)};\n" \
                 f"{router_js}"
-            ),
+            ))
         )
