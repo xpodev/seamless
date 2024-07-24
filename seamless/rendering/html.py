@@ -12,6 +12,17 @@ if TYPE_CHECKING:
 
 
 def render(element: "Renderable | Primitive", *, pretty=False, tab_indent=1) -> str:
+    """
+    Renders the given element into an HTML string.
+
+    Args:
+        element (Renderable | Primitive): The element to be rendered.
+        pretty (bool, optional): Whether to format the HTML string with indentation and line breaks. Defaults to False.
+        tab_indent (int, optional): The number of spaces to use for indentation when pretty is True. Defaults to 1.
+
+    Returns:
+        str: The rendered HTML string.
+    """
     request = _request()
     if request is not None:
         request.id = str(uuid())
