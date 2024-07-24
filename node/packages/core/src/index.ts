@@ -50,6 +50,7 @@ class Seamless {
     this.eventObjectTransformer =
       config?.eventObjectTransformer || ((_, outEvent) => outEvent);
 
+    this.context.instance = this;
     this.init();
   }
 
@@ -84,9 +85,11 @@ class Seamless {
       domElement.setAttribute(key, value);
     });
 
-    if (domElement.hasAttribute(SEAMLESS_ELEMENT)) {
-      this.attachEventListeners(domElement);
-    }
+    this.attributeHandlers.forEach((handler, matcher) => {
+      if (matcher(domElement)) {
+        handler(domElement);
+      }
+    });
 
     const children = Array.isArray(element.children)
       ? element.children.map(this.toDOMElement.bind(this))
@@ -120,7 +123,7 @@ class Seamless {
   private attachInit(element: HTMLElement) {
     const initCode = element.getAttribute(SEAMLESS_INIT);
     if (initCode) {
-      new Function(initCode).apply(element, this.context);
+      new Function("seamless", initCode).apply(element, [this.context]);
       element.removeAttribute(SEAMLESS_INIT);
     }
   }

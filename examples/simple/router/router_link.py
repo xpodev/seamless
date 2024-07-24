@@ -9,5 +9,5 @@ class RouterLink(Component):
 
     def render(self):
         return A(
-            href=self.to, on_click=JS(f"return this.navigateTo('{self.to}')"), **self.kwargs
+            href=self.to, on_click=JS(f"event.preventDefault(); return seamless.navigateTo('{self.to}')"), **self.kwargs
         )(*self.children)
