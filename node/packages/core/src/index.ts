@@ -1,5 +1,12 @@
 import io from "socket.io-client";
-import { SeamlessOptions, OutEvent, PropertyData, PropertyType } from "./types";
+import {
+  SeamlessOptions,
+  OutEvent,
+  PropertyData,
+  PropertyType,
+  AttributeHandlerMatcher,
+  AttributeHandler,
+} from "./types";
 export { SeamlessOptions };
 
 export type Primitive = string | number | boolean | null;
@@ -12,6 +19,7 @@ export interface SeamlessElement {
 
 const SEAMLESS_ELEMENT = "seamless:element";
 const SEAMLESS_EVENT = "seamless:event:";
+const SEAMLESS_INIT = "seamless:init";
 
 class Seamless {
   protected readonly socket;
@@ -19,6 +27,20 @@ class Seamless {
     originalEvent: Event,
     outEvent: any
   ) => any;
+  private readonly attributeHandlers = new Map<
+    AttributeHandlerMatcher,
+    AttributeHandler
+  >([
+    [
+      (element) => element.hasAttribute(SEAMLESS_ELEMENT),
+      (element) => this.attachEventListeners(element as HTMLElement),
+    ],
+    [
+      (element) => element.hasAttribute(SEAMLESS_INIT),
+      (element) => this.attachInit(element as HTMLElement),
+    ],
+  ]);
+  private readonly context: Record<any, any> = {};
 
   constructor(config?: SeamlessOptions) {
     this.socket = io({
@@ -36,7 +58,11 @@ class Seamless {
       "[seamless\\:element]"
     );
     allSeamlessElements.forEach((element) =>
-      this.attachEventListeners(element)
+      this.attributeHandlers.forEach((handler, matcher) => {
+        if (matcher(element)) {
+          handler(element);
+        }
+      })
     );
   }
 
@@ -89,6 +115,14 @@ class Seamless {
     }
 
     removeAttribute && element.removeAttribute(SEAMLESS_ELEMENT);
+  }
+
+  private attachInit(element: HTMLElement) {
+    const initCode = element.getAttribute(SEAMLESS_INIT);
+    if (initCode) {
+      new Function(initCode).apply(element, this.context);
+      element.removeAttribute(SEAMLESS_INIT);
+    }
   }
 
   protected isPrimitive(value: any): value is Primitive {
