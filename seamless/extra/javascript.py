@@ -1,4 +1,5 @@
 from os import PathLike
+from seamless.internal import SEAMLESS_ELEMENT_ATTRIBUTE, SEAMLESS_INIT_ATTRIBUTE
 from seamless.rendering.transformers import transformer_for
 
 
@@ -16,8 +17,8 @@ class JavaScript:
 
 @transformer_for(lambda key, value: key == "init" and isinstance(value, JavaScript))
 def transform_init_source(key: str, source: JavaScript, props):
-    props["seamless:element"] = True
-    props["seamless:init"] = source.code
+    props[SEAMLESS_ELEMENT_ATTRIBUTE] = True
+    props[SEAMLESS_INIT_ATTRIBUTE] = source.code
     del props[key]
 
 
@@ -27,9 +28,9 @@ def transform_init_source(key: str, source: JavaScript, props):
 def transform_event_source(key: str, source: JavaScript, props):
     event_name = key.removeprefix("on_")
 
-    props["seamless:element"] = True
-    props["seamless:init"] = (
-        props.get("seamless:init", "")
+    props[SEAMLESS_ELEMENT_ATTRIBUTE] = True
+    props[SEAMLESS_INIT_ATTRIBUTE] = (
+        props.get(SEAMLESS_INIT_ATTRIBUTE, "")
         + f"\nthis.addEventListener('{event_name}', (event) => {{{source.code}}});"
     )
     del props[key]

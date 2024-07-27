@@ -1,6 +1,7 @@
 from pathlib import Path
 from json import dumps
 
+from seamless.internal import SEAMLESS_ELEMENT_ATTRIBUTE, SEAMLESS_INIT_ATTRIBUTE
 from seamless.rendering.transformers import transformer_for
 from ..javascript import JS
 from ..empty import Empty
@@ -41,9 +42,9 @@ class State:
 )
 def transform_state(key, value, props):
     empty_props = value.props
-    props["seamless:element"] = True
-    props["seamless:init"] = (
-        props.get("seamless:init", "")
+    props[SEAMLESS_ELEMENT_ATTRIBUTE] = True
+    props[SEAMLESS_INIT_ATTRIBUTE] = (
+        props.get(SEAMLESS_INIT_ATTRIBUTE, "")
         + f"""document.addEventListener('stateChange:{empty_props["state-name"]}', (event) => {{
             const state = event.detail;
             this.setAttribute('{key}', state.currentValue);

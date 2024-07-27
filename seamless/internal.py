@@ -5,6 +5,10 @@ from string import ascii_letters
 ascii_length = len(ascii_letters)
 
 
+SEAMLESS_ELEMENT_ATTRIBUTE = "seamless:element"
+SEAMLESS_INIT_ATTRIBUTE = "seamless:init"
+
+
 class Cookies:
     def __init__(self, cookie_string: str):
         self.cookies = dict[str, str]()

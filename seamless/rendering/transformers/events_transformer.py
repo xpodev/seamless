@@ -1,6 +1,6 @@
 from seamless.context.database import DB
+from seamless.internal import SEAMLESS_ELEMENT_ATTRIBUTE, SEAMLESS_INIT_ATTRIBUTE
 
-ELEMENT_ATTR = "seamless:element"
 
 def events_transformer():
     def matcher(key: str, value):
@@ -13,7 +13,7 @@ def events_transformer():
         
         event_name = key.removeprefix("on_")
         action = DB.add_event(value)
-        props["seamless:init"] = props.get("seamless:init", "") + \
+        props[SEAMLESS_INIT_ATTRIBUTE] = props.get(SEAMLESS_INIT_ATTRIBUTE, "") + \
         f"""this.addEventListener('{event_name}', (event) => {{
             const outEvent = seamless.instance.eventObjectTransformer(
               event, 
@@ -22,7 +22,7 @@ def events_transformer():
           seamless.instance.socket.emit("event", "{action.id}", outEvent);
         }});"""
 
-        props[ELEMENT_ATTR] = True
+        props[SEAMLESS_ELEMENT_ATTRIBUTE] = True
 
     return matcher, event_transformer
 
