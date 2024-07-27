@@ -41,6 +41,7 @@ class State:
 )
 def transform_state(key, value, props):
     empty_props = value.props
+    props["seamless:element"] = True
     props["seamless:init"] = (
         props.get("seamless:init", "")
         + f"""document.addEventListener('stateChange:{empty_props["state-name"]}', (event) => {{
