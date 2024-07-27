@@ -1,4 +1,4 @@
-seamless.loadComponent = async function (name) {
+const loadComponent = async function (name) {
   return seamless.instance.toDOMElement(await seamless.instance.getComponent(name, {}));
 }
 
@@ -19,7 +19,7 @@ window.addEventListener("pageLocationChange", () => {
     parent.removeChild(parent.firstChild);
   }
 
-  seamless.loadComponent(page.name).then((component) => {
+  loadComponent(page.name).then((component) => {
     parent.appendChild(component);
   });
 });
