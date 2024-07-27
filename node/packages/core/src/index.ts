@@ -20,6 +20,7 @@ export interface SeamlessElement {
 const SEAMLESS_ELEMENT = "seamless:element";
 const SEAMLESS_EVENT = "seamless:event:";
 const SEAMLESS_INIT = "seamless:init";
+const SEAMLESS_EMPTY = "seamless:empty";
 
 class Seamless {
   protected readonly socket;
@@ -30,16 +31,7 @@ class Seamless {
   private readonly attributeHandlers = new Map<
     AttributeHandlerMatcher,
     AttributeHandler
-  >([
-    [
-      (element) => element.hasAttribute(SEAMLESS_ELEMENT),
-      (element) => this.attachEventListeners(element as HTMLElement),
-    ],
-    [
-      (element) => element.hasAttribute(SEAMLESS_INIT),
-      (element) => this.attachInit(element as HTMLElement),
-    ],
-  ]);
+  >();
   private readonly context: Record<any, any> = {};
 
   constructor(config?: SeamlessOptions) {
@@ -55,6 +47,20 @@ class Seamless {
   }
 
   init() {
+    this.attributeHandlers.set(
+      (element) => element.hasAttribute(SEAMLESS_ELEMENT),
+      (element) => this.attachEventListeners(element as HTMLElement)
+    );
+    this.attributeHandlers.set(
+      (element) => element.hasAttribute(SEAMLESS_INIT),
+      (element) => this.attachInit(element as HTMLElement)
+    );
+    this.attributeHandlers.set(
+      (element) => element.tagName.toLowerCase() === SEAMLESS_EMPTY,
+      (element) => this.initEmpty(element as HTMLElement)
+    );
+
+
     const allSeamlessElements = document.querySelectorAll<HTMLElement>(
       "[seamless\\:element]"
     );
@@ -69,15 +75,19 @@ class Seamless {
 
   render(component: SeamlessElement, parentElement: any): void;
   render(component: SeamlessElement, parentElement: HTMLElement): void {
-    const domElement = this.toDOMElement(component);
-    parentElement.appendChild(domElement);
+    this.toDOMElement(component, parentElement);
   }
 
   private toDOMElement(
-    element: SeamlessElement | Primitive
+    element: SeamlessElement | Primitive,
+    parentElement?: HTMLElement
   ): HTMLElement | Text {
     if (this.isPrimitive(element)) {
-      return document.createTextNode(element?.toString() || "");
+      const primitiveNode = document.createTextNode(element?.toString() || "");
+      if (parentElement) {
+        parentElement.appendChild(primitiveNode);
+      }
+      return primitiveNode;
     }
 
     const domElement = document.createElement(element.type);
@@ -85,20 +95,24 @@ class Seamless {
       domElement.setAttribute(key, value);
     });
 
+    if (parentElement) {
+      parentElement.appendChild(domElement);
+    }
+
+    if (Array.isArray(element.children)) {
+      element.children.map((child) => this.toDOMElement(child, domElement));
+    }
+
     this.attributeHandlers.forEach((handler, matcher) => {
       if (matcher(domElement)) {
         handler(domElement);
       }
     });
 
-    const children = Array.isArray(element.children)
-      ? element.children.map(this.toDOMElement.bind(this))
-      : [];
-    children.forEach((child) => domElement.appendChild(child));
     return domElement;
   }
 
-  private attachEventListeners(element: HTMLElement, removeAttribute = true) {
+  protected attachEventListeners(element: HTMLElement, removeAttribute = true) {
     const attributes = element.attributes;
 
     for (let i = 0; i < attributes.length; i++) {
@@ -120,12 +134,19 @@ class Seamless {
     removeAttribute && element.removeAttribute(SEAMLESS_ELEMENT);
   }
 
-  private attachInit(element: HTMLElement) {
+  protected attachInit(element: HTMLElement) {
     const initCode = element.getAttribute(SEAMLESS_INIT);
     if (initCode) {
       new Function("seamless", initCode).apply(element, [this.context]);
       element.removeAttribute(SEAMLESS_INIT);
     }
+  }
+
+  protected initEmpty(element: HTMLElement) {
+    while (element.firstChild) {
+      element.parentElement?.insertBefore(element.firstChild, element);
+    }
+    element.parentElement?.removeChild(element);
   }
 
   protected isPrimitive(value: any): value is Primitive {
