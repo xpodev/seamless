@@ -18,16 +18,3 @@ export interface OutEvent<T = any> {
   data: T;
 }
 
-export const enum PropertyType {
-  Raw = "raw",
-  Function = "function",
-}
-
-export interface PropertyData {
-  type: PropertyType;
-  value: any;
-}
-
-export type AttributeHandler = (element: Element) => void;
-
-export type AttributeHandlerMatcher = (element: Element) => boolean;
