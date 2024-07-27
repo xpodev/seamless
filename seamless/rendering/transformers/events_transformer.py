@@ -1,6 +1,5 @@
 from seamless.context.database import DB
 
-EVENTS_NAMESPACE = "seamless:event"
 ELEMENT_ATTR = "seamless:element"
 
 def events_transformer():
