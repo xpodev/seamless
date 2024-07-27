@@ -2,11 +2,10 @@ seamless.loadComponent = async function (name) {
   return seamless.instance.toDOMElement(await seamless.instance.getComponent(name, {}));
 }
 
-const PageStateChange = new Event("pagestatechange");
-const spinner = document.createElement("div");
-spinner.classList.add("spinner-border");
+const parent = this.parentElement;
+const PageStateChange = new Event("pageLocationChange");
 
-window.addEventListener("pagestatechange", () => {
+window.addEventListener("pageLocationChange", () => {
   const path = window.location.pathname;
   const page = routes.find(
     (page) => page.path.replace(/^\//, "") === path.replace(/^\//, "")
@@ -16,18 +15,19 @@ window.addEventListener("pagestatechange", () => {
     return;
   }
 
-  this.innerHTML = "";
-  this.prepend(spinner);
+  while (parent.firstChild) {
+    parent.removeChild(parent.firstChild);
+  }
+
   seamless.loadComponent(page.name).then((component) => {
-    this.removeChild(spinner);
-    this.appendChild(component);
+    parent.appendChild(component);
   });
 });
 
-seamless.navigateTo = function(to) {
+seamless.navigateTo = function (to) {
   window.history.pushState({}, "", to);
   window.dispatchEvent(PageStateChange);
   return false;
 }
 
-seamless.navigateTo(window.location.pathname);
+window.dispatchEvent(PageStateChange);
