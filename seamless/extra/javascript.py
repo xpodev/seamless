@@ -1,8 +1,16 @@
+from os import PathLike
 from seamless.rendering.transformers import transformer_for
 
 
 class JavaScript:
-    def __init__(self, code: str) -> None:
+    def __init__(self, code: str = None, *, file: str | PathLike = None) -> None:
+        if file:
+            if code:
+                raise ValueError("Cannot specify both code and file")
+            with open(file, "r") as f:
+                code = f.read()
+        elif not code:
+            raise ValueError("Must specify either code or file")
         self.code = code
 
 
