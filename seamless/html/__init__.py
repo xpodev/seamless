@@ -15,7 +15,6 @@ from .cite import Cite
 from .code import Code
 from .col import Col
 from .div import Div
-from ..element import Element
 from .em import Em
 from .embed import Embed
 from .footer import Footer
@@ -87,7 +86,6 @@ __all__ = [
 	"Code",
 	"Col",
 	"Div",
-	"Element",
 	"Em",
 	"Embed",
 	"Footer",

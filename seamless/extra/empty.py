@@ -1,5 +1,5 @@
 from typing import TYPE_CHECKING
-from seamless import Element
+from seamless.element import Element
 from seamless.internal import SEAMLESS_ELEMENT_ATTRIBUTE
 
 if TYPE_CHECKING:

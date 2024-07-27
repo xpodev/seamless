@@ -5,6 +5,7 @@ from fastapi import FastAPI, Response
 from fastapi.responses import FileResponse
 from pydantic import BaseModel
 from seamless import *
+from seamless.element import Element
 from seamless.middlewares.asgi import ASGIMiddleware
 from seamless.styling import CSS
 from seamless.components import Page as BasePage
