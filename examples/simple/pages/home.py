@@ -1,4 +1,5 @@
 from seamless import Div, Component
+from seamless.extra import State
 from components.clock import Clock
 
 
@@ -12,7 +13,7 @@ class HomePage(Component):
                 ),
             ),
             Div(class_name="row mt-4")(
-                Div(class_name="lead col-12 text-center")("Current counter: 0")
+                Div(class_name="lead col-12 text-center")("Current counter: ", State("counter").get()),
             ),
             Clock(),
         )
