@@ -1,7 +1,7 @@
 from json import dumps
 from pathlib import Path
 
-from seamless import Component, Div
+from seamless import Component
 from seamless.extra import JS, Empty
 
 from .route import Route
