@@ -8,9 +8,23 @@ from ..empty import Empty
 
 HERE = Path(__file__).parent
 
-class State:
-    def __init__(self, name: str):
+
+class _StateMeta(type):
+    _instances = {}
+
+    def __call__(self, name: str, *args: Any, **kwds: Any):
+        if name not in self._instances:
+            self._instances[name] = super().__call__(name, *args, **kwds)
+        return self._instances[name]
+
+    def __iter__(self):
+        return iter(self._instances.values())
+
+
+class State(metaclass=_StateMeta):
+    def __init__(self, name: str, default_value=None):
         self.name = name
+        self.default_value = default_value
         self.props = {
             "init": JS(file=HERE / "state.get.js"),
             "state-name": self.name,
@@ -32,9 +46,13 @@ class State:
         return other + self.get()
 
     @staticmethod
-    def init(state: dict = None):
-        state = state or {}
-        return Empty(init=JS(file=HERE / "state.init.js"), state=dumps(state))
+    def init():
+        class _StateInit(Component):
+            def render(self):
+                state = {state.name: state.default_value for state in State}
+                return Empty(init=JS(file=HERE / "state.init.js"), state=dumps(state))
+
+        return _StateInit()
 
 
 @transformer_for(
@@ -52,3 +70,5 @@ def transform_state(key, value, props):
         this.setAttribute('{key}', seamless.state.getState('{empty_props["state-name"]}'));"""
     )
     del props[key]
+
+del _StateMeta
