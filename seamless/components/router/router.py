@@ -1,8 +1,8 @@
 from json import dumps
 from pathlib import Path
 
-from seamless import Component
-from seamless.extra import JS, Empty
+from seamless import Component, JS
+from seamless.core import Empty
 
 from .route import Route
 

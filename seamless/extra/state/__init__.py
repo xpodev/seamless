@@ -1,10 +1,11 @@
 from pathlib import Path
 from json import dumps
+from typing import Any
 
+from seamless import Component, JS
+from seamless.core import Empty
 from seamless.internal import SEAMLESS_ELEMENT_ATTRIBUTE, SEAMLESS_INIT_ATTRIBUTE
 from seamless.rendering.transformers import transformer_for
-from ..javascript import JS
-from ..empty import Empty
 
 HERE = Path(__file__).parent
 

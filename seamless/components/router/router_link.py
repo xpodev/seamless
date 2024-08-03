@@ -1,5 +1,4 @@
-from seamless import Component, A
-from seamless.extra import JS
+from seamless import Component, A, JS
 
 
 class RouterLink(Component):

@@ -1,6 +1,5 @@
-from seamless import Component, Div, H3, Hr, Link, Button
+from seamless import Component, Div, H3, Hr, Link, Button, JS
 from seamless.components import Page as _Page
-from seamless.extra import JS
 
 
 class Plugin(Component):

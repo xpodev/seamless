@@ -1,6 +1,5 @@
 from pathlib import Path
-from seamless import Component, Span
-from seamless.extra import JS
+from seamless import Component, Span, JS
 
 HERE = Path(__file__).parent
 
