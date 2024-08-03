@@ -93,7 +93,7 @@ class CSSModulesManager:
         Get a CSS module by its path.
         This will return a CSSModule object.
         """
-        css_path = self._full_path(css_path)
+        css_path = str(self._full_path(css_path).resolve())
         if css_path not in self.modules:
             self.modules[css_path] = CSSModule(css_path)
         return self.modules[css_path]
@@ -127,6 +127,7 @@ class CSSModulesManager:
 
         if not css_path.is_absolute():
             return self.folder / css_path
+        
         return css_path
 
 

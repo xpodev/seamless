@@ -1,5 +1,5 @@
 import io from "socket.io-client";
-import { SeamlessOptions, OutEvent, PropertyData, PropertyType } from "./types";
+import { SeamlessOptions, OutEvent } from "./types";
 export { SeamlessOptions };
 
 export type Primitive = string | number | boolean | null;
@@ -11,7 +11,8 @@ export interface SeamlessElement {
 }
 
 const SEAMLESS_ELEMENT = "seamless:element";
-const SEAMLESS_EVENT = "seamless:event:";
+const SEAMLESS_INIT = "seamless:init";
+const SEAMLESS_EMPTY = "seamless:empty";
 
 class Seamless {
   protected readonly socket;
@@ -19,6 +20,7 @@ class Seamless {
     originalEvent: Event,
     outEvent: any
   ) => any;
+  private readonly context: Record<any, any> = {};
 
   constructor(config?: SeamlessOptions) {
     this.socket = io({
@@ -28,6 +30,7 @@ class Seamless {
     this.eventObjectTransformer =
       config?.eventObjectTransformer || ((_, outEvent) => outEvent);
 
+    this.context.instance = this;
     this.init();
   }
 
@@ -35,22 +38,41 @@ class Seamless {
     const allSeamlessElements = document.querySelectorAll<HTMLElement>(
       "[seamless\\:element]"
     );
-    allSeamlessElements.forEach((element) =>
-      this.attachEventListeners(element)
-    );
+
+    this.processElements(Array.from(allSeamlessElements));
+  }
+
+  processElements(elements: HTMLElement[]) {
+    elements.forEach((element) => {
+      if (element.hasAttribute(SEAMLESS_INIT)) {
+        this.attachInit(element);
+      }
+    });
+    elements.forEach((element) => {
+      if (element.tagName.toLowerCase() === SEAMLESS_EMPTY) {
+        this.initEmpty(element);
+      }
+    });
+    elements.forEach((element) => {
+      element.removeAttribute(SEAMLESS_ELEMENT);
+    });
   }
 
   render(component: SeamlessElement, parentElement: any): void;
   render(component: SeamlessElement, parentElement: HTMLElement): void {
-    const domElement = this.toDOMElement(component);
-    parentElement.appendChild(domElement);
+    this.toDOMElement(component, parentElement);
   }
 
   private toDOMElement(
-    element: SeamlessElement | Primitive
+    element: SeamlessElement | Primitive,
+    parentElement?: HTMLElement
   ): HTMLElement | Text {
     if (this.isPrimitive(element)) {
-      return document.createTextNode(element?.toString() || "");
+      const primitiveNode = document.createTextNode(element?.toString() || "");
+      if (parentElement) {
+        parentElement.appendChild(primitiveNode);
+      }
+      return primitiveNode;
     }
 
     const domElement = document.createElement(element.type);
@@ -58,37 +80,34 @@ class Seamless {
       domElement.setAttribute(key, value);
     });
 
-    if (domElement.hasAttribute(SEAMLESS_ELEMENT)) {
-      this.attachEventListeners(domElement);
+    if (parentElement) {
+      parentElement.appendChild(domElement);
     }
 
-    const children = Array.isArray(element.children)
-      ? element.children.map(this.toDOMElement.bind(this))
-      : [];
-    children.forEach((child) => domElement.appendChild(child));
+    if (Array.isArray(element.children)) {
+      element.children.map((child) => this.toDOMElement(child, domElement));
+    }
+
+    if (domElement.hasAttribute(SEAMLESS_ELEMENT)) {
+      this.processElements([domElement]);
+    }
+
     return domElement;
   }
 
-  private attachEventListeners(element: HTMLElement, removeAttribute = true) {
-    const attributes = element.attributes;
-
-    for (let i = 0; i < attributes.length; i++) {
-      const attribute = attributes[i];
-      if (attribute.name.startsWith(SEAMLESS_EVENT)) {
-        const eventName = attribute.name.replace(SEAMLESS_EVENT, "");
-        element.addEventListener(eventName, (event: Event) => {
-          const outEvent = this.eventObjectTransformer(
-            event,
-            this.serializeEventObject(event)
-          );
-          this.socket.emit("event", attribute.value, outEvent);
-        });
-
-        element.removeAttribute(attribute.name);
-      }
+  protected attachInit(element: HTMLElement) {
+    const initCode = element.getAttribute(SEAMLESS_INIT);
+    if (initCode) {
+      new Function("seamless", initCode).apply(element, [this.context]);
+      element.removeAttribute(SEAMLESS_INIT);
     }
+  }
 
-    removeAttribute && element.removeAttribute(SEAMLESS_ELEMENT);
+  protected initEmpty(element: HTMLElement) {
+    while (element.firstChild) {
+      element.parentElement?.insertBefore(element.firstChild, element);
+    }
+    element.parentElement?.removeChild(element);
   }
 
   protected isPrimitive(value: any): value is Primitive {
@@ -101,29 +120,11 @@ class Seamless {
   }
 
   async getComponent(name: string, props: Record<string, any>) {
-    const component = await this.sendWaitResponse<SeamlessElement | Primitive>(
+    return await this.sendWaitResponse<SeamlessElement | Primitive>(
       "component",
       name,
       props
     );
-
-    const prepareComponent = (component: SeamlessElement | Primitive) => {
-      if (this.isPrimitive(component)) {
-        return component;
-      }
-
-      if (component.props) {
-        component.props = this.parseProps(component.props);
-      }
-
-      if (component.children) {
-        component.children = component.children.map(prepareComponent);
-      }
-
-      return component;
-    };
-
-    return prepareComponent(component);
   }
 
   registerEventListener(
@@ -179,21 +180,6 @@ class Seamless {
     });
 
     return data;
-  }
-
-  private parseProps(props: Record<string, PropertyData>) {
-    const parsedProps: Record<string, any> = {};
-    Object.entries(props).forEach(([key, prop]) => {
-      switch (prop.type) {
-        case PropertyType.Function:
-          parsedProps[key] = new Function(prop.value);
-          break;
-        default:
-          parsedProps[key] = prop.value;
-      }
-    });
-
-    return parsedProps;
   }
 }
 

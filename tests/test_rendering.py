@@ -1,4 +1,5 @@
-from seamless import Element, Component, Div, render
+from seamless import Component, Div, render
+from seamless.element import Element
 from seamless.rendering.json import to_dict
 
 import unittest

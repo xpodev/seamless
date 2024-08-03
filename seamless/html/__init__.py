@@ -15,7 +15,6 @@ from .cite import Cite
 from .code import Code
 from .col import Col
 from .div import Div
-from ..element import Element
 from .em import Em
 from .embed import Embed
 from .footer import Footer
@@ -52,6 +51,7 @@ from .small import Small
 from .source import Source
 from .span import Span
 from .strong import Strong
+from .style import Style
 from .sub import Sub
 from .sup import Sup
 from .table import Table
@@ -86,7 +86,6 @@ __all__ = [
 	"Code",
 	"Col",
 	"Div",
-	"Element",
 	"Em",
 	"Embed",
 	"Footer",
@@ -123,6 +122,7 @@ __all__ = [
 	"Source",
 	"Span",
 	"Strong",
+	"Style",
 	"Sub",
 	"Sup",
 	"Table",

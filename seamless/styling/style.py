@@ -6,9 +6,9 @@ if TYPE_CHECKING:
 T = TypeVar("T")
 
 
-class Style:
+class StyleObject:
     class _StyleProperty(Generic[T]):
-        def __init__(self, instance: "Style", name: str):
+        def __init__(self, instance: "StyleObject", name: str):
             self.instance = instance
             self.name = name.replace("_", "-")
 
@@ -16,10 +16,10 @@ class Style:
             self.instance.style[self.name] = value
             return self.instance
 
-    def __init__(self, *styles: "Style | dict", **kwargs: Unpack["CSSProperties"]):
+    def __init__(self, *styles: "StyleObject | CSSProperties", **kwargs: Unpack["CSSProperties"]):
         self.style: dict[str, object] = {}
         for style in styles:
-            if isinstance(style, Style):
+            if isinstance(style, StyleObject):
                 style = style.style
             self.style.update(style)
         self.style.update(kwargs)
@@ -28,7 +28,7 @@ class Style:
         }
 
     def copy(self):
-        return Style(self)
+        return StyleObject(self)
 
     def to_css(self):
         return "".join(map(lambda x: f"{x[0]}:{x[1]};", self.style.items()))
@@ -37,4 +37,4 @@ class Style:
         return self.to_css()
 
     def __getattr__(self, name: str):
-        return Style._StyleProperty(self, name)
+        return StyleObject._StyleProperty(self, name)

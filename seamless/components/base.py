@@ -8,6 +8,7 @@ if TYPE_CHECKING:
 
 class Component:
     children: Final[tuple["ChildrenType", ...]]
+    __seamless_name__: Final[str] = "Component"
 
     def __init__(self, *children: "ChildrenType") -> None:
         self.children = children
@@ -22,7 +23,8 @@ class Component:
         if cls is not Component:
             from ..context.components import COMPONENTS_REPOSITORY
 
-            COMPONENTS_REPOSITORY.add_component(cls, name or cls.__name__)
+            cls.__seamless_name__ = name or cls.__name__
+            COMPONENTS_REPOSITORY.add_component(cls, cls.__seamless_name__)
 
         if cls.__init__ is Component.__init__:
             return

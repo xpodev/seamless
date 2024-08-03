@@ -4,8 +4,7 @@ from fastapi.responses import HTMLResponse, FileResponse
 from seamless import render
 from seamless.middlewares import ASGIMiddleware
 
-from pages.home import HomePage
-from pages.counter import CounterPage
+from components.app import App
 
 HERE = Path(__file__).parent
 
@@ -13,19 +12,14 @@ app = FastAPI()
 app.add_middleware(ASGIMiddleware)
 
 
-@app.get("/", response_class=HTMLResponse)
-def read_root():
-    return render(HomePage())
-
-
-@app.get("/counter", response_class=HTMLResponse)
-def read_root():
-    return render(CounterPage())
-
-
 @app.get("/static/{file_path:path}")
 def read_static(file_path: str):
     return FileResponse(HERE / "static" / file_path)
+
+
+@app.get("/{full_path:path}", response_class=HTMLResponse)
+def read_root():
+    return render(App())
 
 
 if __name__ == "__main__":

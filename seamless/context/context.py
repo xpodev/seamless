@@ -21,3 +21,4 @@ class Context:
 
     def claim(self, claim_id: str, client_id: str):
         self.db.claim(claim_id, client_id)
+

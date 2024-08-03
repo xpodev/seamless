@@ -27,7 +27,11 @@ def transform_props(props: dict[str, Any]):
                 f"Invalid matcher: {matcher} must be a callable or a string."
             )
 
-    return props_copy
+    return {
+        key: value
+        for key, value in props_copy.items()
+        if value is not None
+    }
 
 
 def render_props(props: dict[str, Any]) -> str:

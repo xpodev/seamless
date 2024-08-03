@@ -1,4 +1,5 @@
 from typing import Literal, TypedDict
+
 from .base import Component
 from ..html import (
     Fragment,
@@ -8,6 +9,7 @@ from ..html import (
     Body,
     Meta,
 )
+from ..internal import to_iter
 
 
 class _HtmlProps(TypedDict):
@@ -55,8 +57,8 @@ class Page(Component, name="SeamlessBasePage"):
         return Fragment(
             "<!DOCTYPE html>",
             Html(**self._html_props)(
-                Head(**self._head_props)(*self.head()),
-                Body(**self._body_props)(*self.body()),
+                Head(**self._head_props)(*to_iter(self.head())),
+                Body(**self._body_props)(*to_iter(self.body())),
             ),
         )
 

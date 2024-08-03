@@ -5,6 +5,10 @@ from string import ascii_letters
 ascii_length = len(ascii_letters)
 
 
+SEAMLESS_ELEMENT_ATTRIBUTE = "seamless:element"
+SEAMLESS_INIT_ATTRIBUTE = "seamless:init"
+
+
 class Cookies:
     def __init__(self, cookie_string: str):
         self.cookies = dict[str, str]()
@@ -76,18 +80,21 @@ def short_uuid(length=12):
     return short_uuid
 
 
-def warp_with_validation(func):
+def wrap_with_validation(func):
+    def no_validation(*args):
+        return func(*[_obj(arg) if isinstance(arg, dict) else arg for arg in args])
+
     try:
         from pydantic import create_model, ValidationError
     except ImportError:
-        return func
+        return no_validation
 
     import inspect
 
     signature = inspect.signature(func)
     parameters = signature.parameters
     if not parameters:
-        return func
+        return no_validation
 
     func_parameters = {
         name: (
@@ -103,15 +110,31 @@ def warp_with_validation(func):
     )
 
     async def wrapper(*args):
-        kwargs = {
-            parameter: args[i] for i, parameter in enumerate(func_parameters)
-        }
+        kwargs = {parameter: args[i] for i, parameter in enumerate(func_parameters)}
 
         try:
             data = model(**kwargs)
         except ValidationError as e:
             raise Exception(e.json(include_url=False))
 
-        return await Promise(func(**{name: getattr(data, name) for name in func_parameters}))
+        return await Promise(
+            func(**{name: getattr(data, name) for name in func_parameters})
+        )
 
     return wrapper
+
+
+def to_iter(value):
+    try:
+        return iter(value)
+    except TypeError:
+        return iter((value,))
+
+
+class _obj(object):
+    def __init__(self, d: dict):
+        for k, v in d.items():
+            if isinstance(k, (list, tuple)):
+                setattr(self, k, [_obj(x) if isinstance(x, dict) else x for x in v])
+            else:
+                setattr(self, k, _obj(v) if isinstance(v, dict) else v)

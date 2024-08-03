@@ -1,10 +1,9 @@
 from inspect import iscoroutinefunction, ismethod
 from typing import Any, Callable, TypeAlias
-from uuid import uuid4 as uuid
 from threading import Timer
 
 from seamless.errors import ActionError
-from seamless.internal import warp_with_validation
+from seamless.internal import wrap_with_validation
 from .request import request as _request, RequestType
 
 
@@ -43,7 +42,7 @@ class ElementsDatabase:
             pass
 
         request = _request()
-        action = Action(warp_with_validation(callback), action_id)
+        action = Action(wrap_with_validation(callback), action_id)
 
         if request.type == RequestType.HTTP:
             if request.id not in self._unclaimed_elements:
@@ -65,9 +64,9 @@ class ElementsDatabase:
                 if scope not in self.events:
                     self.events[scope] = {}
 
-                self.events[scope][action.id] = callback
+                self.events[scope][action.id] = action
             else:
-                self.events[action.id] = callback
+                self.events[action.id] = action
 
         return action
 

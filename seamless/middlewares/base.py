@@ -11,7 +11,7 @@ from ..context.database import DB
 from ..context.ws_router import ws_router
 from ..context.request import WSRequest, request as _request, set_request
 
-from ..internal import Cookies, warp_with_validation
+from ..internal import Cookies
 
 
 CLAIM_COOKIE_NAME = "_seamless_claim_id"
@@ -43,7 +43,7 @@ class BaseMiddleware:
 
     def _make_handler(self, handler):
         def _handler(sid, *data):
-            return "OK", handler(sid, *data)
+            return handler(sid, *data)
 
         return _handler
 
@@ -170,7 +170,7 @@ class BaseAsyncMiddleware(BaseMiddleware):
             else:
                 result = handler(sid, *data)
 
-            return "OK", result
+            return result
 
         return _handler
 
