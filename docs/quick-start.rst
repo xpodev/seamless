@@ -14,7 +14,7 @@ First, we need to install the Seamless package.
     $ pip install python-seamless
 
 
-Create reusable page
+Create Reusable Page
 ====================
 
 Seamless provides a default page component that is the minimal structure for a web page.
