@@ -1,6 +1,6 @@
 [project]
 name = "python-seamless"
-version = "0.8.2"
+version = "0.8.3"
 authors = [
   { name="Xpo Development", email="dev@xpo.dev" },
 ]
@@ -22,8 +22,8 @@ Issues = "https://github.com/xpodev/seamless/issues"
 include-package-data = true
 
 [tool.setuptools.packages.find]
-include = ["seamless"]
-exclude = ["tests"]
+include = ["seamless*"]
+exclude = ["tests*"]
 
 [tool.setuptools.package-data]
 seamless = ["**/*.js"]
