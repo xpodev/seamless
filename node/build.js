@@ -4,6 +4,8 @@ const { execSync } = require('child_process');
 
 const nextVersion = process.argv[2];
 
+execSync('yarn build:browser');
+
 const packagesDir = path.join(__dirname, 'packages');
 const packages = fs.readdirSync(packagesDir);
 packages.forEach((pkg) => {
