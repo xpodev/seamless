@@ -18,10 +18,15 @@ dynamic = ["dependencies"]
 Homepage = "https://github.com/xpodev/seamless"
 Issues = "https://github.com/xpodev/seamless/issues"
 
-[tool.setuptools.packages.find]
-include = ["seamless*"]
-exclude = ["tests*"]
+[tool.setuptools]
+include-package-data = true
 
+[tool.setuptools.packages.find]
+include = ["seamless"]
+exclude = ["tests"]
+
+[tool.setuptools.package-data]
+seamless = ["**/*.js"]
 
 [tool.setuptools.dynamic]
 dependencies = {file = ["requirements.txt"]}
