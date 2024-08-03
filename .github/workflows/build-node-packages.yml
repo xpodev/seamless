@@ -27,11 +27,9 @@ jobs:
         run: |
           yarn
 
-      - name: Build
-        run: |
-          yarn build
-
       - name: Publish node packages
         run: |
-          yarn publish --version ${{ github.event.release.tag_name }}
+          node build.js ${{ github.event.release.tag_name }}
+        env:
+          NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
 

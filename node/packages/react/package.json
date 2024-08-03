@@ -1,8 +1,9 @@
 {
-  "name": "seamless-react",
-  "version": "0.0.1",
+  "name": "@python-seamless/react",
+  "version": "0.1.2",
   "description": "Python-Seamless integration with React",
   "main": "dist/index.js",
+  "private": false,
   "dependencies": {
     "react": "^18.2.0",
     "react-dom": "^18.2.0",

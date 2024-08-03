@@ -31,3 +31,8 @@ jobs:
         with:
           user: __token__
           password: ${{ secrets.PYPI_API_TOKEN }}
+
+      - name: Build Node packages
+        uses: xpodev/seamless/.github/workflows/build-node-packages.yml@main
+        with:
+          tag: ${{ github.event.release.tag_name }}
