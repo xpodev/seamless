@@ -1,7 +1,6 @@
-name: Build frontend assets
+name: Build Node Packages
 
 on:
-  workflow_call:
   release:
     types: [published]
 
