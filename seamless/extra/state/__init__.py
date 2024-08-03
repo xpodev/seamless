@@ -1,6 +1,6 @@
 from pathlib import Path
 from json import dumps
-from typing import Any
+from typing import Any, overload
 
 from seamless import Component, JS
 from seamless.core import Empty
@@ -8,6 +8,7 @@ from seamless.internal import SEAMLESS_ELEMENT_ATTRIBUTE, SEAMLESS_INIT_ATTRIBUT
 from seamless.rendering.transformers import transformer_for
 
 HERE = Path(__file__).parent
+EMPTY = object()
 
 
 class _StateMeta(type):
@@ -40,6 +41,16 @@ class State(metaclass=_StateMeta):
             seamless.state.setState('{self.name}', {value})"""
         )
 
+    @overload
+    def __call__(self) -> Any: ...
+    @overload
+    def __call__(self, value: Any) -> JS: ...
+
+    def __call__(self, value=EMPTY):
+        if value is EMPTY:
+            return self.get()
+        return self.set(value)
+
     def __add__(self, other):
         return self.get() + other
 
@@ -71,5 +82,6 @@ def transform_state(key, value, props):
         this.setAttribute('{key}', seamless.state.getState('{empty_props["state-name"]}'));"""
     )
     del props[key]
+
 
 del _StateMeta
