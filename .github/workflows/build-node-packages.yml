@@ -3,6 +3,7 @@ name: Build Node Packages
 on:
   release:
     types: [published]
+  workflow_dispatch:
 
 permissions:
   contents: read
