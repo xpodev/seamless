@@ -22,12 +22,12 @@ The following example demonstrates how to submit a form to the server:
 
     class User(Component):
         def __init__(self, name: str, email: str):
-            self.age = age
+            self.name = name
             self.email = email
 
         def render(self):
             return Form(on_submit=self.save_email)(
-                Div(f"Update the email for {name}"),
+                Div(f"Update the email for {self.name}"),
                 Label(html_for="email")(
                     "Age: ",
                 ),

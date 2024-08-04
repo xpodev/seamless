@@ -20,6 +20,7 @@ This method should be called before creating any states.
 .. code-block:: python
     :caption: Initializing the state
 
+    from seamless.components import Page
     from seamless.extra import State
 
     class MyPage(Page):

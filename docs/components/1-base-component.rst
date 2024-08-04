@@ -77,12 +77,11 @@ The most common way of handling props is to store them as instance variables and
     from seamless import Component
 
     class AppButton(Component):
-        def __init__(self, type: str):
+        def __init__(self, color: str):
             self.color = color
-            self.style = Style(background_color=f"var(--color-{color})")
 
         def render(self):
-            return Button(style=self.style)(
+            return Button(style=Style(background_color=f"var(--color-{color})"))(
                 *self.children
             )
 
