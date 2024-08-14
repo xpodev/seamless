@@ -74,7 +74,7 @@ class Person(Component):
 ```
 To call a function on the server include this script in your file
 ```html
-<script src="/socket.io/static/main.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/@python-seamless/core@0.8.4/umd/seamless.init.js"></script>
 ```
 Import the middleware and mount it to your app
 ```python
