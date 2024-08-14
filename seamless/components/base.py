@@ -11,6 +11,9 @@ class Component:
     __seamless_name__: Final[str] = "Component"
 
     def __init__(self, *children: "ChildrenType") -> None:
+        if type(self) is Component:
+            raise TypeError("Cannot instantiate Component directly")
+        
         self.children = children
 
     @abstractmethod
