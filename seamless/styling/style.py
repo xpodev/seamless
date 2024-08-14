@@ -1,4 +1,5 @@
 from typing import Generic, TypeVar, Unpack, TYPE_CHECKING
+from seamless.rendering.transformers import transformer_for
 
 if TYPE_CHECKING:
     from seamless.types.styling.css_properties import CSSProperties
@@ -16,7 +17,9 @@ class StyleObject:
             self.instance.style[self.name] = value
             return self.instance
 
-    def __init__(self, *styles: "StyleObject | CSSProperties", **kwargs: Unpack["CSSProperties"]):
+    def __init__(
+        self, *styles: "StyleObject | CSSProperties", **kwargs: Unpack["CSSProperties"]
+    ):
         self.style: dict[str, object] = {}
         for style in styles:
             if isinstance(style, StyleObject):
@@ -38,3 +41,8 @@ class StyleObject:
 
     def __getattr__(self, name: str):
         return StyleObject._StyleProperty(self, name)
+
+
+@transformer_for(lambda _, value: isinstance(value, StyleObject))
+def style_transformer(key, value: StyleObject, props):
+    props[key] = value.to_css()
