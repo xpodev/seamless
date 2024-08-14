@@ -2,6 +2,7 @@ from typing import TypedDict, Callable, TypeVar, NotRequired, TYPE_CHECKING
 
 if TYPE_CHECKING:
     from ..styling import StyleObject
+    from .. import JS
 
 from .events import Event, MouseEvent
 
@@ -143,6 +144,8 @@ class HTMLElement(TypedDict):
     tab_index: NotRequired[str]
     title: NotRequired[str]
     translate: NotRequired[str]
+
+    init: "JS"
 
 
 class HTMLAnchorElement(HTMLElement):
