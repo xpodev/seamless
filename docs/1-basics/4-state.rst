@@ -14,13 +14,15 @@ refreshed.
 Initializing the State
 ######################
 
-To initialize the state, use the ``State.init`` method from ``seamless.extra``.
-This method should be called before creating any states.
+Before creating any state, the state must to be initialized. This is done by calling the
+``State.init`` method from ``seamless.extra``.
+
+The ``State.init`` method initializes the state on the client side and adds the ``state`` object
+in the seamless instance.
 
 .. code-block:: python
     :caption: Initializing the state
 
-    from seamless.components import Page
     from seamless.extra import State
 
     class MyPage(Page):

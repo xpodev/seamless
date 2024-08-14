@@ -11,7 +11,8 @@ We recommend picking one syntax and sticking to it, as mixing syntaxes on differ
 Using the card component as an example, we will show the different syntaxes.
 
 .. code-block:: python
-
+    :caption: Card component
+    
     # card.py
 
     from seamless import Component, Div
@@ -30,6 +31,15 @@ Using the card component as an example, we will show the different syntaxes.
               )
             )
 
+Which will result in the following HTML when passing the title "Card Title" and the content "Hello, World!":
+
+.. code-block:: html
+
+    <div class="card">
+      <div class="card-title">Card Title</div>
+      <div class="card-content">Hello, World!</div>
+    </div>
+
 Pythonic Syntax
 ###############
 
@@ -38,6 +48,7 @@ We pass the children as positional arguments, and the props as keyword arguments
 This is called "Pythonic" because it is similar to how we write Python code.
 
 .. code-block:: python
+    :caption: Pythonic Syntax
 
     from seamless import Div, render
     from card import Card
@@ -58,6 +69,7 @@ We start with the props as keyword arguments, then, we pass the children as call
 This is similar to how we write HTML tags, with the props as attributes and the children as the tag's content.
 
 .. code-block:: python
+    :caption: HTML Syntax
 
     from seamless import Div, render
     from card import Card
@@ -76,6 +88,7 @@ We pass the children as the keyword argument "children", along with the props.
 This is similar to how we write Flutter widgets.
 
 .. code-block:: python
+    :caption: Flutter Syntax  
 
     from seamless import Div, render
     from card import Card

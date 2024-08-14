@@ -1,3 +1,5 @@
+.. _asg-middleware:
+
 ###############
 ASGI Middleware
 ###############
