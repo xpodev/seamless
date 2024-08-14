@@ -7,7 +7,7 @@ def events_transformer():
 
     def event_transformer(key: str, value, props):
         from seamless.context.database import DB
-        
+
         if not callable(value):
             props[key] = value
             return
@@ -24,6 +24,7 @@ def events_transformer():
         }});"""
 
         props[SEAMLESS_ELEMENT_ATTRIBUTE] = True
+        del props[key]
 
     return matcher, event_transformer
 
@@ -34,5 +35,6 @@ def js_events_transformer():
     def event_transformer(key: str, value, element_props):       
         event_name = key.removeprefix("on_")
         element_props[f"on{event_name}"] = value
+        del element_props[key]
 
     return matcher, event_transformer
