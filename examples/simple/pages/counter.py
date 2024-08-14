@@ -1,12 +1,16 @@
 from pydantic import BaseModel
 from seamless import Div, Form, Input, Button, Component
+from seamless.context.sid import SocketID
 from seamless.extra import State
 from seamless.types.events import SubmitEvent
+
 
 class Counter(BaseModel):
     counter_value: int
 
+
 counter = State("counter", 0)
+
 
 class CounterPage(Component):
     def render(self):
@@ -16,14 +20,22 @@ class CounterPage(Component):
                 Div(class_name="display-6 text-center")("A simple counter page."),
             ),
             Div(class_name="row mt-4")(
-                Div(class_name="lead col-12 text-center")("Current counter: ", counter()),
+                Div(class_name="lead col-12 text-center")(
+                    "Current counter: ", counter()
+                ),
             ),
             Div(class_name="row")(
                 Div(class_name="col-12 text-center")(
                     Div(class_name="btn-group")(
-                        Div(class_name="btn btn-danger", on_click=counter("state - 1"))("Decrement"),
-                        Div(class_name="btn btn-primary", on_click=counter("0"))("Reset"),
-                        Div(class_name="btn btn-success", on_click=counter("state + 1"))("Increment"),
+                        Div(class_name="btn btn-danger", on_click=counter("state - 1"))(
+                            "Decrement"
+                        ),
+                        Div(class_name="btn btn-primary", on_click=counter("0"))(
+                            "Reset"
+                        ),
+                        Div(
+                            class_name="btn btn-success", on_click=counter("state + 1")
+                        )("Increment"),
                     ),
                 ),
                 Div(class_name="col-12 text-center mt-4")(
@@ -35,7 +47,7 @@ class CounterPage(Component):
             ),
         )
 
-    def submit(self, event: SubmitEvent[Counter]):
+    def submit(self, event: SubmitEvent[Counter], sid: SocketID):
         print("Form submitted!")
+        print("socket id:", sid)
         print(event)
-
