@@ -1,5 +1,10 @@
+from pydantic import BaseModel
 from seamless import Div, Form, Input, Button, Component
 from seamless.extra import State
+from seamless.types.events import SubmitEvent
+
+class Counter(BaseModel):
+    counter_value: int
 
 counter = State("counter", 0)
 
@@ -30,7 +35,7 @@ class CounterPage(Component):
             ),
         )
 
-    def submit(self, event):
+    def submit(self, event: SubmitEvent[Counter]):
         print("Form submitted!")
         print(event)
 
