@@ -1,4 +1,4 @@
-from typing import TypedDict, Callable, TypeVar, NotRequired, TYPE_CHECKING
+from typing import TypedDict, Callable, TypeVar, NotRequired, TYPE_CHECKING, Union
 
 if TYPE_CHECKING:
     from ..styling import StyleObject
@@ -70,11 +70,11 @@ class HTMLEventProps(TypedDict):
     on_can_play: NotRequired[str]
     on_can_play_through: NotRequired[str]
     on_change: NotRequired[str]
-    on_click: EventFunction[MouseEvent]
+    on_click: NotRequired[EventFunction[MouseEvent]]
     on_close: NotRequired[str]
-    on_context_menu: EventFunction[MouseEvent]
+    on_context_menu: NotRequired[EventFunction[MouseEvent]]
     on_cue_change: NotRequired[str]
-    on_dbl_click: EventFunction[MouseEvent]
+    on_dbl_click: NotRequired[EventFunction[MouseEvent]]
     on_drag: NotRequired[str]
     on_drag_end: NotRequired[str]
     on_drag_enter: NotRequired[str]
@@ -96,13 +96,13 @@ class HTMLEventProps(TypedDict):
     on_loaded_data: NotRequired[str]
     on_loaded_metadata: NotRequired[str]
     on_load_start: NotRequired[str]
-    on_mouse_down: EventFunction[MouseEvent]
-    on_mouse_enter: EventFunction[MouseEvent]
-    on_mouse_leave: EventFunction[MouseEvent]
-    on_mouse_move: EventFunction[MouseEvent]
-    on_mouse_out: EventFunction[MouseEvent]
-    on_mouse_over: EventFunction[MouseEvent]
-    on_mouse_up: EventFunction[MouseEvent]
+    on_mouse_down: NotRequired[EventFunction[MouseEvent]]
+    on_mouse_enter: NotRequired[EventFunction[MouseEvent]]
+    on_mouse_leave: NotRequired[EventFunction[MouseEvent]]
+    on_mouse_move: NotRequired[EventFunction[MouseEvent]]
+    on_mouse_out: NotRequired[EventFunction[MouseEvent]]
+    on_mouse_over: NotRequired[EventFunction[MouseEvent]]
+    on_mouse_up: NotRequired[EventFunction[MouseEvent]]
     on_mouse_wheel: NotRequired[str]
     on_pause: NotRequired[str]
     on_play: NotRequired[str]
@@ -131,7 +131,7 @@ class HTMLElement(TypedDict):
     auto_capitalize: NotRequired[str]
     class_name: NotRequired[str]
     content_editable: NotRequired[str]
-    data: dict[str, str]
+    # data: NotRequired[dict[str, str]]  # add this if needed in the future
     dir: NotRequired[str]
     draggable: NotRequired[str]
     hidden: NotRequired[str]
@@ -140,12 +140,12 @@ class HTMLElement(TypedDict):
     lang: NotRequired[str]
     role: NotRequired[str]
     spell_check: NotRequired[str]
-    style: NotRequired[str | "StyleObject"]
+    style: NotRequired[Union[str, "StyleObject"]]
     tab_index: NotRequired[str]
     title: NotRequired[str]
     translate: NotRequired[str]
 
-    init: "JS"
+    init: NotRequired["JS"]
 
 
 class HTMLAnchorElement(HTMLElement):
