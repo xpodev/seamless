@@ -1,4 +1,4 @@
-# Seamless
+![Seamless](https://github.com/xpodev/seamless/blob/main/seamless.jpg?raw=true)
 
 [![PyPI version](https://badge.fury.io/py/python-seamless.svg?)](https://pypi.org/project/python-seamless)
 
@@ -102,8 +102,9 @@ app.add_middleware(
 Actions use [socket.io](https://socket.io) to communicate between server and client.
 
 ## TODO
-- [ ] Add detailed documentation
+- [x] Add detailed documentation
 - [ ] Add more tests
 - [ ] Add support for http actions
+
 ## Contributing
 Feel free to open an issue or a pull request.
