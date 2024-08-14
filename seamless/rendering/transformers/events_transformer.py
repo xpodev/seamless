@@ -1,12 +1,13 @@
-from seamless.context.database import DB
 from seamless.internal import SEAMLESS_ELEMENT_ATTRIBUTE, SEAMLESS_INIT_ATTRIBUTE
 
-
 def events_transformer():
+
     def matcher(key: str, value):
         return key.startswith("on_") and callable(value)
 
     def event_transformer(key: str, value, props):
+        from seamless.context.database import DB
+        
         if not callable(value):
             props[key] = value
             return

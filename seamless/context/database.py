@@ -2,9 +2,9 @@ from inspect import iscoroutinefunction, ismethod, signature
 from typing import Any, Callable, TypeAlias
 from threading import Timer
 
+from seamless.core import SocketID
 from seamless.errors import ActionError
 from seamless.internal import wrap_with_validation
-from .sid import SocketID
 from .request import request as _request, RequestType
 
 
