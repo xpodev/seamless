@@ -11,7 +11,7 @@ from ..context.database import DB
 from ..context.ws_router import ws_router
 from ..context.request import WSRequest, request as _request, set_request
 
-from ..internal import Cookies
+from ..internal import Cookies, _DataValidationError
 
 
 CLAIM_COOKIE_NAME = "_seamless_claim_id"
@@ -70,8 +70,11 @@ class BaseMiddleware:
                 result = handler(sid, *args, **kwargs)
                 set_request(None)
                 return result
+            except _DataValidationError as e:
+                self._emit("error", str(e), to=sid)
             except Exception as e:
                 self._emit("error", str(e), to=sid)
+                raise e
 
         self.server.on(event, wrapper)
 
@@ -182,6 +185,8 @@ class BaseAsyncMiddleware(BaseMiddleware):
                 result = await handler(sid, *args, **kwargs)
                 set_request(None)
                 return result
+            except _DataValidationError as e:
+                await self.server.emit("error", str(e), to=sid)
             except Exception as e:
                 await self.server.emit("error", str(e), to=sid)
                 raise e

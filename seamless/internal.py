@@ -9,6 +9,9 @@ SEAMLESS_ELEMENT_ATTRIBUTE = "seamless:element"
 SEAMLESS_INIT_ATTRIBUTE = "seamless:init"
 
 
+class _DataValidationError(Exception): ...
+
+
 class Cookies:
     def __init__(self, cookie_string: str):
         self.cookies = dict[str, str]()
@@ -115,7 +118,7 @@ def wrap_with_validation(func):
         try:
             data = model(**kwargs)
         except ValidationError as e:
-            raise Exception(e.json(include_url=False))
+            raise _DataValidationError(e.json(include_url=False))
 
         return await Promise(
             func(**{name: getattr(data, name) for name in func_parameters})
