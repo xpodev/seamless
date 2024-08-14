@@ -1,6 +1,5 @@
 from enum import Enum
 from seamless.rendering.json import to_dict
-from seamless.errors import ActionError
 from .database import DB
 from .components import COMPONENTS_REPOSITORY
 

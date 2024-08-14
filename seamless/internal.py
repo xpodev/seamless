@@ -1,3 +1,4 @@
+from functools import wraps
 from typing import Any, Iterable
 from uuid import uuid4
 from string import ascii_letters
@@ -7,6 +8,9 @@ ascii_length = len(ascii_letters)
 
 SEAMLESS_ELEMENT_ATTRIBUTE = "seamless:element"
 SEAMLESS_INIT_ATTRIBUTE = "seamless:init"
+
+
+class _DataValidationError(Exception): ...
 
 
 class Cookies:
@@ -109,13 +113,14 @@ def wrap_with_validation(func):
         **func_parameters,
     )
 
+    @wraps(func)
     async def wrapper(*args):
         kwargs = {parameter: args[i] for i, parameter in enumerate(func_parameters)}
 
         try:
             data = model(**kwargs)
         except ValidationError as e:
-            raise Exception(e.json(include_url=False))
+            raise _DataValidationError(e.json(include_url=False))
 
         return await Promise(
             func(**{name: getattr(data, name) for name in func_parameters})

@@ -1,7 +1,8 @@
-from inspect import iscoroutinefunction, ismethod
+from inspect import iscoroutinefunction, ismethod, signature
 from typing import Any, Callable, TypeAlias
 from threading import Timer
 
+from seamless.core import SocketID
 from seamless.errors import ActionError
 from seamless.internal import wrap_with_validation
 from .request import request as _request, RequestType
@@ -72,12 +73,17 @@ class ElementsDatabase:
 
     async def invoke_event(self, event: str, *data, scope=None):
         if scope and scope in self.events and event in self.events[scope]:
-            return await self.events[scope][event](*data)
-
-        if event in self.events:
-            return await self.events[event](*data)
-
-        raise ActionError("Event not found")
+            func = self.events[scope][event]
+        elif event in self.events:
+            func = self.events[event]
+        else:
+            raise ActionError("Event not found")
+        
+        data = list(data)
+        for index, param in enumerate(signature(func.action).parameters.values()):
+            if param.annotation is SocketID:
+                data.insert(index, scope)
+        return await func(*data)
 
     def claim(self, claim_id, client_id):
         if claim_id not in self._unclaimed_elements:

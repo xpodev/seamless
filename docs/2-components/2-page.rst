@@ -10,13 +10,13 @@ It is a container that holds all the other components that will be rendered on t
 The default page component includes the components for the following HTML structure:
 
 .. code-block:: html
+  :caption: Default page structure
 
   <!DOCTYPE html>
-  <html>
-    <head lang="en">
+  <html lang="en">
+    <head>
       <meta charset="UTF-8">
-      <meta name="viewport" content="width=devi
-      ce-width, initial-scale=1.0">
+      <meta name="viewport" content="width=device-width, initial-scale=1.0">
       <title>
         <!-- The page title property -->
       </title>
@@ -37,6 +37,7 @@ The page component can be used to create a new page by passing the following pro
 - ``body_props``: The props to insert inside the ``body`` tag
 
 .. code-block:: python
+    :caption: Creating a new page
 
     from seamless import Div, P
     from seamless.components import Page
@@ -62,6 +63,7 @@ Custom Pages
 You can create custom pages by extending the page component and overriding the default ``head`` and ``body`` methods.
 
 .. code-block:: python
+    :caption: Creating a custom page component
 
     from seamless import Div, Link
     from seamless.components import Page

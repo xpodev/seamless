@@ -16,23 +16,18 @@ pip install python-seamless
 ## Usage
 
 ```python
-from seamless import Div, H1, P, Component, Style
+from seamless import Div, H1, P, Component, StyleObject
 
 class MyComponent(Component):
   def render(self):
-    return Div(
+    root_style = StyleObject(color="#33343c")
+    return Div(style=div_style)(
       H1(
         "Hello, World!",
-        style=Style(
-          color="#33343c"
-        ),
       ),
       P(
         "Welcome to Seamless!"
       ),
-      style=Style(
-        text_align="center"
-      )
     )
 ```
 ```python
@@ -55,21 +50,18 @@ class Person(Component):
     self.name = name
 
   def render(self):
-    return Form(
+    return Form(on_submit=self.save_age)(
       Div(f"Update the age for {name}"),
-      Label(
-        "Age: ",
-        html_for="age"
+      Label(html_for="age")(
+        "Age: "
       ),
       Input(
         type="text",
         on_change=self.set_age
       ),
-      Button(
-        "Submit Age",
-        type="submit"
+      Button(type="submit")(
+        "Submit Age"
       ),
-      on_submit=self.save_age
     )
 
   def set_age(self, event_data: ChangeEvent):

@@ -8,6 +8,7 @@ Fragment
 in Seamless to return multiple elements from a component without adding an extra node to the DOM.
 
 .. code-block:: python
+    :caption: Using Fragment
 
     from seamless import Fragment, Component, Div
 

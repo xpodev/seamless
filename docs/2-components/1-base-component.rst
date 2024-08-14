@@ -1,3 +1,5 @@
+.. _base-component:
+
 ##############
 Base Component
 ##############
@@ -13,6 +15,8 @@ It provides a ``children`` property that is a tuple of the components that are c
 .. code-block:: python
     :caption: Card example
     :name: card-component
+
+    # card.py
 
     from seamless import Component, Div
 
@@ -79,7 +83,7 @@ The most common way of handling props is to store them as instance variables and
     class AppButton(Component):
         def __init__(self, type: str):
             self.color = color
-            self.style = Style().background_color = f"var(--color-{color})"
+            self.style = Style(background_color=f"var(--color-{color})")
 
         def render(self):
             return Button(style=self.style)(
@@ -104,7 +108,7 @@ create the ``__init__`` method with the correct signature and store the props as
         color: str
 
         def render(self):
-            return Button(style=Style().background_color = f"var(--color-{self.color}")(
+            return Button(style=Style(background_color=f"var(--color-{self.color}"))(
                 *self.children
             )
 
@@ -114,7 +118,6 @@ create the ``__init__`` method with the correct signature and store the props as
 
 The following names are reserved and cannot be used as props:
     * children
-    * init
 
 Children
 ########

@@ -1,9 +1,11 @@
+.. _css-modules:
+
 ###########
 CSS Modules
 ###########
 
 CSS Modules are a way to write CSS that's scoped to a single css file, rather than globally.
-It's a way to write CSS that's more maintainable and easier to understand.
+It's a way to write modular CSS that won't conflict with other styles in your app, but still has meaningful class names.
 
 Usage
 #####
@@ -24,6 +26,7 @@ Then, use the ``CSS`` to import your css files.
 
 
 .. code-block:: python
+    :caption: Using CSS Modules in a component
 
     from seamless.styling import CSS
 
