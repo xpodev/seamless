@@ -3,7 +3,7 @@ from .html import *
 from .rendering.html import render
 from .core import JS
 
-__version__ = "0.8.5"
+__version__ = "0.8.6"
 __all__ = [
     "Component",
     "A",

@@ -9,7 +9,7 @@
 project = 'Seamless'
 copyright = '2024, Xpo Development'
 author = 'Xpo Development'
-version = '0.8.5'
+version = '0.8.6'
 
 # -- General configuration ---------------------------------------------------
 # https://www.sphinx-doc.org/en/master/usage/configuration.html#general-configuration
