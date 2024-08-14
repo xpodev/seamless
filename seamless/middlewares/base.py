@@ -18,8 +18,6 @@ CLAIM_COOKIE_NAME = "_seamless_claim_id"
 
 
 class BaseMiddleware:
-    STATIC_FOLDER = Path(__file__).parent.parent / "server/static"
-
     def __init__(self, app, socket_path="/socket.io"):
         self.socket_path = f"/{socket_path.strip('/')}"
         self.server = self._server_class()(cors_allowed_origins=[])
