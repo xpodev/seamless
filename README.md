@@ -1,4 +1,4 @@
-![Seamless](https://github.com/xpodev/seamless/blob/main/seamless.png?raw=true)
+![Seamless](https://github.com/xpodev/seamless/blob/main/images/seamless.png?raw=true)
 
 [![PyPI version](https://badge.fury.io/py/python-seamless.svg?)](https://pypi.org/project/python-seamless)
 
