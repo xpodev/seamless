@@ -1,11 +1,13 @@
 from dataclasses import dataclass
-
+from typing import Generic, TypeVar
 
 try:
     from pydantic import BaseModel
 except ImportError:
     @dataclass
     class BaseModel: ...
+
+T = TypeVar("T")
 
 # region: Event Types
 
@@ -16,7 +18,6 @@ class EventTarget(BaseModel):
 
 class Event(BaseModel):
     type: str
-    target: EventTarget
 
 
 class MouseEvent(Event): ...
@@ -25,7 +26,8 @@ class MouseEvent(Event): ...
 class KeyboardEvent(Event): ...
 
 
-class FormDataEvent(Event): ...
+class SubmitEvent(Event, Generic[T]):
+    data: T
 
 
 class TouchEvent(Event): ...

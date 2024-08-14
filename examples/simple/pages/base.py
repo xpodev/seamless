@@ -1,6 +1,6 @@
-from seamless import Link, Script
+from seamless import Link, Script, Style
 from seamless.components import Page
-
+from seamless.styling import CSS
 
 class BasePage(Page):
     def head(self):
@@ -10,3 +10,7 @@ class BasePage(Page):
             href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css",
         )
         yield Script(src="/static/main.js", defer=True)
+        yield Style(
+            "html, body { height: 100%; }" +
+            CSS.to_css_string(minified=True)
+        )

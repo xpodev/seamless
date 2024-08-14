@@ -25,6 +25,7 @@ that extends the default page component and adds a link to the bootstrap stylesh
 More information about the default page component can be found `here <components/page.html>`_.
 
 .. code-block:: python
+    :caption: Creating a custom page component
 
     # page.py    
 
@@ -45,6 +46,7 @@ More information about the default page component can be found `here <components
 Last, we create the ``FastAPI`` app and add an endpoint that will render our page when the user is accessing the root route.
 
 .. code-block:: python
+    :caption: Creating the FastAPI app
 
     # main.py
 

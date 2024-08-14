@@ -21,5 +21,6 @@ def simple_transformer():
 
     def transformer(key: str, value, element_props: dict[str, Any]):
         element_props[_SIMPLE_TRANSFORMERS[key]] = value
+        del element_props[key]
 
     return matcher, transformer

@@ -1,6 +1,5 @@
 [project]
 name = "python-seamless"
-version = "0.8.3"
 authors = [
   { name="Xpo Development", email="dev@xpo.dev" },
 ]
@@ -12,7 +11,7 @@ classifiers = [
     "License :: OSI Approved :: MIT License",
     "Operating System :: OS Independent",
 ]
-dynamic = ["dependencies"]
+dynamic = ["dependencies", "version"]
 
 [project.urls]
 Homepage = "https://github.com/xpodev/seamless"
@@ -30,3 +29,4 @@ seamless = ["**/*.js"]
 
 [tool.setuptools.dynamic]
 dependencies = {file = ["requirements.txt"]}
+version = {attr="seamless.__version__"}

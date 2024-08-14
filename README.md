@@ -1,4 +1,4 @@
-# Seamless
+![Seamless](https://github.com/xpodev/seamless/blob/main/images/seamless.png?raw=true)
 
 [![PyPI version](https://badge.fury.io/py/python-seamless.svg?)](https://pypi.org/project/python-seamless)
 
@@ -16,23 +16,18 @@ pip install python-seamless
 ## Usage
 
 ```python
-from seamless import Div, H1, P, Component, Style
+from seamless import Div, H1, P, Component, StyleObject
 
 class MyComponent(Component):
   def render(self):
-    return Div(
+    root_style = StyleObject(color="#33343c")
+    return Div(style=div_style)(
       H1(
         "Hello, World!",
-        style=Style(
-          color="#33343c"
-        ),
       ),
       P(
         "Welcome to Seamless!"
       ),
-      style=Style(
-        text_align="center"
-      )
     )
 ```
 ```python
@@ -55,21 +50,18 @@ class Person(Component):
     self.name = name
 
   def render(self):
-    return Form(
+    return Form(on_submit=self.save_age)(
       Div(f"Update the age for {name}"),
-      Label(
-        "Age: ",
-        html_for="age"
+      Label(html_for="age")(
+        "Age: "
       ),
       Input(
         type="text",
         on_change=self.set_age
       ),
-      Button(
-        "Submit Age",
-        type="submit"
+      Button(type="submit")(
+        "Submit Age"
       ),
-      on_submit=self.save_age
     )
 
   def set_age(self, event_data: ChangeEvent):
@@ -82,7 +74,7 @@ class Person(Component):
 ```
 To call a function on the server include this script in your file
 ```html
-<script src="/socket.io/static/main.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/@python-seamless/core@0.8.4/umd/seamless.init.js"></script>
 ```
 Import the middleware and mount it to your app
 ```python
@@ -102,8 +94,9 @@ app.add_middleware(
 Actions use [socket.io](https://socket.io) to communicate between server and client.
 
 ## TODO
-- [ ] Add detailed documentation
+- [x] Add detailed documentation
 - [ ] Add more tests
 - [ ] Add support for http actions
+
 ## Contributing
 Feel free to open an issue or a pull request.

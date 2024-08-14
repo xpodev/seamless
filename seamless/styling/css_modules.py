@@ -1,6 +1,7 @@
 import inspect
 from os import PathLike
 from pathlib import Path
+import re
 import cssutils
 from seamless.internal import short_uuid
 
@@ -47,10 +48,16 @@ class CSSModule:
         css = cssutils.parseFile(module_name)
         self.module_name = module_name
         self.classes: dict[str, CSSClass] = {}
+        self.raw_css = ""
         for rule in css:
             if rule.type == rule.STYLE_RULE:
                 selectors = rule.selectorList
                 first_selector = selectors[0]
+
+                # if the first selector starts with @ add it to the global styles
+                if first_selector.seq[0].type == "at-keyword":
+                    continue
+
                 if first_selector.seq[0].type != "class":
                     continue
 
@@ -70,6 +77,9 @@ class CSSModule:
                     )
 
                 self.classes[base_name] = css_class
+            
+            if rule.type == rule.UNKNOWN_RULE:
+                self.raw_css += rule.cssText
 
     def __getattr__(self, __name: str):
         if __name not in self.classes:
@@ -77,9 +87,11 @@ class CSSModule:
         return self.classes[__name].uuid
 
     def to_css_string(self, minified=False):
+        raw_css = self.raw_css.replace("\n", "").replace("\t", "") if minified else self.raw_css
+        raw_css = re.sub(r"\s+", " ", raw_css) if minified else raw_css
         join_string = "" if minified else "\n\n"
         return join_string.join(
-            css_class.to_css_string(minified) for css_class in self.classes.values()
+            [*(css_class.to_css_string(minified) for css_class in self.classes.values()), raw_css]
         )
 
 

@@ -1,4 +1,6 @@
-from typing import Literal, TypedDict
+from typing import Iterable, Literal, TypedDict, overload
+
+from ..types import Primitive, Renderable
 
 from .base import Component
 from ..html import (
@@ -24,20 +26,24 @@ class _BodyProps(TypedDict):
 
 
 class Page(Component, name="SeamlessBasePage"):
+    @overload
+    def __init__(self, *children, title: str = None, html_props: _HtmlProps = None, head_props: _HeadProps = None, body_props: _BodyProps = None): ...
+    @overload
+    def __init__(self, *, title: str = None, html_props: _HtmlProps = None, head_props: _HeadProps = None, body_props: _BodyProps = None): ...
     def __init__(
         self,
         *,
-        title=None,
-        html_props: _HtmlProps = None,
-        head_props: _HeadProps = None,
-        body_props: _BodyProps = None,
+        title: str | None = None,
+        html_props: _HtmlProps | None = None,
+        head_props: _HeadProps | None = None,
+        body_props: _BodyProps | None = None,
     ):
         self.title = title
         self._html_props = html_props or {"lang": "en"}
         self._head_props = head_props or {}
         self._body_props = body_props or {"dir": "ltr"}
 
-    def head(self):
+    def head(self) -> Iterable[Renderable | Primitive]:
         """
         The children that will be inside the `head` tag.
         """
@@ -47,7 +53,7 @@ class Page(Component, name="SeamlessBasePage"):
             Title(self.title),
         )
 
-    def body(self):
+    def body(self) -> Iterable[Renderable | Primitive]:
         """
         The children that will be inside the `body` tag.
         """

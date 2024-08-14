@@ -1,4 +1,4 @@
-.. _rendering:
+.. _rendering-components:
 
 ####################
 Rendering Components
@@ -12,6 +12,7 @@ This method returns a string containing the HTML representation of the component
 For example, to render a page with the :ref:`card-component` component, you can use the following code:
 
 .. code-block:: python
+    :caption: Rendering the page as HTML
 
     from seamless import render
     from seamless.components import Page
@@ -28,6 +29,7 @@ For example, to render a page with the :ref:`card-component` component, you can 
 This will output the following HTML:
 
 .. code-block:: html
+    :caption: HTML render result
 
     <html lang="en">
         <head>
@@ -56,6 +58,7 @@ To convert components to the JSON representation, use the ``to_dict`` method fro
 This method returns a dict containing the JSON representation of the component.
 
 .. code-block:: python
+    :caption: Rendering the page as JSON
 
     from json import dumps
     from seamless.renderer import to_dict
@@ -102,6 +105,8 @@ This will output the following JSON:
     }
 
 This dict can be used to render components on the client side after the initial server-side rendering.
+
+It also corresponds to React's virtual DOM representation of the component.
 
 Props Rendering
 ###############

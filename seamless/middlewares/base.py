@@ -11,15 +11,13 @@ from ..context.database import DB
 from ..context.ws_router import ws_router
 from ..context.request import WSRequest, request as _request, set_request
 
-from ..internal import Cookies
+from ..internal import Cookies, _DataValidationError
 
 
 CLAIM_COOKIE_NAME = "_seamless_claim_id"
 
 
 class BaseMiddleware:
-    STATIC_FOLDER = Path(__file__).parent.parent / "server/static"
-
     def __init__(self, app, socket_path="/socket.io"):
         self.socket_path = f"/{socket_path.strip('/')}"
         self.server = self._server_class()(cors_allowed_origins=[])
@@ -70,8 +68,11 @@ class BaseMiddleware:
                 result = handler(sid, *args, **kwargs)
                 set_request(None)
                 return result
+            except _DataValidationError as e:
+                self._emit("error", str(e), to=sid)
             except Exception as e:
                 self._emit("error", str(e), to=sid)
+                raise e
 
         self.server.on(event, wrapper)
 
@@ -89,13 +90,13 @@ class BaseMiddleware:
         name: str,
         value,
         *,
-        expires: str = None,
-        path: str = None,
-        http_only: bool = None,
-        domain: str = None,
-        same_site: str = None,
-        max_age: int = None,
-        secure: bool = None,
+        expires: str | None = None,
+        path: str | None = None,
+        http_only: bool | None = None,
+        domain: str | None = None,
+        same_site: str | None = None,
+        max_age: int | None = None,
+        secure: bool | None = None,
     ):
         if path is None:
             path = self.socket_path
@@ -117,7 +118,7 @@ class BaseMiddleware:
 
         return (b"Set-Cookie", cookie_value.encode())
 
-    def _remove_cookie(self, name: str, path: str = None):
+    def _remove_cookie(self, name: str, path: str | None = None):
         if path is None:
             path = self.socket_path
         return (
@@ -182,6 +183,8 @@ class BaseAsyncMiddleware(BaseMiddleware):
                 result = await handler(sid, *args, **kwargs)
                 set_request(None)
                 return result
+            except _DataValidationError as e:
+                await self.server.emit("error", str(e), to=sid)
             except Exception as e:
                 await self.server.emit("error", str(e), to=sid)
                 raise e
