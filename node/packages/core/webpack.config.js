@@ -4,7 +4,6 @@ const TerserPlugin = require('terser-webpack-plugin');
 const here = path.resolve(__dirname);
 
 module.exports = {
-  entry: path.resolve(here, 'src/index.ts'),
   module: {
     rules: [
       {
@@ -18,9 +17,10 @@ module.exports = {
     extensions: ['.tsx', '.ts', '.js'],
   },
   output: {
-    filename: 'index.js',
     path: path.resolve(here, 'umd'),
-    library: 'Seamless'
+    library: 'Seamless',
+    libraryTarget: 'umd',
+    libraryExport: 'default',
   },
   optimization: {
     minimizer: [
