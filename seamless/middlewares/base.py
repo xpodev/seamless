@@ -92,13 +92,13 @@ class BaseMiddleware:
         name: str,
         value,
         *,
-        expires: str = None,
-        path: str = None,
-        http_only: bool = None,
-        domain: str = None,
-        same_site: str = None,
-        max_age: int = None,
-        secure: bool = None,
+        expires: str | None = None,
+        path: str | None = None,
+        http_only: bool | None = None,
+        domain: str | None = None,
+        same_site: str | None = None,
+        max_age: int | None = None,
+        secure: bool | None = None,
     ):
         if path is None:
             path = self.socket_path
@@ -120,7 +120,7 @@ class BaseMiddleware:
 
         return (b"Set-Cookie", cookie_value.encode())
 
-    def _remove_cookie(self, name: str, path: str = None):
+    def _remove_cookie(self, name: str, path: str | None = None):
         if path is None:
             path = self.socket_path
         return (
