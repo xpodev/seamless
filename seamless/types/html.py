@@ -1,4 +1,4 @@
-from typing import Tuple, TypedDict, Callable, TypeVar, TYPE_CHECKING, Union, Concatenate, Any
+from typing import TypedDict, Callable, TypeVar, TYPE_CHECKING, Union, Concatenate
 
 if TYPE_CHECKING:
     from ..styling import StyleObject
@@ -7,7 +7,7 @@ if TYPE_CHECKING:
 from .events import *
 
 EventProps = TypeVar("EventProps", bound=Event)
-EventFunction = Union[Callable[Concatenate[EventProps, ...], None], JS, str]
+EventFunction = Union[Callable[Concatenate[EventProps, ...], None], "JS", str]
 
 
 class AriaProps(TypedDict, total=False):
