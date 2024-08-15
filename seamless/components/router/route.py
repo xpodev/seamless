@@ -7,4 +7,4 @@ class Route(Component):
         self.component = component
 
     def render(self):
-        return self.component.render()
+        return None

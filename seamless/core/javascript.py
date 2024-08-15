@@ -1,10 +1,16 @@
 from os import PathLike
+from typing import overload
 from seamless.internal import SEAMLESS_ELEMENT_ATTRIBUTE, SEAMLESS_INIT_ATTRIBUTE
 from seamless.rendering.transformers import transformer_for
 
 
 class JavaScript:
-    def __init__(self, code: str = None, *, file: str | PathLike = None) -> None:
+    @overload
+    def __init__(self, code: str) -> None: ...
+    @overload
+    def __init__(self, *, file: str | PathLike) -> None: ...
+
+    def __init__(self, code=None, *, file=None) -> None:
         if file:
             if code:
                 raise ValueError("Cannot specify both code and file")

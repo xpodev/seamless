@@ -13,13 +13,14 @@ HERE = Path(__file__).parent
 
 
 class Router(Component):
-    children: list[Route]
+    children: tuple[Route, ...] # type: ignore
 
     @overload
-    def __init__(self, *, loading_component: Renderable = None): ...
+    def __init__(self, *, loading_component: type[Component] | None = None): ...
     @overload
-    def __init__(self, *routes: Route, loading_component: Renderable = None): ...
-    def __init__(self, *, loading_component: Renderable | None = None):
+    def __init__(self, *routes: Route, loading_component: type[Component] | None = None): ...
+    
+    def __init__(self, *, loading_component: type[Component] | None = None): # type: ignore
         self.loading_component = loading_component.__seamless_name__ if loading_component else None
         for route in self.children:
             if not isinstance(route, Route):

@@ -1,3 +1,5 @@
+# type: ignore
+
 from functools import wraps
 from typing import Any, Iterable
 from uuid import uuid4
@@ -138,8 +140,8 @@ def to_iter(value):
 
 class _obj(object):
     def __init__(self, d: dict):
-        for k, v in d.items():
-            if isinstance(k, (list, tuple)):
-                setattr(self, k, [_obj(x) if isinstance(x, dict) else x for x in v])
+        for key, value in d.items():
+            if isinstance(key, (list, tuple)):
+                setattr(self, key, [_obj(x) if isinstance(x, dict) else x for x in value])
             else:
-                setattr(self, k, _obj(v) if isinstance(v, dict) else v)
+                setattr(self, key, _obj(value) if isinstance(value, dict) else value)

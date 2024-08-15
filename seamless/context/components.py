@@ -8,7 +8,7 @@ class ComponentsRepository:
     def __init__(self):
         self.components = {}
 
-    def add_component(self, component: "Component", name: str):
+    def add_component(self, component: type["Component"], name: str):
         self.components[name] = component
 
     def get_component(self, component_name: str) -> "Component":
