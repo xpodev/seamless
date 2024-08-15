@@ -14,11 +14,21 @@ class JavaScript:
             raise ValueError("Must specify either code or file")
         self.code = code
 
+    def __add__(self, other: "JavaScript | str") -> "JavaScript":
+        if isinstance(other, JavaScript):
+            return JavaScript(self.code + other.code)
+        elif isinstance(other, str):
+            return JavaScript(self.code + other)
+        else:
+            raise TypeError(
+                f"Cannot concatenate JavaScript with {type(other).__name__}"
+            )
+
 
 @transformer_for(lambda key, value: key == "init" and isinstance(value, JavaScript))
 def transform_init_source(key: str, source: JavaScript, props):
     props[SEAMLESS_ELEMENT_ATTRIBUTE] = True
-    props[SEAMLESS_INIT_ATTRIBUTE] = source.code
+    props[SEAMLESS_INIT_ATTRIBUTE] = props.get(SEAMLESS_INIT_ATTRIBUTE, "") + source.code
     del props[key]
 
 
