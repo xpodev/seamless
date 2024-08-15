@@ -208,6 +208,23 @@ html_classes = [
     "Wbr",
 ]
 
+inline_html_classes = [
+    "Area",
+    "Base",
+    "Br",
+    "Col",
+    "Embed",
+    "Hr",
+    "Img",
+    "Input",
+    "Link",
+    "Meta",
+    "Param",
+    "Source",
+    "Track",
+    "Wbr",
+]
+
 html_map = {key: html_map.get(key, "HTMLElementProps") for key in html_classes}
 
 template = """from typing import TYPE_CHECKING, Unpack
@@ -221,9 +238,10 @@ class {class_name}(Element):
     def __init__(self, *children: "ChildType", **kwargs: Unpack["{props_class_name}"]):
         super().__init__(*children, **kwargs)
 
-    tag_name = "{class_name_lower}"
+    tag_name = "{class_name_lower}"{inline}
 """
 
+inline_string = "\n    inline = True"
 
 lower_keys = {key.lower(): key for key in html_map}
 
@@ -232,6 +250,7 @@ for cls, props in html_map.items():
     class_name_lower = class_name.lower()
     props_class_name = props
     filename = f"{class_name_lower}.py"
+    inline = inline_string if class_name in inline_html_classes else ""
 
     if class_name == "Meta":
         continue
@@ -240,6 +259,6 @@ for cls, props in html_map.items():
         filename = "del_.py"
 
     with open(HTML_FILES / filename, "w") as f:
-        f.write(template.format(class_name=class_name, class_name_lower=class_name_lower, props_class_name=props_class_name))
+        f.write(template.format(class_name=class_name, class_name_lower=class_name_lower, props_class_name=props_class_name, inline=inline))
 
     
