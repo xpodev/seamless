@@ -10,3 +10,4 @@ class Param(Element):
         super().__init__(*children, **kwargs)
 
     tag_name = "param"
+    inline = True

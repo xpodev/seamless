@@ -10,3 +10,4 @@ class Track(Element):
         super().__init__(*children, **kwargs)
 
     tag_name = "track"
+    inline = True

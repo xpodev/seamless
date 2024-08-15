@@ -10,3 +10,4 @@ class Img(Element):
         super().__init__(*children, **kwargs)
 
     tag_name = "img"
+    inline = True

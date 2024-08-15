@@ -10,3 +10,4 @@ class Base(Element):
         super().__init__(*children, **kwargs)
 
     tag_name = "base"
+    inline = True

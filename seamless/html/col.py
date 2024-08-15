@@ -10,3 +10,4 @@ class Col(Element):
         super().__init__(*children, **kwargs)
 
     tag_name = "col"
+    inline = True

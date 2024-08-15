@@ -10,3 +10,4 @@ class Hr(Element):
         super().__init__(*children, **kwargs)
 
     tag_name = "hr"
+    inline = True

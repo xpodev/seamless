@@ -10,3 +10,4 @@ class Area(Element):
         super().__init__(*children, **kwargs)
 
     tag_name = "area"
+    inline = True

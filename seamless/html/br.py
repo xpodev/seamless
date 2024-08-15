@@ -10,3 +10,4 @@ class Br(Element):
         super().__init__(*children, **kwargs)
 
     tag_name = "br"
+    inline = True

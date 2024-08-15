@@ -10,3 +10,4 @@ class Embed(Element):
         super().__init__(*children, **kwargs)
 
     tag_name = "embed"
+    inline = True

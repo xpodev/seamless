@@ -10,3 +10,4 @@ class Input(Element):
         super().__init__(*children, **kwargs)
 
     tag_name = "input"
+    inline = True
