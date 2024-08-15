@@ -130,7 +130,6 @@ html_classes = [
     "Figure",
     "Footer",
     "Form",
-    "Fragment",
     "H1",
     "H2",
     "H3",
