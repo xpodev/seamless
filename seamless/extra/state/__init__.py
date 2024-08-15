@@ -68,7 +68,7 @@ class State(metaclass=_StateMeta):
 
 
 @transformer_for(
-    lambda _, value: isinstance(value, Empty) and value.props.get("state-name")
+    lambda _, value: isinstance(value, Empty) and value.props.get("state-name", False)
 )
 def transform_state(key, value, props):
     empty_props = value.props

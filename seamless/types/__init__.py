@@ -8,7 +8,6 @@ if TYPE_CHECKING:
 Primitive: TypeAlias = str | int | float | bool | None
 Renderable: TypeAlias = Union["Element", "Component"]
 
-ChildrenType: TypeAlias = (
-    Renderable | Collection[Renderable] | Primitive | Collection[Primitive]
-)
+ChildType: TypeAlias = Renderable | Primitive
+ChildrenType: TypeAlias = Collection[ChildType]
 RenderResult: TypeAlias = Renderable | Primitive

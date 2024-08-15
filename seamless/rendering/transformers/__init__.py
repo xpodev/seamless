@@ -44,7 +44,7 @@ def transformer_for(matcher: Callable[[str, Any], bool] | str):
 
     """
 
-    def decorator(func: Callable[[str, Any, dict[str, Any]], dict[str, Any]]):
+    def decorator(func: Callable[[str, Any, dict[str, Any]], None]):
         TRANSFORMERS.append((matcher, func))
         return func
 

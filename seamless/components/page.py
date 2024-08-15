@@ -1,6 +1,6 @@
 from typing import Iterable, Literal, TypedDict, overload
 
-from ..types import Primitive, Renderable
+from ..types import Primitive, Renderable, ChildrenType, ChildType
 
 from .base import Component
 from ..html import (
@@ -27,10 +27,10 @@ class _BodyProps(TypedDict):
 
 class Page(Component, name="SeamlessBasePage"):
     @overload
-    def __init__(self, *children, title: str = None, html_props: _HtmlProps = None, head_props: _HeadProps = None, body_props: _BodyProps = None): ...
+    def __init__(self, *children: ChildType, title: str | None = None, html_props: _HtmlProps | None = None, head_props: _HeadProps | None = None, body_props: _BodyProps | None = None): ...
     @overload
-    def __init__(self, *, title: str = None, html_props: _HtmlProps = None, head_props: _HeadProps = None, body_props: _BodyProps = None): ...
-    def __init__(
+    def __init__(self, *, children: ChildrenType, title: str | None = None, html_props: _HtmlProps | None = None, head_props: _HeadProps | None = None, body_props: _BodyProps | None = None): ...
+    def __init__( # type: ignore
         self,
         *,
         title: str | None = None,
@@ -68,7 +68,7 @@ class Page(Component, name="SeamlessBasePage"):
             ),
         )
 
-    def __init_subclass__(cls, title: str = None, **kwargs) -> None:
+    def __init_subclass__(cls, title: str | None = None, **kwargs) -> None:
         super().__init_subclass__(**kwargs)
 
         if title is None:

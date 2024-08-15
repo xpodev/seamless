@@ -1,35 +1,34 @@
 from typing import TYPE_CHECKING, TypeVar, Generic, Unpack
-from abc import abstractmethod
 
+from .internal import to_iter
+from .types.html import HTMLElement
 from .rendering.props import transform_props
 
+
 if TYPE_CHECKING:
-    from seamless.types import ChildrenType
+    from seamless.types import ChildrenType, ChildType
 
 
-PropsType = TypeVar("PropsType")
+PropsType = TypeVar("PropsType", bound=HTMLElement)
 
 
 class Element(Generic[PropsType]):
     def __init__(
         self,
-        *args: "ChildrenType",
-        children: "ChildrenType" = None,
-        **kwargs: Unpack[PropsType],
+        *args: "ChildType",
+        children: "ChildrenType | None" = None,
+        **kwargs: Unpack[PropsType], # type: ignore - until https://github.com/python/typing/issues/1399 is resolved
     ):
-        self.children = tuple(children or args)
+        self.children = tuple(to_iter(children or args))
         self.props = kwargs
 
-    @property
-    @abstractmethod
-    def tag_name(self) -> str:
-        pass
+    tag_name: str
 
     inline = False
 
     def props_dict(self):
         return transform_props(self.props)
 
-    def __call__(self, *children: "ChildrenType"):
+    def __call__(self, *children: "ChildType"):
         self.children = children
         return self

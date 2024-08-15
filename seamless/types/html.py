@@ -1,614 +1,617 @@
-from typing import TypedDict, Callable, TypeVar, NotRequired, TYPE_CHECKING, Union
+from typing import TypedDict, Callable, TypeVar, TYPE_CHECKING, Union, Concatenate
 
 if TYPE_CHECKING:
     from ..styling import StyleObject
     from .. import JS
 
-from .events import Event, MouseEvent
+from .events import *
 
 EventProps = TypeVar("EventProps", bound=Event)
-EventFunction = Callable[[EventProps], None]
+EventFunction = Union[Callable[Concatenate[EventProps, ...], None], "JS", str]
 
 
-class AriaProps(TypedDict):
-    aria_active_descendant: NotRequired[str]
-    aria_atomic: NotRequired[str]
-    aria_auto_complete: NotRequired[str]
-    aria_busy: NotRequired[str]
-    aria_checked: NotRequired[str]
-    aria_col_count: NotRequired[str]
-    aria_col_index: NotRequired[str]
-    aria_col_span: NotRequired[str]
-    aria_controls: NotRequired[str]
-    aria_current: NotRequired[str]
-    aria_described_by: NotRequired[str]
-    aria_details: NotRequired[str]
-    aria_disabled: NotRequired[str]
-    aria_drop_effect: NotRequired[str]
-    aria_error_message: NotRequired[str]
-    aria_expanded: NotRequired[str]
-    aria_flow_to: NotRequired[str]
-    aria_grabbed: NotRequired[str]
-    aria_has_popup: NotRequired[str]
-    aria_hidden: NotRequired[str]
-    aria_invalid: NotRequired[str]
-    aria_key_shortcuts: NotRequired[str]
-    aria_label: NotRequired[str]
-    aria_labelled_by: NotRequired[str]
-    aria_level: NotRequired[str]
-    aria_live: NotRequired[str]
-    aria_modal: NotRequired[str]
-    aria_multiline: NotRequired[str]
-    aria_multi_selectable: NotRequired[str]
-    aria_orientation: NotRequired[str]
-    aria_owns: NotRequired[str]
-    aria_placeholder: NotRequired[str]
-    aria_pos_inset: NotRequired[str]
-    aria_pressed: NotRequired[str]
-    aria_readonly: NotRequired[str]
-    aria_relevant: NotRequired[str]
-    aria_required: NotRequired[str]
-    aria_role_description: NotRequired[str]
-    aria_row_count: NotRequired[str]
-    aria_row_index: NotRequired[str]
-    aria_row_span: NotRequired[str]
-    aria_selected: NotRequired[str]
-    aria_set_size: NotRequired[str]
-    aria_sort: NotRequired[str]
-    aria_value_max: NotRequired[str]
-    aria_value_min: NotRequired[str]
-    aria_value_now: NotRequired[str]
-    aria_value_text: NotRequired[str]
+class AriaProps(TypedDict, total=False):
+    aria_active_descendant: str
+    aria_atomic: str
+    aria_auto_complete: str
+    aria_busy: str
+    aria_checked: str
+    aria_col_count: str
+    aria_col_index: str
+    aria_col_span: str
+    aria_controls: str
+    aria_current: str
+    aria_described_by: str
+    aria_details: str
+    aria_disabled: str
+    aria_drop_effect: str
+    aria_error_message: str
+    aria_expanded: str
+    aria_flow_to: str
+    aria_grabbed: str
+    aria_has_popup: str
+    aria_hidden: str
+    aria_invalid: str
+    aria_key_shortcuts: str
+    aria_label: str
+    aria_labelled_by: str
+    aria_level: str
+    aria_live: str
+    aria_modal: str
+    aria_multiline: str
+    aria_multi_selectable: str
+    aria_orientation: str
+    aria_owns: str
+    aria_placeholder: str
+    aria_pos_inset: str
+    aria_pressed: str
+    aria_readonly: str
+    aria_relevant: str
+    aria_required: str
+    aria_role_description: str
+    aria_row_count: str
+    aria_row_index: str
+    aria_row_span: str
+    aria_selected: str
+    aria_set_size: str
+    aria_sort: str
+    aria_value_max: str
+    aria_value_min: str
+    aria_value_now: str
+    aria_value_text: str
 
 
-class HTMLEventProps(TypedDict):
-    on_abort: NotRequired[str]
-    on_auto_complete: NotRequired[str]
-    on_auto_complete_error: NotRequired[str]
-    on_blur: NotRequired[str]
-    on_cancel: NotRequired[str]
-    on_can_play: NotRequired[str]
-    on_can_play_through: NotRequired[str]
-    on_change: NotRequired[str]
-    on_click: NotRequired[EventFunction[MouseEvent]]
-    on_close: NotRequired[str]
-    on_context_menu: NotRequired[EventFunction[MouseEvent]]
-    on_cue_change: NotRequired[str]
-    on_dbl_click: NotRequired[EventFunction[MouseEvent]]
-    on_drag: NotRequired[str]
-    on_drag_end: NotRequired[str]
-    on_drag_enter: NotRequired[str]
-    on_drag_leave: NotRequired[str]
-    on_drag_over: NotRequired[str]
-    on_drag_start: NotRequired[str]
-    on_drop: NotRequired[str]
-    on_duration_change: NotRequired[str]
-    on_emptied: NotRequired[str]
-    on_ended: NotRequired[str]
-    on_error: NotRequired[str]
-    on_focus: NotRequired[str]
-    on_input: NotRequired[str]
-    on_invalid: NotRequired[str]
-    on_key_down: NotRequired[str]
-    on_key_press: NotRequired[str]
-    on_key_up: NotRequired[str]
-    on_load: NotRequired[str]
-    on_loaded_data: NotRequired[str]
-    on_loaded_metadata: NotRequired[str]
-    on_load_start: NotRequired[str]
-    on_mouse_down: NotRequired[EventFunction[MouseEvent]]
-    on_mouse_enter: NotRequired[EventFunction[MouseEvent]]
-    on_mouse_leave: NotRequired[EventFunction[MouseEvent]]
-    on_mouse_move: NotRequired[EventFunction[MouseEvent]]
-    on_mouse_out: NotRequired[EventFunction[MouseEvent]]
-    on_mouse_over: NotRequired[EventFunction[MouseEvent]]
-    on_mouse_up: NotRequired[EventFunction[MouseEvent]]
-    on_mouse_wheel: NotRequired[str]
-    on_pause: NotRequired[str]
-    on_play: NotRequired[str]
-    on_playing: NotRequired[str]
-    on_progress: NotRequired[str]
-    on_rate_change: NotRequired[str]
-    on_reset: NotRequired[str]
-    on_resize: NotRequired[str]
-    on_scroll: NotRequired[str]
-    on_seeked: NotRequired[str]
-    on_seeking: NotRequired[str]
-    on_select: NotRequired[str]
-    on_show: NotRequired[str]
-    on_sort: NotRequired[str]
-    on_stalled: NotRequired[str]
-    on_submit: NotRequired[str]
-    on_suspend: NotRequired[str]
-    on_time_update: NotRequired[str]
-    on_toggle: NotRequired[str]
-    on_volume_change: NotRequired[str]
-    on_waiting: NotRequired[str]
+class HTMLEventProps(TypedDict, total=False):
+    on_abort: EventFunction[Event]
+    on_auto_complete: EventFunction[Event]
+    on_auto_complete_error: EventFunction[Event]
+    on_blur: EventFunction[FocusEvent]
+    on_cancel: EventFunction[Event]
+    on_can_play: EventFunction[Event]
+    on_can_play_through: EventFunction[Event]
+    on_change: EventFunction[Event]
+    on_click: EventFunction[MouseEvent]
+    on_close: EventFunction[CloseEvent]
+    on_context_menu: EventFunction[MouseEvent]
+    on_cue_change: EventFunction[Event]
+    on_dbl_click: EventFunction[MouseEvent]
+    on_drag: EventFunction[DragEvent]
+    on_drag_end: EventFunction[DragEvent]
+    on_drag_enter: EventFunction[DragEvent]
+    on_drag_leave: EventFunction[DragEvent]
+    on_drag_over: EventFunction[DragEvent]
+    on_drag_start: EventFunction[DragEvent]
+    on_drop: EventFunction[DragEvent]
+    on_duration_change: EventFunction[Event]
+    on_emptied: EventFunction[Event]
+    on_ended: EventFunction[Event]
+    on_error: EventFunction[ErrorEvent]
+    on_focus: EventFunction[FocusEvent]
+    on_input: EventFunction[Event]
+    on_invalid: EventFunction[Event]
+    on_key_down: EventFunction[KeyboardEvent]
+    on_key_press: EventFunction[KeyboardEvent]
+    on_key_up: EventFunction[KeyboardEvent]
+    on_load: EventFunction[Event]
+    on_loaded_data: EventFunction[Event]
+    on_loaded_metadata: EventFunction[Event]
+    on_load_start: EventFunction[Event]
+    on_mouse_down: EventFunction[MouseEvent]
+    on_mouse_enter: EventFunction[MouseEvent]
+    on_mouse_leave: EventFunction[MouseEvent]
+    on_mouse_move: EventFunction[MouseEvent]
+    on_mouse_out: EventFunction[MouseEvent]
+    on_mouse_over: EventFunction[MouseEvent]
+    on_mouse_up: EventFunction[MouseEvent]
+    on_mouse_wheel: EventFunction[WheelEvent]
+    on_pause: EventFunction[Event]
+    on_play: EventFunction[Event]
+    on_playing: EventFunction[Event]
+    on_progress: EventFunction[ProgressEvent]
+    on_rate_change: EventFunction[Event]
+    on_reset: EventFunction[Event]
+    on_resize: EventFunction[UIEvent]
+    on_scroll: EventFunction[UIEvent]
+    on_seeked: EventFunction[Event]
+    on_seeking: EventFunction[Event]
+    on_select: EventFunction[Event]
+    on_show: EventFunction[Event]
+    on_sort: EventFunction[Event]
+    on_stalled: EventFunction[Event]
+    on_submit: EventFunction[SubmitEvent]
+    on_suspend: EventFunction[Event]
+    on_time_update: EventFunction[Event]
+    on_toggle: EventFunction[Event]
+    on_volume_change: EventFunction[Event]
+    on_waiting: EventFunction[Event]
 
 
-class HTMLElement(TypedDict):
-    access_key: NotRequired[str]
-    auto_capitalize: NotRequired[str]
-    class_name: NotRequired[str]
-    content_editable: NotRequired[str]
-    # data: NotRequired[dict[str, str]]  # add this if needed in the future
-    dir: NotRequired[str]
-    draggable: NotRequired[str]
-    hidden: NotRequired[str]
-    id: NotRequired[str]
-    input_mode: NotRequired[str]
-    lang: NotRequired[str]
-    role: NotRequired[str]
-    spell_check: NotRequired[str]
-    style: NotRequired[Union[str, "StyleObject"]]
-    tab_index: NotRequired[str]
-    title: NotRequired[str]
-    translate: NotRequired[str]
+class HTMLElement(TypedDict, total=False):
+    access_key: str
+    auto_capitalize: str
+    class_name: str
+    content_editable: str
+    # data: dict[str, str]  # add this if needed in the future
+    dir: str
+    draggable: str
+    hidden: str
+    id: str
+    input_mode: str
+    lang: str
+    role: str
+    spell_check: str
+    style: Union[str, "StyleObject"]
+    tab_index: str
+    title: str
+    translate: str
 
-    init: NotRequired["JS"]
-
-
-class HTMLAnchorElement(HTMLElement):
-    download: NotRequired[str]
-    href: NotRequired[str]
-    href_lang: NotRequired[str]
-    ping: NotRequired[str]
-    referrer_policy: NotRequired[str]
-    rel: NotRequired[str]
-    target: NotRequired[str]
-    type: NotRequired[str]
+    init: "JS"
 
 
-class HTMLAreaElement(HTMLElement):
-    alt: NotRequired[str]
-    coords: NotRequired[str]
-    download: NotRequired[str]
-    href: NotRequired[str]
-    href_lang: NotRequired[str]
-    ping: NotRequired[str]
-    referrer_policy: NotRequired[str]
-    rel: NotRequired[str]
-    shape: NotRequired[str]
-    target: NotRequired[str]
+class HTMLElementProps(HTMLElement, AriaProps, HTMLEventProps):
+    pass
+
+class HTMLAnchorElement(HTMLElementProps, total=False):
+    download: str
+    href: str
+    href_lang: str
+    ping: str
+    referrer_policy: str
+    rel: str
+    target: str
+    type: str
 
 
-class HTMLAudioElement(HTMLElement):
-    auto_play: NotRequired[str]
-    controls: NotRequired[str]
-    loop: NotRequired[str]
-    muted: NotRequired[str]
-    preload: NotRequired[str]
-    src: NotRequired[str]
+class HTMLAreaElement(HTMLElementProps, total=False):
+    alt: str
+    coords: str
+    download: str
+    href: str
+    href_lang: str
+    ping: str
+    referrer_policy: str
+    rel: str
+    shape: str
+    target: str
 
 
-class HTMLBRElement(HTMLElement):
+class HTMLAudioElement(HTMLElementProps, total=False):
+    auto_play: str
+    controls: str
+    loop: str
+    muted: str
+    preload: str
+    src: str
+
+
+class HTMLBRElement(HTMLElementProps, total=False):
     pass  # No additional attributes
 
 
-class HTMLBaseElement(HTMLElement):
-    href: NotRequired[str]
-    target: NotRequired[str]
+class HTMLBaseElement(HTMLElementProps, total=False):
+    href: str
+    target: str
 
 
-class HTMLBodyElement(HTMLElement):
-    background: NotRequired[str]
+class HTMLBodyElement(HTMLElementProps, total=False):
+    background: str
 
 
-class HTMLButtonElement(HTMLElement):
-    auto_focus: NotRequired[str]
-    disabled: NotRequired[str]
-    form: NotRequired[str]
-    form_action: NotRequired[str]
-    form_enctype: NotRequired[str]
-    form_method: NotRequired[str]
-    form_no_validate: NotRequired[str]
-    form_target: NotRequired[str]
-    name: NotRequired[str]
-    type: NotRequired[str]
-    value: NotRequired[str]
+class HTMLButtonElement(HTMLElementProps, total=False):
+    auto_focus: str
+    disabled: str
+    form: str
+    form_action: str
+    form_enctype: str
+    form_method: str
+    form_no_validate: str
+    form_target: str
+    name: str
+    type: str
+    value: str
 
 
-class HTMLCanvasElement(HTMLElement):
-    height: NotRequired[str]
-    width: NotRequired[str]
+class HTMLCanvasElement(HTMLElementProps, total=False):
+    height: str
+    width: str
 
 
-class HTMLDataElement(HTMLElement):
-    value: NotRequired[str]
+class HTMLDataElement(HTMLElementProps, total=False):
+    value: str
 
 
-class HTMLDataListElement(HTMLElement):
+class HTMLDataListElement(HTMLElementProps, total=False):
     pass  # No additional attributes
 
 
-class HTMLDetailsElement(HTMLElement):
-    open: NotRequired[str]
+class HTMLDetailsElement(HTMLElementProps, total=False):
+    open: str
 
 
-class HTMLDialogElement(HTMLElement):
-    open: NotRequired[str]
+class HTMLDialogElement(HTMLElementProps, total=False):
+    open: str
 
 
-class HTMLDivElement(HTMLElement):
+class HTMLDivElement(HTMLElementProps, total=False):
     pass  # No additional attributes
 
 
-class HTMLEmbedElement(HTMLElement):
-    height: NotRequired[str]
-    src: NotRequired[str]
-    type: NotRequired[str]
-    width: NotRequired[str]
+class HTMLEmbedElement(HTMLElementProps, total=False):
+    height: str
+    src: str
+    type: str
+    width: str
 
 
-class HTMLFieldSetElement(HTMLElement):
-    disabled: NotRequired[str]
-    form: NotRequired[str]
-    name: NotRequired[str]
+class HTMLFieldSetElement(HTMLElementProps, total=False):
+    disabled: str
+    form: str
+    name: str
 
 
-class HTMLFormElement(HTMLElement):
-    accept_charset: NotRequired[str]
-    action: NotRequired[str]
-    auto_complete: NotRequired[str]
-    enctype: NotRequired[str]
-    method: NotRequired[str]
-    name: NotRequired[str]
-    no_validate: NotRequired[str]
-    target: NotRequired[str]
+class HTMLFormElement(HTMLElementProps, total=False):
+    accept_charset: str
+    action: str
+    auto_complete: str
+    enctype: str
+    method: str
+    name: str
+    no_validate: str
+    target: str
 
 
-class HTMLHRElement(HTMLElement):
+class HTMLHRElement(HTMLElementProps, total=False):
     pass  # No additional attributes
 
 
-class HTMLHeadElement(HTMLElement):
+class HTMLHeadElement(HTMLElementProps, total=False):
     pass  # No additional attributes
 
 
-class HTMLHeadingElement(HTMLElement):
+class HTMLHeadingElement(HTMLElementProps, total=False):
     pass  # No additional attributes
 
 
-class HTMLHtmlElement(HTMLElement):
+class HTMLHtmlElement(HTMLElementProps, total=False):
     pass  # No additional attributes
 
 
-class HTMLIFrameElement(HTMLElement):
-    allow: NotRequired[str]
-    allow_fullscreen: NotRequired[str]
-    csp: NotRequired[str]
-    frame_border: NotRequired[str]
-    height: NotRequired[str]
-    importance: NotRequired[str]
-    loading: NotRequired[str]
-    name: NotRequired[str]
-    referrer_policy: NotRequired[str]
-    sandbox: NotRequired[str]
-    scrolling: NotRequired[str]
-    seamless: NotRequired[str]
-    src: NotRequired[str]
-    srcdoc: NotRequired[str]
-    width: NotRequired[str]
+class HTMLIFrameElement(HTMLElementProps, total=False):
+    allow: str
+    allow_fullscreen: str
+    csp: str
+    frame_border: str
+    height: str
+    importance: str
+    loading: str
+    name: str
+    referrer_policy: str
+    sandbox: str
+    scrolling: str
+    seamless: str
+    src: str
+    srcdoc: str
+    width: str
 
 
-class HTMLImageElement(HTMLElement):
-    alt: NotRequired[str]
-    cross_origin: NotRequired[str]
-    decoding: NotRequired[str]
-    height: NotRequired[str]
-    importance: NotRequired[str]
-    intrinsicsize: NotRequired[str]
-    ismap: NotRequired[str]
-    loading: NotRequired[str]
-    referrer_policy: NotRequired[str]
-    sizes: NotRequired[str]
-    src: NotRequired[str]
-    srcset: NotRequired[str]
-    usemap: NotRequired[str]
-    width: NotRequired[str]
+class HTMLImageElement(HTMLElementProps, total=False):
+    alt: str
+    cross_origin: str
+    decoding: str
+    height: str
+    importance: str
+    intrinsicsize: str
+    ismap: str
+    loading: str
+    referrer_policy: str
+    sizes: str
+    src: str
+    srcset: str
+    usemap: str
+    width: str
 
 
-class HTMLInputElement(HTMLElement):
-    accept: NotRequired[str]
-    alt: NotRequired[str]
-    auto_complete: NotRequired[str]
-    auto_focus: NotRequired[str]
-    capture: NotRequired[str]
-    checked: NotRequired[str]
-    cross_origin: NotRequired[str]
-    disabled: NotRequired[str]
-    form: NotRequired[str]
-    form_action: NotRequired[str]
-    form_enctype: NotRequired[str]
-    form_method: NotRequired[str]
-    form_no_validate: NotRequired[str]
-    form_target: NotRequired[str]
-    height: NotRequired[str]
-    list: NotRequired[str]
-    max: NotRequired[str]
-    max_length: NotRequired[str]
-    min: NotRequired[str]
-    min_length: NotRequired[str]
-    multiple: NotRequired[str]
-    name: NotRequired[str]
-    pattern: NotRequired[str]
-    placeholder: NotRequired[str]
-    readonly: NotRequired[str]
-    required: NotRequired[str]
-    selection_direction: NotRequired[str]
-    selection_end: NotRequired[str]
-    selection_start: NotRequired[str]
-    size: NotRequired[str]
-    src: NotRequired[str]
-    step: NotRequired[str]
-    type: NotRequired[str]
-    value: NotRequired[str]
-    width: NotRequired[str]
+class HTMLInputElement(HTMLElementProps, total=False):
+    accept: str
+    alt: str
+    auto_complete: str
+    auto_focus: str
+    capture: str
+    checked: str
+    cross_origin: str
+    disabled: str
+    form: str
+    form_action: str
+    form_enctype: str
+    form_method: str
+    form_no_validate: str
+    form_target: str
+    height: str
+    list: str
+    max: str
+    max_length: str
+    min: str
+    min_length: str
+    multiple: str
+    name: str
+    pattern: str
+    placeholder: str
+    readonly: str
+    required: str
+    selection_direction: str
+    selection_end: str
+    selection_start: str
+    size: str
+    src: str
+    step: str
+    type: str
+    value: str
+    width: str
 
 
-class HTMLListItemElement(HTMLElement):
-    value: NotRequired[str]
+class HTMLListItemElement(HTMLElementProps, total=False):
+    value: str
 
 
-class HTMLLabelElement(HTMLElement):
-    html_for: NotRequired[str]
+class HTMLLabelElement(HTMLElementProps, total=False):
+    html_for: str
 
 
-class HTMLLegendElement(HTMLElement):
-    align: NotRequired[str]
+class HTMLLegendElement(HTMLElementProps, total=False):
+    align: str
 
 
-class HTMLLinkElement(HTMLElement):
-    html_as: NotRequired[str]
-    cross_origin: NotRequired[str]
-    disabled: NotRequired[str]
-    href: NotRequired[str]
-    hreflang: NotRequired[str]
-    media: NotRequired[str]
-    referrer_policy: NotRequired[str]
-    rel: NotRequired[str]
-    sizes: NotRequired[str]
-    type: NotRequired[str]
+class HTMLLinkElement(HTMLElementProps, total=False):
+    html_as: str
+    cross_origin: str
+    disabled: str
+    href: str
+    hreflang: str
+    media: str
+    referrer_policy: str
+    rel: str
+    sizes: str
+    type: str
 
 
-class HTMLMapElement(HTMLElement):
-    name: NotRequired[str]
+class HTMLMapElement(HTMLElementProps, total=False):
+    name: str
 
 
-class HTMLDocumentMetaElement(HTMLElement):
-    name: NotRequired[str]
-    content: NotRequired[str]
+class HTMLDocumentMetaElement(HTMLElementProps, total=False):
+    name: str
+    content: str
 
 
-class HTMLPragmaMetaElement(HTMLElement):
-    http_equiv: NotRequired[str]
+class HTMLPragmaMetaElement(HTMLElementProps, total=False):
+    http_equiv: str
 
 
-class HTMLCharsetMetaElement(HTMLElement):
-    charset: NotRequired[str]
+class HTMLCharsetMetaElement(HTMLElementProps, total=False):
+    charset: str
 
 
-class HTMLUserMetaElement(HTMLElement):
-    itemprop: NotRequired[str]
+class HTMLUserMetaElement(HTMLElementProps, total=False):
+    itemprop: str
 
 
-class HTMLMeterElement(HTMLElement):
-    form: NotRequired[str]
-    high: NotRequired[str]
-    low: NotRequired[str]
-    max: NotRequired[str]
-    min: NotRequired[str]
-    optimum: NotRequired[str]
-    value: NotRequired[str]
+class HTMLMeterElement(HTMLElementProps, total=False):
+    form: str
+    high: str
+    low: str
+    max: str
+    min: str
+    optimum: str
+    value: str
 
 
-class HTMLModElement(HTMLElement):
-    cite: NotRequired[str]
-    datetime: NotRequired[str]
+class HTMLModElement(HTMLElementProps, total=False):
+    cite: str
+    datetime: str
 
 
-class HTMLObjectElement(HTMLElement):
-    data: NotRequired[str]
-    form: NotRequired[str]
-    height: NotRequired[str]
-    name: NotRequired[str]
-    type: NotRequired[str]
-    usemap: NotRequired[str]
-    width: NotRequired[str]
+class HTMLObjectElement(HTMLElementProps, total=False):
+    data: str
+    form: str
+    height: str
+    name: str
+    type: str
+    usemap: str
+    width: str
 
 
-class HTMLOrderedListElement(HTMLElement):
-    reversed: NotRequired[str]
-    start: NotRequired[str]
+class HTMLOrderedListElement(HTMLElementProps, total=False):
+    reversed: str
+    start: str
 
 
-class HTMLOptGroupElement(HTMLElement):
-    disabled: NotRequired[str]
-    label: NotRequired[str]
+class HTMLOptGroupElement(HTMLElementProps, total=False):
+    disabled: str
+    label: str
 
 
-class HTMLOptionElement(HTMLElement):
-    disabled: NotRequired[str]
-    label: NotRequired[str]
-    selected: NotRequired[str]
-    value: NotRequired[str]
+class HTMLOptionElement(HTMLElementProps, total=False):
+    disabled: str
+    label: str
+    selected: str
+    value: str
 
 
-class HTMLOutputElement(HTMLElement):
-    html_for: NotRequired[str]  # 'for' is a reserved keyword in Python, so using 'html_for'
-    form: NotRequired[str]
-    name: NotRequired[str]
+class HTMLOutputElement(HTMLElementProps, total=False):
+    html_for: str  # 'for' is a reserved keyword in Python, so using 'html_for'
+    form: str
+    name: str
 
 
-class HTMLParagraphElement(HTMLElement):
+class HTMLParagraphElement(HTMLElementProps, total=False):
     pass  # No additional attributes
 
 
-class HTMLParamElement(HTMLElement):
-    name: NotRequired[str]
-    value: NotRequired[str]
+class HTMLParamElement(HTMLElementProps, total=False):
+    name: str
+    value: str
 
 
-class HTMLPictureElement(HTMLElement):
+class HTMLPictureElement(HTMLElementProps, total=False):
     pass  # No additional attributes
 
 
-class HTMLPreElement(HTMLElement):
+class HTMLPreElement(HTMLElementProps, total=False):
     pass  # No additional attributes
 
 
-class HTMLProgressElement(HTMLElement):
-    max: NotRequired[str]
-    value: NotRequired[str]
+class HTMLProgressElement(HTMLElementProps, total=False):
+    max: str
+    value: str
 
 
-class HTMLQuoteElement(HTMLElement):
-    cite: NotRequired[str]
+class HTMLQuoteElement(HTMLElementProps, total=False):
+    cite: str
 
 
-class HTMLScriptElement(HTMLElement):
-    async_: NotRequired[str]  # 'async' is a reserved keyword in Python, so using 'async_'
-    cross_origin: NotRequired[str]
-    defer: NotRequired[str]
-    integrity: NotRequired[str]
-    nonce: NotRequired[str]
-    referrer_policy: NotRequired[str]
-    src: NotRequired[str]
-    type: NotRequired[str]
+class HTMLScriptElement(HTMLElementProps, total=False):
+    async_: bool  # 'async' is a reserved keyword in Python, so using 'async_'
+    cross_origin: str
+    defer: bool
+    integrity: str
+    nonce: str
+    referrer_policy: str
+    src: str
+    type: str
 
 
-class HTMLSelectElement(HTMLElement):
-    auto_complete: NotRequired[str]
-    auto_focus: NotRequired[str]
-    disabled: NotRequired[str]
-    form: NotRequired[str]
-    multiple: NotRequired[str]
-    name: NotRequired[str]
-    required: NotRequired[str]
-    size: NotRequired[str]
+class HTMLSelectElement(HTMLElementProps, total=False):
+    auto_complete: str
+    auto_focus: str
+    disabled: str
+    form: str
+    multiple: str
+    name: str
+    required: str
+    size: str
 
 
-class HTMLSlotElement(HTMLElement):
-    name: NotRequired[str]
+class HTMLSlotElement(HTMLElementProps, total=False):
+    name: str
 
 
-class HTMLSourceElement(HTMLElement):
-    media: NotRequired[str]
-    sizes: NotRequired[str]
-    src: NotRequired[str]
-    srcset: NotRequired[str]
-    type: NotRequired[str]
+class HTMLSourceElement(HTMLElementProps, total=False):
+    media: str
+    sizes: str
+    src: str
+    srcset: str
+    type: str
 
 
-class HTMLSpanElement(HTMLElement):
+class HTMLSpanElement(HTMLElementProps, total=False):
     pass  # No additional attributes
 
 
-class HTMLStyleElement(HTMLElement):
-    media: NotRequired[str]
-    nonce: NotRequired[str]
-    scoped: NotRequired[str]
+class HTMLStyleElement(HTMLElementProps, total=False):
+    media: str
+    nonce: str
+    scoped: str
 
 
-class HTMLTableCaptionElement(HTMLElement):
+class HTMLTableCaptionElement(HTMLElementProps, total=False):
     pass  # No additional attributes
 
 
-class HTMLTableCellElement(HTMLElement):
-    abbr: NotRequired[str]
-    colspan: NotRequired[str]
-    headers: NotRequired[str]
-    rowspan: NotRequired[str]
-    scope: NotRequired[str]
+class HTMLTableCellElement(HTMLElementProps, total=False):
+    abbr: str
+    colspan: str
+    headers: str
+    rowspan: str
+    scope: str
 
 
-class HTMLTableColElement(HTMLElement):
-    span: NotRequired[str]
+class HTMLTableColElement(HTMLElementProps, total=False):
+    span: str
 
 
 class HTMLTableDataCellElement(HTMLTableCellElement):
     pass  # Inherits attributes from HTMLTableCellElement
 
 
-class HTMLTableElement(HTMLElement):
-    border: NotRequired[str]
-    cellpadding: NotRequired[str]
-    cellspacing: NotRequired[str]
-    frame: NotRequired[str]
-    rules: NotRequired[str]
-    summary: NotRequired[str]
-    width: NotRequired[str]
+class HTMLTableElement(HTMLElementProps, total=False):
+    border: str
+    cellpadding: str
+    cellspacing: str
+    frame: str
+    rules: str
+    summary: str
+    width: str
 
 
 class HTMLTableHeaderCellElement(HTMLTableCellElement):
     pass  # Inherits attributes from HTMLTableCellElement
 
 
-class HTMLTableRowElement(HTMLElement):
-    align: NotRequired[str]
-    bgcolor: NotRequired[str]
-    ch: NotRequired[str]
-    choff: NotRequired[str]
-    v_align: NotRequired[str]
+class HTMLTableRowElement(HTMLElementProps, total=False):
+    align: str
+    bgcolor: str
+    ch: str
+    choff: str
+    v_align: str
 
 
-class HTMLTableSectionElement(HTMLElement):
-    align: NotRequired[str]
-    ch: NotRequired[str]
-    choff: NotRequired[str]
-    v_align: NotRequired[str]
+class HTMLTableSectionElement(HTMLElementProps, total=False):
+    align: str
+    ch: str
+    choff: str
+    v_align: str
 
 
-class HTMLTemplateElement(HTMLElement):
+class HTMLTemplateElement(HTMLElementProps, total=False):
     pass  # No additional attributes
 
 
-class HTMLTextAreaElement(HTMLElement):
-    auto_complete: NotRequired[str]
-    auto_focus: NotRequired[str]
-    cols: NotRequired[str]
-    dirname: NotRequired[str]
-    disabled: NotRequired[str]
-    form: NotRequired[str]
-    max_length: NotRequired[str]
-    min_length: NotRequired[str]
-    name: NotRequired[str]
-    placeholder: NotRequired[str]
-    readonly: NotRequired[str]
-    required: NotRequired[str]
-    rows: NotRequired[str]
-    wrap: NotRequired[str]
+class HTMLTextAreaElement(HTMLElementProps, total=False):
+    auto_complete: str
+    auto_focus: str
+    cols: str
+    dirname: str
+    disabled: str
+    form: str
+    max_length: str
+    min_length: str
+    name: str
+    placeholder: str
+    readonly: str
+    required: str
+    rows: str
+    wrap: str
 
 
-class HTMLTimeElement(HTMLElement):
-    datetime: NotRequired[str]
+class HTMLTimeElement(HTMLElementProps, total=False):
+    datetime: str
 
 
-class HTMLTitleElement(HTMLElement):
+class HTMLTitleElement(HTMLElementProps, total=False):
     pass  # No additional attributes
 
 
-class HTMLTrackElement(HTMLElement):
-    default: NotRequired[str]
-    kind: NotRequired[str]
-    label: NotRequired[str]
-    src: NotRequired[str]
-    srclang: NotRequired[str]
+class HTMLTrackElement(HTMLElementProps, total=False):
+    default: str
+    kind: str
+    label: str
+    src: str
+    srclang: str
 
 
-class HTMLUnorderedListElement(HTMLElement):
+class HTMLUnorderedListElement(HTMLElementProps, total=False):
     pass  # No additional attributes
 
 
-class HTMLVideoElement(HTMLElement):
-    auto_play: NotRequired[str]
-    controls: NotRequired[str]
-    cross_origin: NotRequired[str]
-    height: NotRequired[str]
-    loop: NotRequired[str]
-    muted: NotRequired[str]
-    plays_inline: NotRequired[str]
-    poster: NotRequired[str]
-    preload: NotRequired[str]
-    src: NotRequired[str]
-    width: NotRequired[str]
+class HTMLVideoElement(HTMLElementProps, total=False):
+    auto_play: str
+    controls: str
+    cross_origin: str
+    height: str
+    loop: str
+    muted: str
+    plays_inline: str
+    poster: str
+    preload: str
+    src: str
+    width: str

@@ -7,12 +7,10 @@ from seamless.internal import short_uuid
 
 
 class CSSClass:
-    def __init__(self, class_name: str, css_text: str = None):
+    def __init__(self, class_name: str):
         self.class_name = class_name
         self.sub_rules: dict[str, dict[str, str]] = {}
         self.uuid = short_uuid()
-        if css_text is not None:
-            self.add_rule("", css_text)
 
     def add_rule(self, rule: str, properties: dict[str, str]):
         if rule not in self.sub_rules:
@@ -100,7 +98,7 @@ class CSSModulesManager:
         self.modules: dict[str, CSSModule] = {}
         self.folder: Path = Path.cwd()
 
-    def module(self, css_path: PathLike):
+    def module(self, css_path: PathLike | str):
         """
         Get a CSS module by its path.
         This will return a CSSModule object.
@@ -119,23 +117,25 @@ class CSSModulesManager:
             css_module.to_css_string(minified) for css_module in self.modules.values()
         )
 
-    def set_root_folder(self, folder: PathLike):
+    def set_root_folder(self, folder: PathLike | str):
         """
         Set the folder where the CSS files are located.
         """
-        if isinstance(folder, str):
-            folder = Path(folder)
+        folder = Path(folder)
 
         self.folder = folder.absolute()
 
-    def _full_path(self, css_path: PathLike):
+    def _full_path(self, css_path: PathLike | str) -> Path:
         if isinstance(css_path, str):
             if css_path.startswith("./"):
                 frame = inspect.stack()[2]
                 module = inspect.getmodule(frame[0])
+                if module is None or module.__file__ is None:
+                    raise ValueError("Cannot use relative path in a module without a file")
+                
                 css_path = Path(module.__file__).parent / css_path
 
-            css_path = Path(css_path)
+        css_path = Path(css_path)
 
         if not css_path.is_absolute():
             return self.folder / css_path

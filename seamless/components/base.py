@@ -1,16 +1,16 @@
 from abc import abstractmethod
-from typing import TYPE_CHECKING, Final
+from typing import TYPE_CHECKING, ClassVar
 
 
 if TYPE_CHECKING:
-    from seamless.types import RenderResult, ChildrenType
+    from seamless.types import RenderResult, ChildType
 
 
 class Component:
-    children: Final[tuple["ChildrenType", ...]]
-    __seamless_name__: Final[str] = "Component"
+    children: tuple["ChildType", ...]
+    __seamless_name__: ClassVar[str] = "Component"
 
-    def __init__(self, *children: "ChildrenType") -> None:
+    def __init__(self, *children: "ChildType") -> None:
         if type(self) is Component:
             raise TypeError("Cannot instantiate Component directly")
         
@@ -20,7 +20,7 @@ class Component:
     def render(self) -> "RenderResult":
         raise NotImplementedError(f"{type(self).__name__}.render() is not implemented")
 
-    def __init_subclass__(cls, *, name: str = None, **kwargs) -> None:
+    def __init_subclass__(cls, *, name: str | None = None, **kwargs) -> None:
         super().__init_subclass__(**kwargs)
 
         if cls is not Component:
@@ -40,6 +40,6 @@ class Component:
 
         cls.__init__ = __init__
 
-    def __call__(self, *children: "ChildrenType"):
+    def __call__(self, *children: "ChildType"):
         self.children = children
         return self
