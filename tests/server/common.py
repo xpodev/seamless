@@ -2,8 +2,6 @@ from seamless.html import *
 from seamless import Component, render
 from seamless.components import Page as _Page
 from seamless.styling import CSS, StyleObject
-from seamless.context.database import DB
-from seamless.types.events import MouseEvent
 
 
 def index():
@@ -12,14 +10,6 @@ def index():
 
 def css_file(minified=False):
     return CSS.to_css_string(minified)
-
-
-def db_memory():
-    return {
-        "elements": len(DB.elements),
-        "ids": len(DB.element_ids),
-        "unclaimed": list(DB._all_unclaimed.keys()),
-    }
 
 
 class Page(_Page):
