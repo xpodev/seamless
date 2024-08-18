@@ -40,6 +40,9 @@ class State(metaclass=_StateMeta):
             f"""const state = seamless.state.getState('{self.name}');\
             seamless.state.setState('{self.name}', {value})"""
         )
+    
+    def __str__(self):
+        return f"seamless.state.getState('{self.name}')"
 
     @overload
     def __call__(self) -> Any: ...
