@@ -49,7 +49,7 @@ html_map = {
     "Heading": "HTMLHeadingElement",
     "Html": "HTMLHtmlElement",
     "IFrame": "HTMLIFrameElement",
-    "Image": "HTMLImageElement",
+    "Img": "HTMLImageElement",
     "Input": "HTMLInputElement",
     "Ins": "HTMLModElement",
     "Li": "HTMLListItemElement",
