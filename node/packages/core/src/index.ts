@@ -31,6 +31,7 @@ class Seamless {
       config?.eventObjectTransformer || ((_, outEvent) => outEvent);
 
     this.context.instance = this;
+    this.socket.on("error", (error) => this.handleErrors(error));
     this.init();
   }
 
@@ -115,7 +116,8 @@ class Seamless {
       typeof value === "string" ||
       typeof value === "number" ||
       typeof value === "boolean" ||
-      value === null
+      value === null ||
+      value === undefined
     );
   }
 
@@ -147,6 +149,10 @@ class Seamless {
     return new Promise<T>((resolve) => {
       this.socket.emit(event, ...args, resolve);
     });
+  }
+
+  protected handleErrors(error: any) {
+    throw new Error(error);
   }
 
   protected serializeEventObject(event: Event) {
