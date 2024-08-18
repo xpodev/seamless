@@ -130,19 +130,14 @@ class Seamless {
   }
 
   registerEventListener(
-    seamlessId: string,
     event: string,
     callback: (e: any) => any
   ) {
-    this.socket.on(`${seamlessId}:${event}`, callback);
+    this.socket.on(event, callback);
   }
 
   emit(event: string, ...args: any[]) {
     this.socket.emit(event, ...args);
-  }
-
-  sendCustomEvent(event: string, data: any) {
-    this.socket.emit("custom", event, data);
   }
 
   sendWaitResponse<T>(event: string, ...args: any[]) {
