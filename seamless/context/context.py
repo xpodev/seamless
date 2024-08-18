@@ -1,7 +1,8 @@
 from typing import Callable, Concatenate, ParamSpec, Any
 from socketio import AsyncServer
 
-from ..internal.validation import _DataValidationError
+from ..errors import ClientError
+
 from ..internal.utils import to_async, wraps
 
 from .request import WSRequest, set_request
@@ -27,7 +28,7 @@ class Context:
                 result = await to_async(handler)(sid, *args, **kwargs)
                 set_request(None)
                 return result
-            except _DataValidationError as e:
+            except ClientError as e:
                 await self.server.emit("error", str(e), to=sid)
             except Exception as e:
                 await self.server.emit("error", str(e), to=sid)

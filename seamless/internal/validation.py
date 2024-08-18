@@ -2,9 +2,10 @@
 
 from typing import Any
 from .utils import Promise, _obj, wraps
+from ..errors import ClientError
 
 
-class _DataValidationError(Exception): ...
+class _DataValidationError(ClientError): ...
 
 
 def wrap_with_validation(func):
@@ -48,6 +49,6 @@ def wrap_with_validation(func):
 
         return await Promise(
             func(**{name: getattr(data, name) for name in func_parameters})
-        )   
+        )
 
     return wrapper

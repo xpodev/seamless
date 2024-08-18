@@ -1,5 +1,7 @@
 from typing import TYPE_CHECKING
+
 from ...core.component import Component
+from ...errors import ClientError
 from ...rendering.json import to_dict
 
 from .repository import ComponentsRepository
@@ -26,8 +28,14 @@ def init_components(ctx: "Context"):
 
     Component.__init_subclass__ = __init_subclass__
 
-    def get_component(sid: str, name: str, props={}):
+    def get_component(sid: str, name: str, props=None):
+        props = props or {}
         cls = COMPONENTS_REPOSITORY.get_component(name)
-        return to_dict(cls(**props))
+        try:
+            component = cls(**props)
+        except TypeError:
+            raise ClientError(f"Invalid props for component {name}")
+        
+        return to_dict(component)
 
     ctx.on("component", get_component)
