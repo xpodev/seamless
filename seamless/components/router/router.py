@@ -33,4 +33,4 @@ class Router(Component):
         with open(HERE / "router.js", "r") as f:
             router_js = f.read()
 
-        return Empty(init=JS(f"const routes = {dumps(routes)};{router_js}"), loading=self.loading_component)
+        return Empty(init=JS(f"let routes = {dumps(routes)};{router_js}"), loading=self.loading_component)
