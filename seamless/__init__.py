@@ -4,7 +4,7 @@ from .rendering.html import render
 from .core import Component
 from .html import *
 
-__version__ = "0.8.6"
+__version__ = "0.9.0"
 __all__ = [
     "Component",
     "A",
