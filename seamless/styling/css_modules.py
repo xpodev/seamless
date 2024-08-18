@@ -3,7 +3,7 @@ from os import PathLike
 from pathlib import Path
 import re
 import cssutils
-from seamless.internal import short_uuid
+from ..internal.utils import short_uuid
 
 
 class CSSClass:

@@ -1,14 +1,23 @@
 from typing import TYPE_CHECKING
 
-from ..components import Component
+from ..core.component import Component
 from ..element import Element
+from .props import transform_props
 
 if TYPE_CHECKING:
-    from seamless.types import Renderable, Primitive
+    from ..types import Renderable, Primitive
+    from ..context import Context
 
-def to_dict(element: "Renderable | Primitive"):
+
+def to_dict(element: "Renderable | Primitive", *, context: "Context | None" = None):
+    from ..context import get_context
+
+    return _to_dict(element, context=get_context(context))
+
+
+def _to_dict(element: "Renderable | Primitive", *, context: "Context"):
     if isinstance(element, Component):
-        element = to_dict(element.render())
+        element = _to_dict(element.render(), context=context)
 
     if not isinstance(element, Element):
         return element
@@ -21,6 +30,5 @@ def to_dict(element: "Renderable | Primitive"):
                 element.children,
             )
         ),
-        "props": element.props_dict(),
+        "props": transform_props(element.props, context=context),
     }
-

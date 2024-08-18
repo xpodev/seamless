@@ -9,10 +9,3 @@ class RenderError(Error):
     Raised when an error occurs while rendering an element.
     """
     ...
-
-
-class ActionError(Error):
-    """
-    Raised when an error occurs while invoking an action.
-    """
-    ...

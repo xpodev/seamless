@@ -1,7 +1,7 @@
 from pydantic import BaseModel
 from seamless import Div, Form, Input, Button, Component
 from seamless.core import SocketID
-from seamless.extra import State
+from seamless.extensions import State
 from seamless.types.events import SubmitEvent
 
 

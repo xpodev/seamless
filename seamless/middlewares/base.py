@@ -1,89 +1,16 @@
-from functools import wraps
-from pathlib import Path
-from inspect import iscoroutinefunction
-
-import asyncio
-
-from socketio.base_server import BaseServer
-from socketio import AsyncServer
-
-from ..context.database import DB
-from ..context.ws_router import ws_router
-from ..context.request import WSRequest, request as _request, set_request
-
-from ..internal import Cookies, _DataValidationError
-
-
-CLAIM_COOKIE_NAME = "_seamless_claim_id"
+from ..context.context import Context, get_context
+from ..context.request import request as _request
 
 
 class BaseMiddleware:
-    def __init__(self, app, socket_path="/socket.io"):
+    def __init__(self, app, socket_path="/socket.io", context: Context | None = None):
+        if context is None:
+            context = get_context()
         self.socket_path = f"/{socket_path.strip('/')}"
-        self.server = self._server_class()(cors_allowed_origins=[])
-        self.app = self._app_class()(self.server, app, socketio_path=socket_path)
-        self._disconnect = self._make_method(self.server.disconnect)
-        self._setup()
-
-    def _setup(self):
-        self._setup_events()
-
-    def _emit(self, *args, **kwargs):
-        return self.server.emit(*args, **kwargs)
-
-    def _setup_events(self):
-        self.server.on("disconnect", self._handle_disconnect)
-        self.server.on("connect", self._handle_connect)
-
-        for command, handler in ws_router.items():
-            wrapped = self._make_handler(handler)
-            self.on(command, wrapped)
-
-    def _make_handler(self, handler):
-        def _handler(sid, *data):
-            return handler(sid, *data)
-
-        return _handler
-
-    def _handle_disconnect(self, sid: str):
-        DB.release_actions(sid)
-
-    def _handle_connect(self, sid: str, env):
-        cookie_string = env.get("HTTP_COOKIE", "")
-        if not cookie_string:
-            self._disconnect(sid)
-
-        cookies = Cookies(env.get("HTTP_COOKIE", ""))
-        claim_id = cookies[CLAIM_COOKIE_NAME]
-        if not claim_id:
-            self._disconnect(sid)
-
-        DB.claim(claim_id, sid)
-
-    def on(self, event, handler):
-        @wraps(handler)
-        def wrapper(sid, *args, **kwargs):
-            try:
-                WSRequest.make(sid)
-                result = handler(sid, *args, **kwargs)
-                set_request(None)
-                return result
-            except _DataValidationError as e:
-                self._emit("error", str(e), to=sid)
-            except Exception as e:
-                self._emit("error", str(e), to=sid)
-                raise e
-
-        self.server.on(event, wrapper)
+        self.app = self._app_class()(context.server, app, socketio_path=socket_path)
 
     def _app_class(self):
         raise NotImplementedError("self._app_class is not implemented")
-
-    def _server_class(self) -> type[BaseServer]:
-        raise NotImplementedError("self._server_class is not implemented")
-
-    def _is_async_server(self) -> bool:
-        return False
 
     def _make_cookie_header(
         self,
@@ -126,67 +53,8 @@ class BaseMiddleware:
             f"{name}=; Path={path}; Expires=Thu, 01 Jan 1970 00:00:00 GMT;".encode(),
         )
 
-    def _make_method(self, method):
-        if self._is_async_server():
-
-            def _method(*args, **kwargs):
-                if iscoroutinefunction(method):
-                    return asyncio.get_running_loop().create_task(
-                        method(*args, **kwargs)
-                    )
-                else:
-
-                    async def _wrapper():
-                        return method(*args, **kwargs)
-
-                    return _wrapper()
-
-        else:
-
-            def _method(*args, **kwargs):
-                return method(*args, **kwargs)
-
-        return _method
-
     def _is_render_request(self):
         request = _request()
         if not request:
             return False
         return request.id is not None
-
-
-class BaseAsyncMiddleware(BaseMiddleware):
-    server: AsyncServer
-
-    def _is_async_server(self) -> bool:
-        return True
-
-    async def _emit(self, *args, **kwargs):
-        return await self.server.emit(*args, **kwargs)
-
-    def _make_handler(self, handler):
-        async def _handler(sid, *data):
-            if iscoroutinefunction(handler):
-                result = await handler(sid, *data)
-            else:
-                result = handler(sid, *data)
-
-            return result
-
-        return _handler
-
-    def on(self, event, handler):
-        @wraps(handler)
-        async def wrapper(sid, *args, **kwargs):
-            try:
-                WSRequest.make(sid)
-                result = await handler(sid, *args, **kwargs)
-                set_request(None)
-                return result
-            except _DataValidationError as e:
-                await self.server.emit("error", str(e), to=sid)
-            except Exception as e:
-                await self.server.emit("error", str(e), to=sid)
-                raise e
-
-        self.server.on(event, wrapper)

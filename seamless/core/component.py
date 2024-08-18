@@ -3,7 +3,7 @@ from typing import TYPE_CHECKING, ClassVar
 
 
 if TYPE_CHECKING:
-    from seamless.types import RenderResult, ChildType
+    from ..types import RenderResult, ChildType
 
 
 class Component:
@@ -20,14 +20,8 @@ class Component:
     def render(self) -> "RenderResult":
         raise NotImplementedError(f"{type(self).__name__}.render() is not implemented")
 
-    def __init_subclass__(cls, *, name: str | None = None, **kwargs) -> None:
+    def __init_subclass__(cls, **kwargs) -> None:
         super().__init_subclass__(**kwargs)
-
-        if cls is not Component:
-            from ..context.components import COMPONENTS_REPOSITORY
-
-            cls.__seamless_name__ = name or cls.__name__
-            COMPONENTS_REPOSITORY.add_component(cls, cls.__seamless_name__)
 
         if cls.__init__ is Component.__init__:
             return

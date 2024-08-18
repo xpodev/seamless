@@ -1,7 +1,8 @@
-from .components import Component
-from .html import *
-from .rendering.html import render
+from .context import Context
 from .core import JS
+from .rendering.html import render
+from .core import Component
+from .html import *
 
 __version__ = "0.8.6"
 __all__ = [
@@ -75,6 +76,7 @@ __all__ = [
     "U",
     "Ul",
     "Wbr",
-    "render",
+    "Context",
     "JS",
+    "render",
 ]

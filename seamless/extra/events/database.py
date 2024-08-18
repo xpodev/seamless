@@ -2,13 +2,13 @@ from inspect import iscoroutinefunction, ismethod, signature
 from typing import Any, Callable, TypeAlias
 from threading import Timer
 
-from seamless.core import SocketID
-from seamless.errors import ActionError
-from seamless.internal import wrap_with_validation
-from .request import request as _request, RequestType
+from ...core import SocketID
+from .errors import ActionError
+from ...internal.validation import wrap_with_validation
+from ...context.request import request as _request, RequestType
 
 
-ActionsMap: TypeAlias = dict[str, Callable] | dict[str, dict[str, Callable]]
+ActionsMap: TypeAlias = dict[str, Callable | dict[str, Callable]]
 
 
 class Action:
@@ -18,7 +18,7 @@ class Action:
         id: str,
     ):
         self.id = id
-        self.action = action  # TODO: make wrapper for action for data validation
+        self.action = action
 
     async def __call__(self, *args: Any, **kwargs: Any) -> Any:
         if iscoroutinefunction(self.action):
@@ -78,7 +78,7 @@ class ElementsDatabase:
             func = self.events[event]
         else:
             raise ActionError("Event not found")
-        
+
         data = list(data)
         for index, param in enumerate(signature(func.action).parameters.values()):
             if param.annotation is SocketID:

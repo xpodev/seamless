@@ -2,10 +2,10 @@ from pathlib import Path
 from json import dumps
 from typing import Any, overload
 
-from seamless import Component, JS
-from seamless.core import Empty
-from seamless.internal import SEAMLESS_ELEMENT_ATTRIBUTE, SEAMLESS_INIT_ATTRIBUTE
-from seamless.rendering.transformers import transformer_for
+from ...core.component import Component
+from ...core import Empty, JS
+from ...internal.constants import SEAMLESS_ELEMENT_ATTRIBUTE, SEAMLESS_INIT_ATTRIBUTE
+from ...extra.transformers import transformer_for
 
 HERE = Path(__file__).parent
 EMPTY = object()

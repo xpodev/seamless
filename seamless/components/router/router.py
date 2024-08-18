@@ -2,9 +2,7 @@ from json import dumps
 from pathlib import Path
 from typing import overload
 
-from seamless import Component, JS
-from seamless.core import Empty
-from ...types import Renderable
+from ...core import Empty, Component, JS
 
 from .route import Route
 

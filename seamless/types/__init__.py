@@ -1,8 +1,8 @@
 from typing import Collection, TypeAlias, TYPE_CHECKING, Union
 
 if TYPE_CHECKING:
-    from seamless import Component
-    from seamless.element import Element
+    from ..core import Component
+    from ..element import Element
 
 
 Primitive: TypeAlias = str | int | float | bool | None
