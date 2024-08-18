@@ -6,6 +6,8 @@ on:
       - main
       - dev/v\d+\.\d+\.\d+
     types: [opened, reopened, synchronize]
+    paths:
+      - 'seamless/**/*.py'
 
 permissions:
   contents: read
