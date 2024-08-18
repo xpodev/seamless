@@ -2,9 +2,7 @@ from json import dumps
 from pathlib import Path
 from typing import overload
 
-from seamless import Component, JS
-from seamless.core import Empty
-from ...types import Renderable
+from ...core import Empty, Component, JS
 
 from .route import Route
 
@@ -35,4 +33,4 @@ class Router(Component):
         with open(HERE / "router.js", "r") as f:
             router_js = f.read()
 
-        return Empty(init=JS(f"const routes = {dumps(routes)};{router_js}"), loading=self.loading_component)
+        return Empty(init=JS(f"let routes = {dumps(routes)};{router_js}"), loading=self.loading_component)

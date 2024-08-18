@@ -1,9 +1,9 @@
 from typing import TYPE_CHECKING, Any
-from seamless.element import Element
-from seamless.internal import SEAMLESS_ELEMENT_ATTRIBUTE
+from ..element import Element
+from ..internal.constants import SEAMLESS_ELEMENT_ATTRIBUTE
 
 if TYPE_CHECKING:
-    from seamless.types import ChildType
+    from ..types import ChildType
 
 class Empty(Element):
     tag_name = "seamless:empty"

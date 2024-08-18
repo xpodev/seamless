@@ -1,5 +1,5 @@
 from seamless import Div, Component
-from seamless.extra import State
+from seamless.extensions import State
 from components.clock import Clock
 
 

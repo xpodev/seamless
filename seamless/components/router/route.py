@@ -1,4 +1,4 @@
-from seamless import Component
+from ...core import Component
 
 
 class Route(Component):

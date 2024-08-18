@@ -1,13 +1,15 @@
 from html import escape
-from typing import Any
+from typing import Any, TYPE_CHECKING
 from ..errors import RenderError
-from .transformers import TRANSFORMERS
+
+if TYPE_CHECKING:
+    from ..context import Context
 
 
-def transform_props(props: dict[str, Any]):
+def transform_props(props: dict[str, Any], *, context: "Context"):
     props_copy = props.copy()
 
-    for matcher, transformer in TRANSFORMERS:
+    for matcher, transformer in context._prop_transformers:
         if isinstance(matcher, str):
             key = matcher
             if key in props_copy:

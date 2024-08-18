@@ -1,21 +1,9 @@
-from typing import Any, Callable
+from typing import Any, Callable, Concatenate, TYPE_CHECKING
 
-from .simple_transformer import simple_transformer as _simple_transformer
-from .events_transformer import (
-    events_transformer as _events_transformer,
-    js_events_transformer as _js_events_transformer,
-)
-from .class_transformer import class_transformer as _class_transformer
+if TYPE_CHECKING:
+    from ...context.context import Context
 
-
-TRANSFORMERS = [
-    _simple_transformer(),
-    _events_transformer(),
-    _js_events_transformer(),
-]
-
-
-def transformer_for(matcher: Callable[[str, Any], bool] | str):
+def transformer_for(matcher: Callable[[str, Any], bool] | str, context: "Context | None" = None):
     """
     A decorator to register a prop transformer.
 
@@ -43,12 +31,11 @@ def transformer_for(matcher: Callable[[str, Any], bool] | str):
         ...     element_props["class"] = " ".join(str(class_name).split())
 
     """
+    from ...context.context import get_context
+    context = get_context(context)
 
-    def decorator(func: Callable[[str, Any, dict[str, Any]], None]):
-        TRANSFORMERS.append((matcher, func))
+    def decorator(func: Callable[Concatenate[str, Any, dict[str, Any], ...], None]):
+        context.add_prop_transformer(matcher, func)
         return func
 
     return decorator
-
-
-transformer_for("class_name")(_class_transformer)

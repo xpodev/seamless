@@ -1,11 +1,11 @@
-from functools import partial
-from socketio import AsyncServer, ASGIApp
+from socketio import ASGIApp
 
-from .base import BaseAsyncMiddleware, CLAIM_COOKIE_NAME
+from .base import BaseMiddleware
 from ..context.request import HTTPRequest
+from ..internal.constants import CLAIM_COOKIE_NAME
 
 
-class ASGIMiddleware(BaseAsyncMiddleware):
+class ASGIMiddleware(BaseMiddleware):
     async def __call__(self, scope, receive, send):
         async def _send(message):
             await send(message)
@@ -40,6 +40,3 @@ class ASGIMiddleware(BaseAsyncMiddleware):
 
     def _app_class(self):
         return ASGIApp
-
-    def _server_class(self):
-        return partial(AsyncServer, async_mode="asgi")

@@ -1,8 +1,6 @@
 from typing import Iterable, Literal, TypedDict, overload
 
-from ..types import Primitive, Renderable, ChildrenType, ChildType
-
-from .base import Component
+from ..internal.utils import to_iter
 from ..html import (
     Fragment,
     Html,
@@ -11,7 +9,9 @@ from ..html import (
     Body,
     Meta,
 )
-from ..internal import to_iter
+from ..types import Primitive, Renderable, ChildrenType, ChildType
+
+from ..core.component import Component
 
 
 class _HtmlProps(TypedDict):

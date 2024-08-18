@@ -1,4 +1,4 @@
-from seamless import Component, A, JS
+from ... import Component, A, JS
 
 
 class RouterLink(Component):

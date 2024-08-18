@@ -1,8 +1,8 @@
 from typing import Generic, TypeVar, Unpack, TYPE_CHECKING
-from seamless.rendering.transformers import transformer_for
+from ..extra.transformers import transformer_for
 
 if TYPE_CHECKING:
-    from seamless.types.styling.css_properties import CSSProperties
+    from ..types.styling.css_properties import CSSProperties
 
 T = TypeVar("T")
 

@@ -6,7 +6,7 @@
 
 Seamless is a Python package for creating and manipulating HTML components. It is working similar to React.js, but in Python.
 
-[Docs](https://seamless.readthedocs.io/)
+We have detailed documentation [here](https://seamless.readthedocs.io/)
 
 ## Installation
 ```sh

@@ -1,3 +1,5 @@
+from seamless import __version__
+
 # Configuration file for the Sphinx documentation builder.
 #
 # For the full list of built-in configuration values, see the documentation:
@@ -9,7 +11,7 @@
 project = 'Seamless'
 copyright = '2024, Xpo Development'
 author = 'Xpo Development'
-version = '0.8.6'
+version = __version__
 
 # -- General configuration ---------------------------------------------------
 # https://www.sphinx-doc.org/en/master/usage/configuration.html#general-configuration

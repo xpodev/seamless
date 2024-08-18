@@ -2,7 +2,7 @@ from enum import Enum
 from dataclasses import dataclass
 from urllib.parse import parse_qs
 
-from seamless.internal import Cookies
+from ..internal.cookies import Cookies
 
 
 class RequestType(Enum):
@@ -62,13 +62,13 @@ class HTTPRequest(Request):
         return f"{self.path}?{self._raw_query}"
 
 
-_request: WSRequest | HTTPRequest = None
+_request: WSRequest | HTTPRequest | None = None
 
 
 def request():
     return _request
 
 
-def set_request(request: Request):
+def set_request(request: WSRequest | HTTPRequest | None):
     global _request
     _request = request
