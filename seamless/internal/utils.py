@@ -80,20 +80,19 @@ def wraps(info):
     def inner(callback):
         if ismethod(info):
 
-            class _Wrapper:
-                if iscoroutinefunction(callback):
+            if iscoroutinefunction(callback):
 
-                    @_wraps(info)
-                    async def wrapper(self, *args, **kwargs):
-                        return await callback(*args, **kwargs)
+                @_wraps(info.__func__)
+                async def wrapper(_, *args, **kwargs):
+                    return await callback(*args, **kwargs)
 
-                else:
+            else:
 
-                    @_wraps(info)
-                    def wrapper(self, *args, **kwargs):
-                        return callback(*args, **kwargs)
+                @_wraps(info.__func__)
+                def wrapper(_, *args, **kwargs):
+                    return callback(*args, **kwargs)
 
-            return _Wrapper().wrapper
+            return wrapper.__get__(info.__self__, info.__class__)
 
         if iscoroutinefunction(callback):
 

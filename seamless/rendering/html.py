@@ -1,18 +1,29 @@
 from typing import TYPE_CHECKING
 from uuid import uuid4 as uuid
 
+from .render_state import RenderState
+
 from ..context import Context, get_context
 from ..context.request import request as _request
-from ..errors import RenderError
 from ..core.component import Component
+from ..errors import RenderError
 from ..element import Element
+from ..internal.injector import injector
 from .props import render_props, transform_props
+from seamless.rendering import render_state
 
 if TYPE_CHECKING:
     from ..types import Renderable, Primitive
 
 
-def render(element: "Renderable | Primitive", *, pretty=False, tab_indent=1, context: "Context | None" = None) -> str:
+def render(
+    element: "Renderable | Primitive",
+    *,
+    pretty=False,
+    tab_indent=1,
+    context: "Context | None" = None,
+    **render_state_data,
+) -> str:
     """
     Renders the given element into an HTML string.
 
@@ -24,22 +35,49 @@ def render(element: "Renderable | Primitive", *, pretty=False, tab_indent=1, con
     Returns:
         str: The rendered HTML string.
     """
+
     request = _request()
     if request is not None:
         request.id = str(uuid())
-    return _render(element, pretty=pretty, tab_indent=tab_indent, context=get_context(context))
+
+    render_state = RenderState(**render_state_data)
+    injector().add(RenderState, render_state)
+    return _render(
+        element,
+        pretty=pretty,
+        tab_indent=tab_indent,
+        context=get_context(context),
+        render_state=render_state,
+    )
 
 
-def _render(element: "Renderable | Primitive", *, pretty=False, tab_indent=1, context: "Context") -> str:
+def _render(
+    element: "Renderable | Primitive",
+    *,
+    pretty=False,
+    tab_indent=1,
+    context: "Context",
+    render_state: RenderState,
+) -> str:
     if isinstance(element, Component):
-        element = _render(element.render(), pretty=pretty, tab_indent=tab_indent, context=context)
+        element = _render(
+            element.render(),
+            pretty=pretty,
+            tab_indent=tab_indent,
+            context=context,
+            render_state=render_state,
+        )
 
     if not isinstance(element, Element):
         return str(element) if element is not None else ""
 
     tag_name = getattr(element, "tag_name", None)
 
-    props = {k: v for k, v in transform_props(element.props, context=context).items() if v not in [None, False]}
+    props = {
+        k: v
+        for k, v in transform_props(element.props, context=context).items()
+        if v not in [None, False]
+    }
 
     props_string = render_props(props)
     open_tag = f"{tag_name} {props_string}".strip()
@@ -53,7 +91,7 @@ def _render(element: "Renderable | Primitive", *, pretty=False, tab_indent=1, co
     tab = "  " * tab_indent if pretty else ""
     children_join_string = f"\n{tab}" if pretty else ""
     children = [
-        _render(child, pretty=pretty, tab_indent=tab_indent + 1, context=context)
+        _render(child, pretty=pretty, tab_indent=tab_indent + 1, context=context, render_state=render_state)
         for child in element.children
     ]
     if pretty:

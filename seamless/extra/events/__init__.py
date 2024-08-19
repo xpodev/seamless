@@ -1,5 +1,7 @@
 from typing import TYPE_CHECKING
 
+from ...rendering.render_state import RenderState
+
 from .database import ElementsDatabase
 
 from ...internal.constants import (
@@ -35,9 +37,9 @@ def init_events(ctx: "Context", claim_time=20.0):
         def matcher(key: str, value):
             return key.startswith("on_") and callable(value)
 
-        def transformer(key: str, value, props):
+        def transformer(key: str, value, props, render_state: RenderState):
             event_name = key.removeprefix("on").replace("_", "").lower()
-            action = DB.add_event(value)
+            action = DB.add_event(value, render_state.data.get("events_scope", None))
             props[SEAMLESS_INIT_ATTRIBUTE] = (
                 props.get(SEAMLESS_INIT_ATTRIBUTE, "")
                 + f"""this.addEventListener('{event_name}', (event) => {{

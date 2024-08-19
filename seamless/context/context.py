@@ -3,6 +3,7 @@ from socketio import AsyncServer
 
 from ..errors import ClientError
 
+from ..internal.injector import injector
 from ..internal.utils import to_async, wraps
 
 from .request import WSRequest, set_request
@@ -44,15 +45,15 @@ class Context:
 
     def add_prop_transformer(
         self,
-        matcher: Callable[[str, Any], bool] | str,
-        transformer: Callable[[str, Any, dict[str, Any]], None],
+        matcher: Callable[Concatenate[str, Any, ...], bool] | str,
+        transformer: Callable[Concatenate[str, Any, dict[str, Any], ...], None],
     ):
-        self._prop_transformers.append((matcher, transformer))
+        self._prop_transformers.append((matcher, self._inject(transformer)))
 
     def add_post_dict_render_transformer(
-        self, transformer: Callable[[dict[str, Any]], dict[str, Any]]
+        self, transformer: Callable[Concatenate[dict[str, Any], ...], dict[str, Any]]
     ):
-        self._post_dict_render_transformers.append(transformer)
+        self._post_dict_render_transformers.append(self._inject(transformer))
 
     @classmethod
     def standard(cls) -> "Context":
@@ -62,6 +63,9 @@ class Context:
 
         add_standard_features(context)
         return context
+    
+    def _inject(self, callback: Callable) -> Callable:
+        return injector().inject(callback)
 
 
 _DEFAULT_CONTEXT = Context.standard()

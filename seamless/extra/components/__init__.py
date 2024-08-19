@@ -36,6 +36,6 @@ def init_components(ctx: "Context"):
         except TypeError:
             raise ClientError(f"Invalid props for component {name}")
         
-        return to_dict(component)
+        return to_dict(component, events_scope=sid)
 
     ctx.on("component", get_component)
