@@ -44,6 +44,9 @@ class CounterPage(Component):
                         Button(class_name="btn btn-primary", type="submit")("Submit"),
                     )
                 ),
+                Button(
+                    class_name="btn btn-primary", type="submit", on_click=global_submit
+                )("Submit 2"),
             ),
         )
 
@@ -51,3 +54,9 @@ class CounterPage(Component):
         print("Form submitted!")
         print("socket id:", sid)
         print(event)
+
+
+def global_submit(event, sid: SocketID):
+    print("Global submit!")
+    print("socket id:", sid)
+    print(event)
