@@ -1,3 +1,9 @@
+import os, pathlib
+
+HERE = pathlib.Path(__file__).parent
+
+os.environ["PYTHONPATH"] = str(HERE.parent)
+
 from seamless import __version__
 
 # Configuration file for the Sphinx documentation builder.
