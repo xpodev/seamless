@@ -1,8 +1,7 @@
-import os, pathlib
+import sys, pathlib
 
 HERE = pathlib.Path(__file__).parent
-
-os.environ["PYTHONPATH"] = str(HERE.parent)
+sys.path.append(str(HERE.parent))
 
 from seamless import __version__
 
