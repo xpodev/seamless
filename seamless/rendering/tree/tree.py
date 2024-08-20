@@ -22,13 +22,13 @@ class ElementNode(TreeNode):
     def __init__(
         self,
         tag_name: str,
-        props: dict,
+        props: dict[str, "Primitive"] | None = None,
         children: list[TreeNode] | None = None,
         parent: "ElementNode | None" = None,
     ):
         super().__init__(parent=parent)
         self.tag_name = tag_name
-        self.props = props
+        self.props = dict(props or ())
         self.children = children
 
     def get_by_tag(self, tag: str):
@@ -79,11 +79,13 @@ class ElementNode(TreeNode):
     def insert_child(self, index: int, node: TreeNode):
         if self.children is None:
             raise RenderError("Cannot append child to inline elements")
+        
         self.children.insert(index, node)
 
     def append_child(self, node: TreeNode):
         if self.children is None:
             raise RenderError("Cannot append child to inline elements")
+        
         self.children.append(node)
 
 
@@ -119,6 +121,9 @@ def build_raw_tree(
 
 def build_tree(renderable: "Renderable | Primitive", *, context: "Context") -> TreeNode:
     tree = build_raw_tree(renderable, context=context)
+
+    if not isinstance(tree, ElementNode):
+        return tree
 
     for transformer in context.post_render_transformers:
         transformer(tree)
