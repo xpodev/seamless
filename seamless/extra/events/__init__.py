@@ -55,7 +55,7 @@ class EventsFeature(Feature):
                 value, render_state.custom_data.get("events_scope", None)
             )
             element.props[SEAMLESS_INIT_ATTRIBUTE] = (
-                element.props.get(SEAMLESS_INIT_ATTRIBUTE, "")
+                str(element.props.get(SEAMLESS_INIT_ATTRIBUTE, ""))
                 + f"""this.addEventListener('{event_name}', (event) => {{
               const outEvent = seamless.instance.eventObjectTransformer(
                 event, 

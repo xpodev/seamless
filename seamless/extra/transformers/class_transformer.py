@@ -1,8 +1,8 @@
 def class_transformer():
-    def matcher(key, value):
+    def matcher(key, _):
         return key == "class_name"
 
-    def transformer(key, class_name, element):
+    def transformer(_, class_name, element):
         if isinstance(class_name, list):
             class_name = " ".join(class_name)
 
