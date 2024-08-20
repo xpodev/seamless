@@ -8,6 +8,12 @@ InjectFactory: TypeAlias = Callable[[], T]
 
 
 class Injector:
+    """
+    A simple dependency injection container
+
+    To get an instance of a class, you can use the `injector` property of the `Context` class.
+    """
+
     def __init__(self):
         self.dependencies = dict[type, Callable]()
 
@@ -74,10 +80,3 @@ def injectable(factory: InjectFactory | None = None):
         return cls
 
     return decorator
-
-
-_DEFAULT_INJECTOR = Injector()
-
-
-def injector():
-    return _DEFAULT_INJECTOR

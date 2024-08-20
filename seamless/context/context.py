@@ -1,25 +1,30 @@
-from typing import Callable, Concatenate, ParamSpec, Any
+from typing import Callable, Concatenate, ParamSpec, Any, TYPE_CHECKING
 from socketio import AsyncServer
 
 from ..errors import ClientError
 
-from ..internal.injector import injector
+from ..internal.injector import Injector
 from ..internal.utils import to_async, wraps
 
 from .request import WSRequest, set_request
 
+if TYPE_CHECKING:
+    from ..rendering.tree import TreeNode, ElementNode
+
 P = ParamSpec("P")
 Feature = Callable[Concatenate["Context", P], Any]
 
+PropertyMatcher = Callable[Concatenate[str, Any, ...], bool] | str
+PropertyTransformer = Callable[Concatenate[str, Any, "ElementNode", ...], None]
+PostRenderTransformer = Callable[Concatenate["TreeNode", ...], None]
 
 class Context:
     def __init__(self) -> None:
-        """
-        :param claim_time: The time in seconds that a claim for an element is valid
-        """
         self.server = AsyncServer(async_mode="asgi")
-        self._prop_transformers = []
-        self._post_dict_render_transformers = []
+        self.injector = Injector()
+        self.injector.add(Context, self)
+        self._prop_transformers: list[tuple[PropertyMatcher, PropertyTransformer]] = []
+        self._post_render_transformers: list[PostRenderTransformer] = []
 
     def on(self, event, handler):
         @wraps(handler)
@@ -45,15 +50,23 @@ class Context:
 
     def add_prop_transformer(
         self,
-        matcher: Callable[Concatenate[str, Any, ...], bool] | str,
-        transformer: Callable[Concatenate[str, Any, dict[str, Any], ...], None],
+        matcher: PropertyMatcher,
+        transformer: PropertyTransformer
     ):
-        self._prop_transformers.append((matcher, self._inject(transformer)))
+        self._prop_transformers.append((matcher, self.inject(transformer)))
 
-    def add_post_dict_render_transformer(
-        self, transformer: Callable[Concatenate[dict[str, Any], ...], dict[str, Any]]
+    def add_post_render_transformer(
+        self, transformer: PostRenderTransformer
     ):
-        self._post_dict_render_transformers.append(self._inject(transformer))
+        self._post_render_transformers.append(self.inject(transformer))
+
+    @property
+    def prop_transformers(self):
+        return self._prop_transformers
+    
+    @property
+    def post_render_transformers(self):
+        return self._post_render_transformers
 
     @classmethod
     def standard(cls) -> "Context":
@@ -63,9 +76,9 @@ class Context:
 
         add_standard_features(context)
         return context
-    
-    def _inject(self, callback: Callable) -> Callable:
-        return injector().inject(callback)
+
+    def inject(self, callback: Callable) -> Callable:
+        return self.injector.inject(callback)
 
 
 _DEFAULT_CONTEXT = Context.standard()

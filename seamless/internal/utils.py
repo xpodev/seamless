@@ -3,6 +3,7 @@
 from functools import wraps as _wraps
 from inspect import iscoroutinefunction, ismethod
 from string import ascii_letters
+from typing import TypeGuard
 from uuid import uuid4
 
 ascii_length = len(ascii_letters)
@@ -107,3 +108,7 @@ def wraps(info):
             return callback(*args, **kwargs)
 
     return inner
+
+
+def is_primitive(value) -> TypeGuard[str | int | float | bool | None]:
+    return isinstance(value, (str, int, float, bool)) or value is None

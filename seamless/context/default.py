@@ -1,7 +1,9 @@
 from typing import TYPE_CHECKING
 
+
 from ..extra.components import init_components
-from ..extra.events import init_events
+from ..extra.events import EventsFeature
+from ..extra.state import init_state
 
 from ..extra.transformers.class_transformer import class_transformer
 from ..extra.transformers.dash_transformer import dash_transformer
@@ -15,7 +17,8 @@ if TYPE_CHECKING:
 
 def add_standard_features(ctx: "Context"):
     ctx.add_feature(init_components)
-    ctx.add_feature(init_events, claim_time=30)
+    ctx.add_feature(EventsFeature, claim_time=30)
+    ctx.add_feature(init_state)
 
     ctx.add_prop_transformer(*class_transformer())
     ctx.add_prop_transformer(*simple_transformer())

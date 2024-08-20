@@ -1,16 +1,18 @@
 from typing import TYPE_CHECKING
 from uuid import uuid4 as uuid
 
-from .render_state import RenderState
+from .tree.tree import ElementNode, TreeNode, TextNode
+
+from ..internal.utils import is_primitive
 
 from ..context import Context, get_context
 from ..context.request import request as _request
 from ..core.component import Component
 from ..errors import RenderError
 from ..element import Element
-from ..internal.injector import injector
-from .props import render_props, transform_props
-from seamless.rendering import render_state
+from .props import render_props
+from .render_state import RenderState
+from .tree import build_tree
 
 if TYPE_CHECKING:
     from ..types import Renderable, Primitive
@@ -21,7 +23,7 @@ def render(
     *,
     pretty=False,
     tab_indent=1,
-    context: "Context | None" = None,
+    context: Context | None = None,
     **render_state_data,
 ) -> str:
     """
@@ -40,13 +42,14 @@ def render(
     if request is not None:
         request.id = str(uuid())
 
+    context = get_context(context)
     render_state = RenderState(**render_state_data)
-    injector().add(RenderState, render_state)
+    context.injector.add(RenderState, render_state)
     return _render(
         element,
         pretty=pretty,
         tab_indent=tab_indent,
-        context=get_context(context),
+        context=context,
         render_state=render_state,
     )
 
@@ -56,53 +59,37 @@ def _render(
     *,
     pretty=False,
     tab_indent=1,
-    context: "Context",
+    context: Context,
     render_state: RenderState,
 ) -> str:
-    if isinstance(element, Component):
-        element = _render(
-            element.render(),
-            pretty=pretty,
-            tab_indent=tab_indent,
-            context=context,
-            render_state=render_state,
-        )
+    if is_primitive(element):
+        return str(element)
 
-    if not isinstance(element, Element):
-        return str(element) if element is not None else ""
+    assert isinstance(element, Component) or isinstance(element, Element)
 
-    tag_name = getattr(element, "tag_name", None)
+    tree = build_tree(element, context=context)
 
-    props = {
-        k: v
-        for k, v in transform_props(element.props, context=context).items()
-        if v not in [None, False]
-    }
+    def render_html(node: TreeNode, pretty=False, tab_indent=0):
+        tab = "  " * tab_indent if pretty else ""
+        newline = "\n" if pretty else ""
 
-    props_string = render_props(props)
-    open_tag = f"{tag_name} {props_string}".strip()
+        if isinstance(node, TextNode):
+            return tab + node.text
 
-    if element.inline:
-        if len(element.children) > 0:
-            # Maybe this should be a warning instead of an error?
-            raise RenderError("Inline components cannot have children")
-        return f"<{open_tag}>"
+        if not isinstance(node, ElementNode):
+            raise RenderError("Invalid node type")
+        
+        props_string = render_props(node.props)
+        open_tag = f"{node.tag_name} {props_string}".strip()
 
-    tab = "  " * tab_indent if pretty else ""
-    children_join_string = f"\n{tab}" if pretty else ""
-    children = [
-        _render(child, pretty=pretty, tab_indent=tab_indent + 1, context=context, render_state=render_state)
-        for child in element.children
-    ]
-    if pretty:
-        children.insert(0, "")
+        if node.children is None:
+            return tab + f"<{open_tag}>"
 
-    children = children_join_string.join(children)
+        children = newline.join(render_html(child, pretty=pretty, tab_indent=tab_indent + 1) for child in node.children)
 
-    if pretty:
-        children += f"\n{tab[:-2]}"
+        if not node.tag_name:
+            return tab + children
 
-    if not tag_name:
-        return children
+        return tab + f"<{open_tag}>{newline if children else ''}{children}</{node.tag_name}>"
 
-    return f"<{open_tag}>{children}</{tag_name}>"
+    return render_html(tree, pretty=pretty, tab_indent=tab_indent)
