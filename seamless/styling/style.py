@@ -44,5 +44,5 @@ class StyleObject:
 
 
 @transformer_for(lambda _, value: isinstance(value, StyleObject))
-def style_transformer(key, value: StyleObject, props):
-    props[key] = value.to_css()
+def style_transformer(key, value: StyleObject, element):
+    element.props[key] = value.to_css()
