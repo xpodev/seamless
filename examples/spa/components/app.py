@@ -1,4 +1,5 @@
 from seamless import Component, Div, Nav, Button
+from seamless.styling import StyleObject
 from seamless.extensions import State
 from seamless.components.router import Router, Route, RouterLink
 from pages import HomePage, CounterPage, BasePage, UserPage
@@ -16,7 +17,7 @@ class App(Component):
                         RouterLink(to="/counter", class_name="navbar-brand")("Counter"),
                     ),
                     Div(
-                        Button(on_click=self.foo)(
+                        Button(on_click=self.foo, style=StyleObject(border_radius="5px", background_color="red"))(
                             "Click me!"
                         )
                     )
