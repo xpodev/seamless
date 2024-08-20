@@ -1,5 +1,5 @@
 from typing import Generic, TypeVar, Unpack, TYPE_CHECKING
-from ..extra.transformers import transformer_for
+from ..extra.transformers import property_transformer
 
 if TYPE_CHECKING:
     from ..types.styling.css_properties import CSSProperties
@@ -43,6 +43,6 @@ class StyleObject:
         return StyleObject._StyleProperty(self, name)
 
 
-@transformer_for(lambda _, value: isinstance(value, StyleObject))
+@property_transformer(lambda _, value: isinstance(value, StyleObject))
 def style_transformer(key, value: StyleObject, element):
     element.props[key] = value.to_css()
