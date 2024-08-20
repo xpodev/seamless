@@ -9,14 +9,14 @@ from ..internal.utils import to_async, wraps
 from .request import WSRequest, set_request
 
 if TYPE_CHECKING:
-    from ..rendering.tree import TreeNode, ElementNode
+    from ..rendering.tree import ElementNode
 
 P = ParamSpec("P")
 Feature = Callable[Concatenate["Context", P], Any]
 
 PropertyMatcher = Callable[Concatenate[str, Any, ...], bool] | str
 PropertyTransformer = Callable[Concatenate[str, Any, "ElementNode", ...], None]
-PostRenderTransformer = Callable[Concatenate["TreeNode", ...], None]
+PostRenderTransformer = Callable[Concatenate["ElementNode", ...], None]
 
 class Context:
     def __init__(self) -> None:
