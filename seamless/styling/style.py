@@ -1,5 +1,5 @@
 from typing import Generic, TypeVar, Unpack, TYPE_CHECKING
-from ..extra.transformers import property_transformer
+from ..rendering.transformers import property_transformer
 
 if TYPE_CHECKING:
     from ..types.styling.css_properties import CSSProperties
