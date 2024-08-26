@@ -7,6 +7,8 @@ from ...core import Empty, JS
 from ...internal.constants import SEAMLESS_ELEMENT_ATTRIBUTE, SEAMLESS_INIT_ATTRIBUTE
 from ...rendering.tree import ElementNode
 
+from ..feature import Feature
+
 if TYPE_CHECKING:
     from ...context import Context
 
@@ -73,8 +75,12 @@ class State(metaclass=_StateMeta):
         return _StateInit()
 
 
-def init_state(context: "Context"):
-    def state_transformer():
+class StateFeature(Feature):
+    def __init__(self, context: "Context"):
+        super().__init__(context)
+        self.context.add_prop_transformer(*self.state_transformer())
+
+    def state_transformer(self):
         def matcher(_, value):
             return isinstance(value, Empty) and value.props.get("state-name", False)
 
@@ -93,8 +99,6 @@ def init_state(context: "Context"):
             del element.props[key]
 
         return matcher, transformer
-
-    context.add_prop_transformer(*state_transformer())
 
 
 del _StateMeta
