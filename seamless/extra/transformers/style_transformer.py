@@ -1,7 +1,7 @@
 from ...styling import StyleObject
 
 def style_transformer():
-    def matcher(_: str, value):
+    def matcher(_, value):
         return isinstance(value, StyleObject)
     
     def transformer(key: str, value: StyleObject, element):
