@@ -1,4 +1,4 @@
-from typing import Callable, Concatenate, ParamSpec, Any, TYPE_CHECKING
+from typing import Callable, Concatenate, ParamSpec, Any, TYPE_CHECKING, TypeVar
 from socketio import AsyncServer
 
 from ..errors import ClientError
@@ -10,6 +10,8 @@ from .request import WSRequest, set_request
 
 if TYPE_CHECKING:
     from ..rendering.tree import ElementNode
+
+T = TypeVar("T")
 
 P = ParamSpec("P")
 Feature = Callable[Concatenate["Context", P], Any]
@@ -25,6 +27,7 @@ class Context:
         self.injector.add(Context, self)
         self._prop_transformers: list[tuple[PropertyMatcher, PropertyTransformer]] = []
         self._post_render_transformers: list[PostRenderTransformer] = []
+        self._features: dict[type, Any] = {}
 
     def on(self, event, handler):
         @wraps(handler)
@@ -46,7 +49,12 @@ class Context:
         return await self.server.emit(event, *args)
 
     def add_feature(self, feature: Feature[P], *args: P.args, **kwargs: P.kwargs):
-        feature(self, *args, **kwargs)
+            result = feature(self, *args, **kwargs)
+            if isinstance(feature, type):
+                self._features[feature] = result
+
+    def get_feature(self, feature: type[T]) -> T:
+        return self._features[feature]
 
     def add_prop_transformer(
         self,
