@@ -22,7 +22,7 @@ class ElementNode(TreeNode):
     def __init__(
         self,
         tag_name: str,
-        props: dict[str, "Primitive"] | None = None,
+        props: dict | None = None,
         children: list[TreeNode] | None = None,
         parent: "ElementNode | None" = None,
     ):
