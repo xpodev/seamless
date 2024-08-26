@@ -1,14 +1,18 @@
 # type: ignore
 
-from typing import Any
+from typing import Any, TYPE_CHECKING
+
 from .utils import Promise, _obj, wraps
 from ..errors import ClientError
+
+if TYPE_CHECKING:
+    from ..context import Context
 
 
 class _DataValidationError(ClientError): ...
 
 
-def wrap_with_validation(func):
+def wrap_with_validation(func, *, context: "Context"):
     @wraps(func)
     def no_validation(*args):
         return func(*[_obj(arg) if isinstance(arg, dict) else arg for arg in args])
@@ -30,7 +34,7 @@ def wrap_with_validation(func):
             parameter.annotation if parameter.annotation is not inspect._empty else Any,
             parameter.default if parameter.default is not inspect._empty else None,
         )
-        for name, parameter in parameters.items()
+        for name, parameter in parameters.items() if parameter.annotation not in context.injector.dependencies
     }
 
     model = create_model(
