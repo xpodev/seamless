@@ -108,6 +108,8 @@ This dict can be used to render components on the client side after the initial 
 
 It also corresponds to React's virtual DOM representation of the component.
 
+.. _props-rendering:
+
 Props Rendering
 ###############
 

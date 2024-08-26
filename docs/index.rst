@@ -1,4 +1,18 @@
-####################################
+########
+Seamless
+########
+
+.. image:: _static/images/seamless.svg
+   :alt: Seamless
+   :align: center
+
+.. image:: https://img.shields.io/pypi/v/python-seamless.svg
+   :target: https://pypi.org/project/python-seamless/
+   :alt: PyPI version
+   :align: center
+
+|br|
+
 Welcome to Seamless's documentation!
 ####################################
 
