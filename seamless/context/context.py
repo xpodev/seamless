@@ -89,8 +89,13 @@ class Context:
         return self.injector.inject(callback)
 
 
-_DEFAULT_CONTEXT = Context.standard()
+_GLOBAL_CONTEXT = Context.standard()
 
 
 def get_context(context: Context | None = None) -> Context:
-    return context or _DEFAULT_CONTEXT
+    return context or _GLOBAL_CONTEXT
+
+
+def set_global_context(context: Context):
+    global _GLOBAL_CONTEXT
+    _GLOBAL_CONTEXT = context
