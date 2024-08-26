@@ -104,25 +104,62 @@ Then, pass the ``MyApp`` component in the ``Page`` component and render the page
         import uvicorn
         uvicorn.run(app, host="localhost", port=8000)
 
-API Reference
-#############
 
-Router Component
-================
-+-------------------+-----------+--------------------------------------------------+---------------+
-| Name              | Type      | Description                                      | Default value |
-+===================+===========+==================================================+===============+
-| loading_component | Component | The component to show between components loading | None          |
-+-------------------+-----------+--------------------------------------------------+---------------+
+Path Parameters
+###############
+
+The ``Route`` component supports path parameters.
+
+To use path parameters, put the parameter name inside curly braces in the path.
+Optionally, you can specify a type for the parameter by adding a colon and the type name after the parameter name.
+
+The supported types are:
+
+- ``int``
+- ``float``
+
+The parameter will be passed to the component as a prop with the same name.
+
+.. code-block:: python
+
+    # pages.py
+
+    from dataclasses import dataclass
+    from seamless import Component, Div
+
+    @dataclass
+    class User(Component):
+        id: int
+
+        def render(self):
+            return Div()(
+                f"User Page - {self.id}"
+            )
 
 
-Route Component
-===============
+.. code-block:: python
+    :caption: Using path parameters
 
-+-----------+-----------+--------------------------------------------------+---------------+
-| Name      | Type      | Description                                      | Default value |
-+===========+===========+==================================================+===============+
-| path      | string    | The path of the page                             | None          |
-+-----------+-----------+--------------------------------------------------+---------------+
-| component | Component | The component to render when the path is matched | None          |
-+-----------+-----------+--------------------------------------------------+---------------+
+    # my_app.py
+
+    from seamless import Nav, Div, Component
+    from seamless.components.router import Router, Route, RouterLink 
+    from pages import Home, About, Contact, User
+
+    class MyApp(Component):
+        def render(self):
+            return Div(class_name="root")(
+              Nav(
+                  RouterLink(to="/user/1")(
+                      "User 1"
+                  ),
+                  RouterLink(to="/user/2")(
+                      "User 2"
+                  )
+              ),
+              Div(class_name="content")(
+                  Router(
+                      Route(path="/user/{id:int}", component=User)
+                  )
+              )
+            ) 

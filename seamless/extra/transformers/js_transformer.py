@@ -6,12 +6,12 @@ def init_transformer():
     def matcher(key: str, value):
         return key == "init" and isinstance(value, JavaScript)
 
-    def transformer(key: str, source: JavaScript, props):
-        props[SEAMLESS_ELEMENT_ATTRIBUTE] = True
-        props[SEAMLESS_INIT_ATTRIBUTE] = (
-            props.get(SEAMLESS_INIT_ATTRIBUTE, "") + source.code
+    def transformer(key: str, source: JavaScript, element):
+        element.props[SEAMLESS_ELEMENT_ATTRIBUTE] = True
+        element.props[SEAMLESS_INIT_ATTRIBUTE] = (
+            element.props.get(SEAMLESS_INIT_ATTRIBUTE, "") + source.code
         )
-        del props[key]
+        del element.props[key]
 
     return matcher, transformer
 
@@ -20,14 +20,14 @@ def js_transformer():
     def matcher(key: str, value):
         return key.startswith("on_") and isinstance(value, JavaScript)
 
-    def transformer(key: str, source: JavaScript, props):
+    def transformer(key: str, source: JavaScript, element):
         event_name = key.removeprefix("on_")
 
-        props[SEAMLESS_ELEMENT_ATTRIBUTE] = True
-        props[SEAMLESS_INIT_ATTRIBUTE] = (
-            props.get(SEAMLESS_INIT_ATTRIBUTE, "")
+        element.props[SEAMLESS_ELEMENT_ATTRIBUTE] = True
+        element.props[SEAMLESS_INIT_ATTRIBUTE] = (
+            element.props.get(SEAMLESS_INIT_ATTRIBUTE, "")
             + f"\nthis.addEventListener('{event_name}', (event) => {{{source.code}}});"
         )
-        del props[key]
+        del element.props[key]
 
     return matcher, transformer

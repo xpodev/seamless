@@ -1,5 +1,3 @@
-from typing import Any
-
 _SIMPLE_TRANSFORMERS = {
     "html_for": "for",
     "accept_charset": "accept-charset",
@@ -16,11 +14,11 @@ _SIMPLE_TRANSFORMERS = {
 
 
 def simple_transformer():
-    def matcher(key: str, value):
+    def matcher(key: str, _):
         return key in _SIMPLE_TRANSFORMERS
 
-    def transformer(key: str, value, element_props: dict[str, Any]):
-        element_props[_SIMPLE_TRANSFORMERS[key]] = value
-        del element_props[key]
+    def transformer(key: str, value, element):
+        element.props[_SIMPLE_TRANSFORMERS[key]] = value
+        del element.props[key]
 
     return matcher, transformer

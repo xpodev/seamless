@@ -1,4 +1,5 @@
-from typing import Any, Generic, Literal, TypeVar, TypedDict, Union, TypeAlias
+from typing import Any, Generic, Literal, TypeVar, Union, TypeAlias
+from typing_extensions import TypedDict
 
 float_ = float
 T = TypeVar("T")
@@ -12,7 +13,7 @@ class StyleProperty(Generic[T]):
     def __call__(self, value: T) -> Any: ...
 
 
-class CSSProperties(TypedDict, total=False):
+class CSSProperties(TypedDict, total=False, closed=False):
     align_content: AlignContent
     align_items: Literal["flex-start", "flex-end", "center", "baseline", "stretch"]
     align_self: Union[

@@ -1,14 +1,19 @@
 from pathlib import Path
 from json import dumps
-from typing import Any, overload
+from typing import Any, overload, TYPE_CHECKING
 
 from ...core.component import Component
 from ...core import Empty, JS
 from ...internal.constants import SEAMLESS_ELEMENT_ATTRIBUTE, SEAMLESS_INIT_ATTRIBUTE
-from ...extra.transformers import transformer_for
+from ...rendering.tree import ElementNode
+
+from ..feature import Feature
+
+if TYPE_CHECKING:
+    from ...context import Context
 
 HERE = Path(__file__).parent
-EMPTY = object()
+_EMPTY = object()
 
 
 class _StateMeta(type):
@@ -40,7 +45,7 @@ class State(metaclass=_StateMeta):
             f"""const state = seamless.state.getState('{self.name}');\
             seamless.state.setState('{self.name}', {value})"""
         )
-    
+
     def __str__(self):
         return f"seamless.state.getState('{self.name}')"
 
@@ -49,8 +54,8 @@ class State(metaclass=_StateMeta):
     @overload
     def __call__(self, value: Any) -> JS: ...
 
-    def __call__(self, value=EMPTY):
-        if value is EMPTY:
+    def __call__(self, value=_EMPTY):
+        if value is _EMPTY:
             return self.get()
         return self.set(value)
 
@@ -70,21 +75,30 @@ class State(metaclass=_StateMeta):
         return _StateInit()
 
 
-@transformer_for(
-    lambda _, value: isinstance(value, Empty) and value.props.get("state-name", False)
-)
-def transform_state(key, value, props):
-    empty_props = value.props
-    props[SEAMLESS_ELEMENT_ATTRIBUTE] = True
-    props[SEAMLESS_INIT_ATTRIBUTE] = (
-        props.get(SEAMLESS_INIT_ATTRIBUTE, "")
-        + f"""document.addEventListener('stateChange:{empty_props["state-name"]}', (event) => {{
-            const state = event.detail;
-            this.setAttribute('{key}', state.currentValue);
-        }});
-        this.setAttribute('{key}', seamless.state.getState('{empty_props["state-name"]}'));"""
-    )
-    del props[key]
+class StateFeature(Feature):
+    def __init__(self, context: "Context"):
+        super().__init__(context)
+        self.context.add_prop_transformer(*self.state_transformer())
+
+    def state_transformer(self):
+        def matcher(_, value):
+            return isinstance(value, Empty) and value.props.get("state-name", False)
+
+        def transformer(key, value: Empty, element: ElementNode):
+            empty_props = value.props
+            element.props[SEAMLESS_ELEMENT_ATTRIBUTE] = True
+            element.props[SEAMLESS_INIT_ATTRIBUTE] = (
+                element.props.get(SEAMLESS_INIT_ATTRIBUTE, "")
+                + f"""document.addEventListener('stateChange:{empty_props["state-name"]}', (event) => {{
+                    const state = event.detail;
+                    this.setAttribute('{key}', state.currentValue);
+                }});
+                this.setAttribute('{key}', seamless.state.getState('{empty_props["state-name"]}'));"""
+            )
+
+            del element.props[key]
+
+        return matcher, transformer
 
 
 del _StateMeta

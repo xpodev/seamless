@@ -1,6 +1,5 @@
 from seamless import Component, Div, render
 from seamless.element import Element
-from seamless.rendering.json import to_dict
 
 import unittest
 
@@ -73,7 +72,7 @@ class TestRender(unittest.TestCase):
 
     def test_render_json(self):
         self.assertEqual(
-            to_dict(Div()), {"type": "div", "children": [], "props": {}}
+            render(Div(), to="json"), {"type": "div", "children": [], "props": {}}
         )
 
     def test_render_json_component(self):
@@ -82,7 +81,7 @@ class TestRender(unittest.TestCase):
                 return Div()
 
         self.assertEqual(
-            to_dict(MyComponent()), {"type": "div", "children": [], "props": {}}
+            render(MyComponent(), to="json"), {"type": "div", "children": [], "props": {}}
         )
 
     def test_render_json_element(self):
@@ -90,13 +89,13 @@ class TestRender(unittest.TestCase):
             tag_name = "my-element"
 
         self.assertEqual(
-            to_dict(MyElement()),
+            render(MyElement(), to="json"),
             {"type": "my-element", "children": [], "props": {}},
         )
 
     def test_render_json_nested(self):
         self.assertEqual(
-            to_dict(Div(Div())),
+            render(Div(Div()), to="json"),
             {
                 "type": "div",
                 "children": [{"type": "div", "children": [], "props": {}}],
@@ -106,13 +105,13 @@ class TestRender(unittest.TestCase):
 
     def test_render_json_text(self):
         self.assertEqual(
-            to_dict(Div("Hello")),
+            render(Div("Hello"), to="json"),
             {"type": "div", "children": ["Hello"], "props": {}},
         )
 
     def test_render_json_attributes(self):
         self.assertEqual(
-            to_dict(Div(id="my-id")),
+            render(Div(id="my-id"), to="json"),
             {"type": "div", "children": [], "props": {"id": "my-id"}},
         )
 
@@ -134,7 +133,7 @@ class TestRender(unittest.TestCase):
                 )
 
         self.assertEqual(
-            to_dict(MyComponent2()),
+            render(MyComponent2(), to="json"),
             {
                 "type": "div",
                 "children": [

@@ -1,8 +1,11 @@
 from seamless import Component, Div, Nav, Button
+from seamless.context.context import Context
+from seamless.styling import StyleObject
 from seamless.extensions import State
 from seamless.components.router import Router, Route, RouterLink
 from pages import HomePage, CounterPage, BasePage, UserPage
 from components.loading import Loading
+from components.usage import Usage
 
 
 class App(Component):
@@ -16,7 +19,7 @@ class App(Component):
                         RouterLink(to="/counter", class_name="navbar-brand")("Counter"),
                     ),
                     Div(
-                        Button(on_click=self.foo)(
+                        Button(on_click=self.foo, style=StyleObject(border_radius="5px", background_color="red"))(
                             "Click me!"
                         )
                     )
@@ -26,11 +29,12 @@ class App(Component):
                         Route(path="/", component=HomePage),
                         Route(path="/counter", component=CounterPage),
                         Route(path="/user/{user_id:int}", component=UserPage),
+                        Route(path="/usage", component=Usage),
                     )
                 ),
             ),
             title="Seamless",
         )
 
-    def foo(self, event):
+    def foo(self, event, context: Context):
         print("foo")

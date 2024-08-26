@@ -1,24 +1,19 @@
-from abc import abstractmethod
-from typing import TYPE_CHECKING, ClassVar
-
+from abc import abstractmethod, ABC
+from typing import TYPE_CHECKING, ClassVar, overload
 
 if TYPE_CHECKING:
     from ..types import RenderResult, ChildType
 
 
-class Component:
+class Component(ABC):
     children: tuple["ChildType", ...]
     __seamless_name__: ClassVar[str] = "Component"
 
     def __init__(self, *children: "ChildType") -> None:
-        if type(self) is Component:
-            raise TypeError("Cannot instantiate Component directly")
-        
         self.children = children
 
     @abstractmethod
-    def render(self) -> "RenderResult":
-        raise NotImplementedError(f"{type(self).__name__}.render() is not implemented")
+    def render(self, *_, **kwargs) -> "RenderResult": ...
 
     def __init_subclass__(cls, **kwargs) -> None:
         super().__init_subclass__(**kwargs)

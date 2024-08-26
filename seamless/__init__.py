@@ -1,10 +1,10 @@
 from .context import Context
 from .core import JS
-from .rendering.html import render
+from .rendering import render
 from .core import Component
 from .html import *
+from .version import version as __version__
 
-__version__ = "0.9.0"
 __all__ = [
     "Component",
     "A",

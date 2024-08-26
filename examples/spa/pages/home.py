@@ -18,6 +18,6 @@ class HomePage(Component):
             Div(class_name="row mt-4")(
                 "Search User: ",
                 Input(type="text", on_change=search_user("this.value")),
-                Button(on_click=JS(f"seamless.navigateTo('/user/' + {search_user} + '?a=1')"))("Search"),
+                Button(on_click=JS(f"seamless.navigateTo('/user/' + {search_user})"))("Search"),
             ),
         )

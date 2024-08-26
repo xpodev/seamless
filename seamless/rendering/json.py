@@ -1,34 +1,45 @@
 from typing import TYPE_CHECKING
 
-from ..core.component import Component
-from ..element import Element
-from .props import transform_props
+from ..errors import RenderError
+from .render_state import RenderState
+from .tree import build_tree, TreeNode, TextNode, ElementNode
 
 if TYPE_CHECKING:
     from ..types import Renderable, Primitive
     from ..context import Context
 
 
-def to_dict(element: "Renderable | Primitive", *, context: "Context | None" = None):
+def render_json(
+    element: "Renderable | Primitive",
+    *,
+    context: "Context | None" = None,
+    **render_state_data,
+):
     from ..context import get_context
 
-    return _to_dict(element, context=get_context(context))
+    context = get_context(context)
+    render_state = RenderState(root=element, render_target="json", **render_state_data)
+    context.injector.add(RenderState, render_state)
+
+    tree = build_tree(element, context=context)
+
+    return _render_json(tree)
 
 
-def _to_dict(element: "Renderable | Primitive", *, context: "Context"):
-    if isinstance(element, Component):
-        element = _to_dict(element.render(), context=context)
+def _render_json(node: TreeNode):
+    if isinstance(node, TextNode):
+        return node.text
 
-    if not isinstance(element, Element):
-        return element
+    if not isinstance(node, ElementNode):
+        raise RenderError("Invalid node type")
+
+    children = []
+    if node.children is not None:
+        for child in node.children:
+            children.append(_render_json(child))
 
     return {
-        "type": element.tag_name,
-        "children": list(
-            map(
-                to_dict,
-                element.children,
-            )
-        ),
-        "props": transform_props(element.props, context=context),
+        "type": node.tag_name,
+        "props": node.props,
+        "children": children,
     }

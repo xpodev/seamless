@@ -1,14 +1,15 @@
 from typing import TYPE_CHECKING, TypeVar, Generic, Unpack
 
 from .internal.utils import to_iter
-from .types.html import HTMLElement
-
 
 if TYPE_CHECKING:
     from .types import ChildrenType, ChildType
+    from .types.html import HTMLElement
 
+    PropsType = TypeVar("PropsType", bound=HTMLElement)
 
-PropsType = TypeVar("PropsType", bound=HTMLElement)
+else:
+    PropsType = TypeVar("PropsType")
 
 
 class Element(Generic[PropsType]):
@@ -16,7 +17,7 @@ class Element(Generic[PropsType]):
         self,
         *args: "ChildType",
         children: "ChildrenType | None" = None,
-        **kwargs: Unpack[PropsType], # type: ignore - until https://github.com/python/typing/issues/1399 is resolved
+        **kwargs: Unpack[PropsType],  # type: ignore - until https://github.com/python/typing/issues/1399 is resolved
     ):
         self.children = tuple(to_iter(children or args))
         self.props = kwargs

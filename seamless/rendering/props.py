@@ -1,27 +1,27 @@
 from html import escape
 from typing import Any, TYPE_CHECKING
+
 from ..errors import RenderError
 
 if TYPE_CHECKING:
     from ..context import Context
+    from .tree import ElementNode
 
 
-def transform_props(props: dict[str, Any], *, context: "Context"):
-    props_copy = props.copy()
-
-    for matcher, transformer in context._prop_transformers:
+def transform_props(element: "ElementNode", *, context: "Context"):
+    for matcher, transformer in context.prop_transformers:
         if isinstance(matcher, str):
             key = matcher
-            if key in props_copy:
-                value = props_copy[key]
+            if key in element.props:
+                value = element.props[key]
                 if callable(transformer):
-                    transformer(key, value, props_copy)
+                    transformer(key, value, element)
                 else:
-                    props_copy[transformer] = value
+                    element.props[transformer] = value
         elif callable(matcher):
-            for key, value in list(props_copy.items()):
+            for key, value in list(element.props.items()):
                 if matcher(key, value):
-                    transformer(key, value, props_copy)
+                    transformer(key, value, element)
         else:
             raise RenderError(
                 f"Invalid matcher: {matcher} must be a callable or a string."
@@ -29,7 +29,7 @@ def transform_props(props: dict[str, Any], *, context: "Context"):
 
     return {
         key: value
-        for key, value in props_copy.items()
+        for key, value in element.props.items()
         if value is not None
     }
 

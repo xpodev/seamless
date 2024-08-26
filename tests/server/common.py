@@ -44,7 +44,7 @@ class SampleComponent(Component):
             AnotherComponent(name="world"),
         )
 
-    def click(self, event: dict[str, str]):
+    def click(self, event):
         print("clicked", event)
 
 
@@ -56,7 +56,7 @@ class Card(Component):
         styles = CSS.module("./static/card.css")
         return Div(
             class_name=styles.card,
-            style={"border-radius": "5px"} if self.rounded else None,
+            style=StyleObject(border_radius="5px") if self.rounded else None,
         )(*self.children)
 
 

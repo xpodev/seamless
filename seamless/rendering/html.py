@@ -1,18 +1,25 @@
 from typing import TYPE_CHECKING
 from uuid import uuid4 as uuid
 
-from ..context import Context, get_context
 from ..context.request import request as _request
 from ..errors import RenderError
-from ..core.component import Component
-from ..element import Element
-from .props import render_props, transform_props
+from .props import render_props
+from .render_state import RenderState
+from .tree import ElementNode, TreeNode, TextNode, build_tree
 
 if TYPE_CHECKING:
     from ..types import Renderable, Primitive
+    from ..context import Context
 
 
-def render(element: "Renderable | Primitive", *, pretty=False, tab_indent=1, context: "Context | None" = None) -> str:
+def render_html(
+    element: "Renderable | Primitive",
+    *,
+    pretty=False,
+    tab_indent=1,
+    context: "Context | None" = None,
+    **render_state_data,
+) -> str:
     """
     Renders the given element into an HTML string.
 
@@ -24,47 +31,45 @@ def render(element: "Renderable | Primitive", *, pretty=False, tab_indent=1, con
     Returns:
         str: The rendered HTML string.
     """
+    from ..context import get_context
+
     request = _request()
     if request is not None:
         request.id = str(uuid())
-    return _render(element, pretty=pretty, tab_indent=tab_indent, context=get_context(context))
+
+    context = get_context(context)
+    render_state = RenderState(root=element, render_target="html", **render_state_data)
+    context.injector.add(RenderState, render_state)
+
+    tree = build_tree(element, context=context)
+
+    return _render_html(tree, pretty=pretty, tab_indent=tab_indent)
 
 
-def _render(element: "Renderable | Primitive", *, pretty=False, tab_indent=1, context: "Context") -> str:
-    if isinstance(element, Component):
-        element = _render(element.render(), pretty=pretty, tab_indent=tab_indent, context=context)
-
-    if not isinstance(element, Element):
-        return str(element) if element is not None else ""
-
-    tag_name = getattr(element, "tag_name", None)
-
-    props = {k: v for k, v in transform_props(element.props, context=context).items() if v not in [None, False]}
-
-    props_string = render_props(props)
-    open_tag = f"{tag_name} {props_string}".strip()
-
-    if element.inline:
-        if len(element.children) > 0:
-            # Maybe this should be a warning instead of an error?
-            raise RenderError("Inline components cannot have children")
-        return f"<{open_tag}>"
-
+def _render_html(node: TreeNode, pretty=False, tab_indent=0):
     tab = "  " * tab_indent if pretty else ""
-    children_join_string = f"\n{tab}" if pretty else ""
-    children = [
-        _render(child, pretty=pretty, tab_indent=tab_indent + 1, context=context)
-        for child in element.children
-    ]
-    if pretty:
-        children.insert(0, "")
+    newline = "\n" if pretty else ""
 
-    children = children_join_string.join(children)
+    if isinstance(node, TextNode):
+        return tab + node.text
 
-    if pretty:
-        children += f"\n{tab[:-2]}"
+    if not isinstance(node, ElementNode):
+        raise RenderError("Invalid node type")
 
-    if not tag_name:
-        return children
+    props_string = render_props(node.props)
+    open_tag = f"{node.tag_name} {props_string}".strip()
 
-    return f"<{open_tag}>{children}</{tag_name}>"
+    if node.children is None:
+        return tab + f"<{open_tag}>"
+
+    children = newline.join(
+        _render_html(child, pretty=pretty, tab_indent=tab_indent + 1)
+        for child in node.children
+    )
+
+    if not node.tag_name:
+        return tab + children
+
+    return (
+        tab + f"<{open_tag}>{newline if children else ''}{children}</{node.tag_name}>"
+    )

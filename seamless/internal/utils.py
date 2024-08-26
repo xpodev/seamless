@@ -3,6 +3,7 @@
 from functools import wraps as _wraps
 from inspect import iscoroutinefunction, ismethod
 from string import ascii_letters
+from typing import TypeGuard
 from uuid import uuid4
 
 ascii_length = len(ascii_letters)
@@ -80,20 +81,19 @@ def wraps(info):
     def inner(callback):
         if ismethod(info):
 
-            class _Wrapper:
-                if iscoroutinefunction(callback):
+            if iscoroutinefunction(callback):
 
-                    @_wraps(info)
-                    async def wrapper(self, *args, **kwargs):
-                        return await callback(*args, **kwargs)
+                @_wraps(info.__func__)
+                async def wrapper(_, *args, **kwargs):
+                    return await callback(*args, **kwargs)
 
-                else:
+            else:
 
-                    @_wraps(info)
-                    def wrapper(self, *args, **kwargs):
-                        return callback(*args, **kwargs)
+                @_wraps(info.__func__)
+                def wrapper(_, *args, **kwargs):
+                    return callback(*args, **kwargs)
 
-            return _Wrapper().wrapper
+            return wrapper.__get__(info.__self__, info.__class__)
 
         if iscoroutinefunction(callback):
 
@@ -101,10 +101,14 @@ def wraps(info):
             async def wrapper(*args, **kwargs):
                 return await callback(*args, **kwargs)
 
-            return wrapper
-
         @_wraps(info)
         def wrapper(*args, **kwargs):
             return callback(*args, **kwargs)
+        
+        return wrapper
 
     return inner
+
+
+def is_primitive(value) -> TypeGuard[str | int | float | bool | None]:
+    return isinstance(value, (str, int, float, bool)) or value is None
