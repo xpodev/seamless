@@ -35,15 +35,13 @@ class ElementsDatabase:
         self._unclaimed_elements_timeouts = dict[str, Timer]()
         self.claim_time = claim_time
 
-    def add_event(self, callback: Callable, scope=None):
-        action_id = str(hash(callback))
+    def add_event(self, action: Action, scope=None):
         try:
-            return self.actions_ids[action_id]
+            return self.actions_ids[action.id]
         except KeyError:
             pass
 
         request = _request()
-        action = Action(wrap_with_validation(callback), action_id)
 
         if request.type == RequestType.HTTP:
             if request.id not in self._unclaimed_elements:
@@ -59,7 +57,7 @@ class ElementsDatabase:
             self._unclaimed_elements_timeouts[request.id] = timer
             timer.start()
         else:
-            self.actions_ids[action_id] = action
+            self.actions_ids[action.id] = action
 
             if scope:
                 if scope not in self.events:

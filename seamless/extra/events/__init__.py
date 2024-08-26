@@ -1,6 +1,8 @@
-from typing import TYPE_CHECKING
+from typing import TYPE_CHECKING, Callable
 
-from .database import ElementsDatabase
+from ...internal.validation import wrap_with_validation
+
+from .database import ElementsDatabase, Action
 
 from ..feature import Feature
 
@@ -48,11 +50,14 @@ class EventsFeature(Feature):
             return key.startswith("on_") and callable(value)
 
         def transformer(
-            key: str, value, element: ElementNode, render_state: RenderState
+            key: str, value: Callable, element: ElementNode, render_state: RenderState
         ):
             event_name = key.removeprefix("on").replace("_", "").lower()
             action = self.DB.add_event(
-                value, render_state.custom_data.get("events_scope", None)
+                Action(
+                    wrap_with_validation(self.context.inject(value), context=self.context), str(hash(value))
+                ),
+                render_state.custom_data.get("events_scope", None),
             )
             element.props[SEAMLESS_INIT_ATTRIBUTE] = (
                 str(element.props.get(SEAMLESS_INIT_ATTRIBUTE, ""))
