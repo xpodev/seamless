@@ -1,6 +1,7 @@
-from functools import wraps
 from inspect import iscoroutinefunction, signature
 from typing import Type, TypeVar, overload, Callable, TypeAlias
+
+from ..internal.utils import wraps
 
 T = TypeVar("T")
 
@@ -32,46 +33,33 @@ class Injector:
 
             @wraps(callback)
             async def wrapper(*args, **kwargs):  # type: ignore
-                positional_args, keyword_args = self.inject_params(callback)
-                args = list(args)
-                for i, arg in enumerate(positional_args):
-                    if type(arg) not in self.dependencies:
-                        positional_args[i] = args.pop(0)
-                return await callback(*positional_args, **keyword_args, **kwargs)
+                keyword_args = self.inject_params(callback)
+                return await callback(*args, **keyword_args, **kwargs)
 
         else:
 
             @wraps(callback)
             def wrapper(*args, **kwargs):
-                positional_args, keyword_args = self.inject_params(callback)
-                args = list(args)
-                for i, arg in enumerate(positional_args):
-                    if type(arg) not in self.dependencies:
-                        positional_args[i] = args.pop(0)
-                return callback(*positional_args, **keyword_args, **kwargs)
+                keyword_args = self.inject_params(callback)
+                return callback(*args, **keyword_args, **kwargs)
 
         return wrapper
 
-    def inject_params(self, callback: Callable) -> tuple[list, dict]:
+    def inject_params(self, callback: Callable):
         signature_ = signature(callback)
         parameters = signature_.parameters
 
-        positional_args = []
         keyword_args = {}
 
         for name, parameter in parameters.items():
             if parameter.kind == parameter.POSITIONAL_OR_KEYWORD:
                 if parameter.annotation in self.dependencies:
-                    positional_args.append(self.dependencies[parameter.annotation]())
-                else:
-                    positional_args.append(parameter.default)
+                    keyword_args[name] = self.dependencies[parameter.annotation]()
             elif parameter.kind == parameter.KEYWORD_ONLY:
                 if parameter.annotation in self.dependencies:
                     keyword_args[name] = self.dependencies[parameter.annotation]()
-                else:
-                    keyword_args[name] = parameter.default
 
-        return positional_args, keyword_args
+        return keyword_args
 
 
 def injectable(factory: InjectFactory | None = None):
