@@ -1,4 +1,5 @@
-from typing import Iterable, Literal, TypedDict, overload
+from typing import Literal, overload, Iterable
+from typing_extensions import TypedDict
 
 from ..internal.utils import to_iter
 from ..html import (
@@ -9,19 +10,19 @@ from ..html import (
     Body,
     Meta,
 )
-from ..types import Primitive, Renderable, ChildrenType, ChildType
+from ..types import ChildrenType, ChildType
 
 from ..core.component import Component
 
 
-class _HtmlProps(TypedDict):
+class _HtmlProps(TypedDict, total=False, closed=False):
     lang: str
 
 
-class _HeadProps(TypedDict): ...
+class _HeadProps(TypedDict, total=False, closed=False): ...
 
 
-class _BodyProps(TypedDict):
+class _BodyProps(TypedDict, total=False, closed=False):
     dir: Literal["ltr", "rtl"]
 
 
@@ -43,7 +44,7 @@ class Page(Component, name="SeamlessBasePage"):
         self._head_props = head_props or {}
         self._body_props = body_props or {"dir": "ltr"}
 
-    def head(self) -> Iterable[Renderable | Primitive]:
+    def head(self) -> Iterable[ChildType]:
         """
         The children that will be inside the `head` tag.
         """
@@ -53,7 +54,7 @@ class Page(Component, name="SeamlessBasePage"):
             Title(self.title),
         )
 
-    def body(self) -> Iterable[Renderable | Primitive]:
+    def body(self) -> Iterable[ChildType]:
         """
         The children that will be inside the `body` tag.
         """

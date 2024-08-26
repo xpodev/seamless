@@ -1,4 +1,5 @@
-from typing import TypedDict, Callable, TypeVar, TYPE_CHECKING, Union, Concatenate
+from typing import Callable, TypeVar, TYPE_CHECKING, Union, Concatenate, Iterable
+from typing_extensions import TypedDict
 
 if TYPE_CHECKING:
     from ..styling import StyleObject
@@ -129,7 +130,7 @@ class HTMLEventProps(TypedDict, total=False):
 class HTMLElement(TypedDict, total=False, closed=False):
     access_key: str
     auto_capitalize: str
-    class_name: str
+    class_name: str | Iterable[str]
     content_editable: str
     # data: dict[str, str]  # add this if needed in the future
     dir: str
