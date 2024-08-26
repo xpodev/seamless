@@ -101,11 +101,11 @@ def wraps(info):
             async def wrapper(*args, **kwargs):
                 return await callback(*args, **kwargs)
 
-            return wrapper
-
         @_wraps(info)
         def wrapper(*args, **kwargs):
             return callback(*args, **kwargs)
+        
+        return wrapper
 
     return inner
 
