@@ -1,9 +1,9 @@
-import os
-
+from .context import Context
+from .core import JS
+from .rendering import render
+from .core import Component
+from .html import *
 from .version import version as __version__
-
-if not os.environ.get("SEAMLESS_VERSION_ONLY", False):
-    from ._init import *
 
 __all__ = [
     "Component",
@@ -79,5 +79,4 @@ __all__ = [
     "Context",
     "JS",
     "render",
-    "__version__",
 ]

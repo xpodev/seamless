@@ -10,6 +10,9 @@ permissions:
 jobs:
   deploy:
     runs-on: ubuntu-latest
+    
+    env:
+      SEAMLESS_VERSION_ONLY: true
 
     steps:
       - uses: actions/checkout@v4
