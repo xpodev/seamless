@@ -1,4 +1,4 @@
-from typing import Collection, TypeAlias, TypeVar
+from typing import Collection, TypeAlias
 
 from ..core import Component
 from ..element import Element
