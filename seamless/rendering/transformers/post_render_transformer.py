@@ -14,7 +14,7 @@ def post_render_transformer(context: ContextBase | None = None):
 
     Example:
         >>> @post_render_transformer()
-        ... def add_custom_script(root: TreeNode) -> TreeNode:
+        ... def add_custom_script(root: ElementNode):
         ...     root.get_by_tag("head").append_child(
         ...         ElementNode(
         ...             tag_name="script",

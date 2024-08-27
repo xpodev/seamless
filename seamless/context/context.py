@@ -1,23 +1,32 @@
-from typing import Callable, Concatenate, ParamSpec, Any, TYPE_CHECKING, TypeVar, overload
+import os
+from typing import (
+    Callable,
+    Concatenate,
+    ParamSpec,
+    Any,
+    TYPE_CHECKING,
+    TypeVar,
+    overload,
+)
 from socketio import AsyncServer
 
 from ..internal.constants import DISABLE_GLOBAL_CONTEXT_ENV
 
 from .base import ContextBase
-from ..errors import ClientError
+from ..errors import ClientError, Error
 from ..internal.utils import to_async, wraps
 from .request import WSRequest, set_request
 
 if TYPE_CHECKING:
-    from ..rendering.tree import ElementNode
+    from ..rendering.tree.nodes.context_node import ContextNode
 
 T = TypeVar("T")
 P = ParamSpec("P")
 
 Feature = Callable[Concatenate["Context", P], Any]
 PropertyMatcher = Callable[Concatenate[str, Any, ...], bool] | str
-PropertyTransformer = Callable[Concatenate[str, Any, "ElementNode", ...], None]
-PostRenderTransformer = Callable[Concatenate["ElementNode", ...], None]
+PropertyTransformer = Callable[Concatenate[str, Any, "ContextNode", ...], None]
+PostRenderTransformer = Callable[Concatenate["ContextNode", ...], None]
 
 
 class Context(ContextBase):

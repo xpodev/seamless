@@ -5,10 +5,10 @@ from ..errors import RenderError
 
 if TYPE_CHECKING:
     from ..context.base import ContextBase
-    from .tree import ElementNode
+    from .tree.nodes.context_node import ContextNode
 
 
-def transform_props(element: "ElementNode", *, context: "ContextBase"):
+def transform_props(element: "ContextNode", *, context: "ContextBase"):
     for matcher, transformer in context.prop_transformers:
         if isinstance(matcher, str):
             key = matcher

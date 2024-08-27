@@ -3,7 +3,7 @@ from typing import Callable, Concatenate, ParamSpec, Any, TYPE_CHECKING, TypeVar
 from ..internal.injector import Injector
 
 if TYPE_CHECKING:
-    from ..rendering.tree import ElementNode
+    from ..rendering.tree.nodes.context_node import ContextNode
 
 T = TypeVar("T")
 
@@ -11,8 +11,8 @@ P = ParamSpec("P")
 Feature = Callable[Concatenate["ContextBase", P], Any]
 
 PropertyMatcher = Callable[Concatenate[str, Any, ...], bool] | str
-PropertyTransformer = Callable[Concatenate[str, Any, "ElementNode", ...], None]
-PostRenderTransformer = Callable[Concatenate["ElementNode", ...], None]
+PropertyTransformer = Callable[Concatenate[str, Any, "ContextNode", ...], None]
+PostRenderTransformer = Callable[Concatenate["ContextNode", ...], None]
 
 class ContextBase:
     def __init__(self) -> None:

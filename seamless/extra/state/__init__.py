@@ -2,10 +2,11 @@ from pathlib import Path
 from json import dumps
 from typing import Any, overload, TYPE_CHECKING
 
+from ...rendering.tree.nodes.context_node import ContextNode
+
 from ...core.component import Component
 from ...core import Empty, JS
 from ...internal.constants import SEAMLESS_ELEMENT_ATTRIBUTE, SEAMLESS_INIT_ATTRIBUTE
-from ...rendering.tree import ElementNode
 
 from ..feature import Feature
 
@@ -84,7 +85,7 @@ class StateFeature(Feature):
         def matcher(_, value):
             return isinstance(value, Empty) and value.props.get("state-name", False)
 
-        def transformer(key, value: Empty, element: ElementNode):
+        def transformer(key, value: Empty, element: ContextNode):
             empty_props = value.props
             element.props[SEAMLESS_ELEMENT_ATTRIBUTE] = True
             element.props[SEAMLESS_INIT_ATTRIBUTE] = (

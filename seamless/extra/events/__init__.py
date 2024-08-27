@@ -1,5 +1,7 @@
 from typing import Callable
 
+from ...rendering.tree.nodes.context_node import ContextNode
+
 from .database import ElementsDatabase, Action
 
 from ..feature import Feature
@@ -12,7 +14,6 @@ from ...internal.constants import (
 )
 from ...internal.cookies import Cookies
 from ...internal.validation import wrap_with_validation
-from ...rendering.tree import ElementNode
 from ...rendering.render_state import RenderState
 
 
@@ -50,7 +51,7 @@ class EventsFeature(Feature):
             return key.startswith("on_") and callable(value)
 
         def transformer(
-            key: str, value: Callable, element: ElementNode, render_state: RenderState
+            key: str, value: Callable, element: ContextNode, render_state: RenderState
         ):
             event_name = key.removeprefix("on").replace("_", "").lower()
             action = self.DB.add_event(
