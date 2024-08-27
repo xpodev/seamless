@@ -40,7 +40,7 @@
       "name": "Python Debugger: Example",
       "type": "debugpy",
       "request": "launch",
-      "program": "${workspaceFolder}/examples/simple/main.py",
+      "program": "${workspaceFolder}/examples/simple/run.py",
       "env": {
         "PYTHONPATH": "${workspaceFolder}"
       },
@@ -51,7 +51,7 @@
       "name": "Python Debugger: SPA",
       "type": "debugpy",
       "request": "launch",
-      "program": "${workspaceFolder}/examples/spa/main.py",
+      "program": "${workspaceFolder}/examples/spa/run.py",
       "env": {
         "PYTHONPATH": "${workspaceFolder}"
       },
