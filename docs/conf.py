@@ -1,14 +1,8 @@
-import importlib.util
-import pathlib, importlib
+import os
 
-HERE = pathlib.Path(__file__).parent
+os.environ["SEAMLESS_VERSION_ONLY"] = "true"
 
-# Import the package to get the version
-spec = importlib.util.spec_from_file_location(
-    "seamless", str(HERE.parent / "seamless" / "version.py")
-)
-seamless = importlib.util.module_from_spec(spec)
-spec.loader.exec_module(seamless)
+from seamless import __version__
 
 # Configuration file for the Sphinx documentation builder.
 #
@@ -21,7 +15,7 @@ spec.loader.exec_module(seamless)
 project = "Seamless"
 copyright = "2024, Xpo Development"
 author = "Xpo Development"
-version = seamless.version
+version = __version__
 
 # -- General configuration ---------------------------------------------------
 # https://www.sphinx-doc.org/en/master/usage/configuration.html#general-configuration
