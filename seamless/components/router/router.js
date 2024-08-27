@@ -18,9 +18,18 @@ class FloatConvertor {
   }
 }
 
+class PathConvertor {
+  static regex = "[^?]+";
+
+  static convert(value) {
+    return value;
+  }
+}
+
 const convertors = {
   int: IntConvertor,
   float: FloatConvertor,
+  path: PathConvertor,
 };
 
 routes = routes.map((route) => {
