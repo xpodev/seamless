@@ -1,13 +1,20 @@
+import os
+
 from .context import Context
-from .context.context import set_global_context
 from .core import JS
-from .rendering import render
 from .core import Component
+from .internal.constants import DISABLE_GLOBAL_CONTEXT_ENV
 from .html import *
+from .rendering import render
 from .version import version as __version__
 
-set_global_context(Context.standard())
-del set_global_context
+if not os.getenv(DISABLE_GLOBAL_CONTEXT_ENV):
+    from .context.context import set_global_context
+
+    set_global_context(Context.standard())
+    del set_global_context
+    
+del DISABLE_GLOBAL_CONTEXT_ENV
 
 __all__ = [
     "Component",
@@ -83,4 +90,5 @@ __all__ = [
     "Context",
     "JS",
     "render",
+    "__version__",
 ]

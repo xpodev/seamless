@@ -1,6 +1,8 @@
 from typing import Callable, Concatenate, ParamSpec, Any, TYPE_CHECKING, TypeVar, overload
 from socketio import AsyncServer
 
+from ..internal.constants import DISABLE_GLOBAL_CONTEXT_ENV
+
 from .base import ContextBase
 from ..errors import ClientError
 from ..internal.utils import to_async, wraps
@@ -63,7 +65,17 @@ def get_context(context: None = None) -> Context: ...
 def get_context(context: CT) -> CT: ...
 
 def get_context(context: ContextBase | None = None):
-    return context or _GLOBAL_CONTEXT
+    try:
+        return context or _GLOBAL_CONTEXT
+    except NameError as e:
+        if os.getenv(DISABLE_GLOBAL_CONTEXT_ENV):
+            raise Error(
+                f"Global context is disabled by {DISABLE_GLOBAL_CONTEXT_ENV} environment variable. " \
+                "You must provide a context explicitly."
+            ) from None
+            
+        else:
+            raise e
 
 
 def set_global_context(context: ContextBase):
