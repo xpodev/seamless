@@ -10,7 +10,7 @@ from ...rendering.tree import ElementNode
 from ..feature import Feature
 
 if TYPE_CHECKING:
-    from ...context import Context
+    from ...context.base import ContextBase
 
 HERE = Path(__file__).parent
 _EMPTY = object()
@@ -76,7 +76,7 @@ class State(metaclass=_StateMeta):
 
 
 class StateFeature(Feature):
-    def __init__(self, context: "Context"):
+    def __init__(self, context: "ContextBase"):
         super().__init__(context)
         self.context.add_prop_transformer(*self.state_transformer())
 

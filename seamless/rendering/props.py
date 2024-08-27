@@ -4,11 +4,11 @@ from typing import Any, TYPE_CHECKING
 from ..errors import RenderError
 
 if TYPE_CHECKING:
-    from ..context import Context
+    from ..context.base import ContextBase
     from .tree import ElementNode
 
 
-def transform_props(element: "ElementNode", *, context: "Context"):
+def transform_props(element: "ElementNode", *, context: "ContextBase"):
     for matcher, transformer in context.prop_transformers:
         if isinstance(matcher, str):
             key = matcher

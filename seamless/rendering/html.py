@@ -9,7 +9,7 @@ from .tree import ElementNode, TreeNode, TextNode, build_tree
 
 if TYPE_CHECKING:
     from ..types import Renderable, Primitive
-    from ..context import Context
+    from ..context.base import ContextBase
 
 
 def render_html(
@@ -17,7 +17,7 @@ def render_html(
     *,
     pretty=False,
     tab_indent=1,
-    context: "Context | None" = None,
+    context: "ContextBase | None" = None,
     **render_state_data,
 ) -> str:
     """

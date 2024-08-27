@@ -16,19 +16,22 @@ from ...rendering.tree import ElementNode
 from ...rendering.render_state import RenderState
 
 if TYPE_CHECKING:
-    from ...context import Context
+    from ...context.base import ContextBase
 
 
 class EventsFeature(Feature):
-    def __init__(self, context: "Context", claim_time=20.0):
+    def __init__(self, context: "ContextBase", claim_time=20.0):
         super().__init__(context)
+
         self.DB = ElementsDatabase(claim_time=claim_time)
-
-        self.context.on("connect", self.on_connect)
-        self.context.on("disconnect", self.on_disconnect)
-        self.context.on("event", self.event)
-
         self.context.add_prop_transformer(*self.events_transformer())
+
+        from ...context import Context
+        if isinstance(self.context, Context):
+            self.context.on("connect", self.on_connect)
+            self.context.on("disconnect", self.on_disconnect)
+            self.context.on("event", self.event)
+
 
     async def event(self, sid: str, data: str, event_data: dict):
         return await self.DB.invoke_event(data, event_data, scope=sid)
@@ -37,7 +40,7 @@ class EventsFeature(Feature):
         cookies = Cookies(env.get("HTTP_COOKIE", ""))
         claim_id = cookies[CLAIM_COOKIE_NAME]
         if not claim_id:
-            return await self.context.server.disconnect(sid)
+            return await self.context.server.disconnect(sid) # type: ignore - since on_connect is called only when self.context is a Context, we can safely ignore the type error
 
         self.DB.claim(claim_id, sid)
 

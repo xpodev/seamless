@@ -10,7 +10,7 @@ from ...internal.utils import is_primitive
 
 if TYPE_CHECKING:
     from ...types import Primitive, Renderable
-    from ...context import Context
+    from ...context.base import ContextBase
 
 
 class TreeNode:
@@ -96,7 +96,7 @@ class TextNode(TreeNode):
 
 
 def build_raw_tree(
-    renderable: "Renderable | Primitive", *, context: "Context"
+    renderable: "Renderable | Primitive", *, context: "ContextBase"
 ) -> TreeNode:
     while isinstance(renderable, Component):
         renderable = renderable.render()
@@ -119,7 +119,7 @@ def build_raw_tree(
     return element
 
 
-def build_tree(renderable: "Renderable | Primitive", *, context: "Context") -> TreeNode:
+def build_tree(renderable: "Renderable | Primitive", *, context: "ContextBase") -> TreeNode:
     tree = build_raw_tree(renderable, context=context)
 
     if not isinstance(tree, ElementNode):

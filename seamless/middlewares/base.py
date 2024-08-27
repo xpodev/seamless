@@ -4,8 +4,7 @@ from ..context.request import request as _request
 
 class BaseMiddleware:
     def __init__(self, app, socket_path="/socket.io", context: Context | None = None):
-        if context is None:
-            context = get_context()
+        context = get_context(context)
         self.socket_path = f"/{socket_path.strip('/')}"
         self.app = self._app_class()(context.server, app, socketio_path=socket_path)
 

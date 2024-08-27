@@ -6,13 +6,13 @@ from .utils import Promise, _obj, wraps
 from ..errors import ClientError
 
 if TYPE_CHECKING:
-    from ..context import Context
+    from ..context.base import ContextBase
 
 
 class _DataValidationError(ClientError): ...
 
 
-def wrap_with_validation(func, *, context: "Context"):
+def wrap_with_validation(func, *, context: "ContextBase"):
     @wraps(func)
     def no_validation(*args):
         return func(*[_obj(arg) if isinstance(arg, dict) else arg for arg in args])

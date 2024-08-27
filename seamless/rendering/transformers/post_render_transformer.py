@@ -1,7 +1,6 @@
-from ...context.context import PostRenderTransformer, get_context, Context
+from ...context.context import PostRenderTransformer, get_context, ContextBase
 
-
-def post_render_transformer(context: Context | None = None):
+def post_render_transformer(context: ContextBase | None = None):
     """
     A decorator to register a post-render transformer.
 

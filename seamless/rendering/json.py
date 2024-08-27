@@ -6,13 +6,13 @@ from .tree import build_tree, TreeNode, TextNode, ElementNode
 
 if TYPE_CHECKING:
     from ..types import Renderable, Primitive
-    from ..context import Context
+    from ..context.base import ContextBase
 
 
 def render_json(
     element: "Renderable | Primitive",
     *,
-    context: "Context | None" = None,
+    context: "ContextBase | None" = None,
     **render_state_data,
 ):
     from ..context import get_context

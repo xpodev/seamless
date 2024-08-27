@@ -8,11 +8,11 @@ from ..feature import Feature
 from .repository import ComponentsRepository
 
 if TYPE_CHECKING:
-    from ...context import Context
+    from ...context.base import ContextBase
 
 
 class ComponentsFeature(Feature):
-    def __init__(self, context: "Context") -> None:
+    def __init__(self, context: "ContextBase") -> None:
         super().__init__(context)
         self.DB = ComponentsRepository()
 
@@ -34,7 +34,10 @@ class ComponentsFeature(Feature):
 
         Component.__init_subclass__ = __init_subclass__
 
-        context.on("component", self.get_component)
+        from ...context import Context
+
+        if isinstance(self.context, Context):
+            self.context.on("component", self.get_component)
 
     def get_component(self, sid: str, name: str, props=None):
         props = props or {}

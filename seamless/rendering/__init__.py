@@ -5,7 +5,7 @@ from .json import render_json
 
 if TYPE_CHECKING:
     from ..types import Renderable, Primitive
-    from ..context import Context
+    from ..context.base import ContextBase
 
 
 @overload
@@ -15,7 +15,7 @@ def render(
     to: Literal["html"],
     pretty: bool = False,
     tab_indent: int = 1,
-    context: "Context | None" = None,
+    context: "ContextBase | None" = None,
     **render_state_data,
 ) -> str: ...
 
@@ -25,7 +25,7 @@ def render(
     element: "Renderable | Primitive",
     *,
     to: Literal["json"],
-    context: "Context | None" = None,
+    context: "ContextBase | None" = None,
     **render_state_data,
 ) -> dict: ...
 
@@ -36,7 +36,7 @@ def render(
     *,
     pretty: bool = False,
     tab_indent: int = 1,
-    context: "Context | None" = None,
+    context: "ContextBase | None" = None,
     **render_state_data,
 ) -> str: ...
 

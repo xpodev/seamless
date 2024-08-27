@@ -1,9 +1,9 @@
 from typing import Any, Callable
-from ...context.context import PropertyTransformer, Context, get_context
+from ...context.context import PropertyTransformer, ContextBase, get_context
 
 
 def property_transformer(
-    matcher: Callable[[str, Any], bool] | str, context: Context | None = None
+    matcher: Callable[[str, Any], bool] | str, context: ContextBase | None = None
 ):
     """
     A decorator to register a property transformer.
