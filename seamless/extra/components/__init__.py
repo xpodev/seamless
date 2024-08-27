@@ -27,7 +27,7 @@ class ComponentsFeature(Feature):
         ) -> None:
             if cls is not Component:
 
-                cls.__seamless_name__ = name or cls.__name__
+                cls.__seamless_name__ = cls.__seamless_name__ or name or cls.__name__
                 self.DB.add_component(cls, cls.__seamless_name__)
 
                 if inject_render:

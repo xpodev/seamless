@@ -26,7 +26,7 @@ class _BodyProps(TypedDict, total=False, closed=False):
     dir: Literal["ltr", "rtl"]
 
 
-class Page(Component, name="SeamlessBasePage"):
+class Page(Component):
     @overload
     def __init__(self, *children: ChildType, title: str | None = None, html_props: _HtmlProps | None = None, head_props: _HeadProps | None = None, body_props: _BodyProps | None = None): ...
     @overload
@@ -82,3 +82,5 @@ class Page(Component, name="SeamlessBasePage"):
             original_init(self, *args, **kwargs)
 
         cls.__init__ = __init__
+
+    __seamless_name__ = "SeamlessBasePage"
