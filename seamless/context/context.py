@@ -2,11 +2,8 @@ from typing import Callable, Concatenate, ParamSpec, Any, TYPE_CHECKING, TypeVar
 from socketio import AsyncServer
 
 from .base import ContextBase
-
 from ..errors import ClientError
-
 from ..internal.utils import to_async, wraps
-
 from .request import WSRequest, set_request
 
 if TYPE_CHECKING:
@@ -56,7 +53,7 @@ class Context(ContextBase):
         return context
 
 
-_GLOBAL_CONTEXT: ContextBase = Context.standard()
+_GLOBAL_CONTEXT: ContextBase
 
 CT = TypeVar("CT", bound=ContextBase)
 

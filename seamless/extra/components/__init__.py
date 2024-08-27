@@ -1,18 +1,17 @@
-from typing import TYPE_CHECKING
+from .repository import ComponentsRepository
 
+from ..feature import Feature
+
+from ...context import Context
+from ...context.base import ContextBase
 from ...core.component import Component
 from ...errors import ClientError
 from ...rendering import render_json
 
-from ..feature import Feature
-from .repository import ComponentsRepository
-
-if TYPE_CHECKING:
-    from ...context.base import ContextBase
 
 
 class ComponentsFeature(Feature):
-    def __init__(self, context: "ContextBase") -> None:
+    def __init__(self, context: ContextBase) -> None:
         super().__init__(context)
         self.DB = ComponentsRepository()
 
@@ -20,7 +19,11 @@ class ComponentsFeature(Feature):
 
         @classmethod
         def __init_subclass__(
-            cls: type[Component], *, name: str | None = None, inject_render: bool = False, **kwargs
+            cls: type[Component],
+            *,
+            name: str | None = None,
+            inject_render: bool = False,
+            **kwargs,
         ) -> None:
             if cls is not Component:
 
@@ -33,8 +36,6 @@ class ComponentsFeature(Feature):
             original_init_subclass.__func__(cls, **kwargs)  # type: ignore
 
         Component.__init_subclass__ = __init_subclass__
-
-        from ...context import Context
 
         if isinstance(self.context, Context):
             self.context.on("component", self.get_component)

@@ -1,9 +1,13 @@
 from .context import Context
+from .context.context import set_global_context
 from .core import JS
 from .rendering import render
 from .core import Component
 from .html import *
 from .version import version as __version__
+
+set_global_context(Context.standard())
+del set_global_context
 
 __all__ = [
     "Component",
