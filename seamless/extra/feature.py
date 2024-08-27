@@ -7,3 +7,7 @@ if TYPE_CHECKING:
 class Feature:
     def __init__(self, context: "ContextBase") -> None:
         self.context = context
+    
+    @property
+    def feature_name(self) -> str:
+        return type(self).__name__.replace("Feature", "").lower()
