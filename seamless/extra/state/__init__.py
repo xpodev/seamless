@@ -2,13 +2,12 @@ from pathlib import Path
 from json import dumps
 from typing import Any, overload, TYPE_CHECKING
 
-from ...rendering.tree.nodes.context_node import ContextNode
+from ..feature import Feature
 
 from ...core.component import Component
 from ...core import Empty, JS
 from ...internal.constants import SEAMLESS_ELEMENT_ATTRIBUTE, SEAMLESS_INIT_ATTRIBUTE
-
-from ..feature import Feature
+from ...rendering.tree.nodes.context_node import ContextNode
 
 if TYPE_CHECKING:
     from ...context.base import ContextBase
