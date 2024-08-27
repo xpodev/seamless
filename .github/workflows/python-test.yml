@@ -32,3 +32,8 @@ jobs:
         working-directory: ${{ github.workspace }}
         run: |
           python -m unittest discover -s tests -p 'test_*.py' -t ${{ github.workspace }}
+      
+      - name: Run build test
+        working-directory: ${{ github.workspace }}
+        run: |
+          python -m build
