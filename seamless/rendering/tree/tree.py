@@ -7,6 +7,7 @@ from ..props import transform_props
 
 from ...core.component import Component
 from ...element import Element
+from ...errors import RenderError
 from ...internal.utils import is_primitive
 
 if TYPE_CHECKING:
@@ -23,7 +24,9 @@ def build_raw_tree(
     if is_primitive(renderable):
         return TextNode(renderable)
 
-    assert isinstance(renderable, Element)
+    if not isinstance(renderable, Element):
+        raise RenderError(f"Invalid renderable type: {type(renderable)}")
+
     children = (
         [build_raw_tree(child, context=context) for child in renderable.children]
         if not renderable.inline
