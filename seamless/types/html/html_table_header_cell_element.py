@@ -1,4 +1,4 @@
-from seamless.types.html.HTMLTableCellElement import HTMLTableCellElement
+from seamless.types.html.html_table_cell_element import HTMLTableCellElement
 
 
 class HTMLTableHeaderCellElement(HTMLTableCellElement):
