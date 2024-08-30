@@ -1,4 +1,4 @@
-from typing import TYPE_CHECKING, Iterable, Union
+from typing import TYPE_CHECKING, Iterable, Union, Literal
 
 from typing_extensions import TypedDict
 
@@ -13,7 +13,7 @@ class HTMLElement(TypedDict, total=False, closed=False):
     class_name: str | Iterable[str]
     content_editable: str
     # data: dict[str, str]  # add this if needed in the future
-    dir: str
+    dir: Literal["ltr", "rtl", "auto"]
     draggable: str
     hidden: str
     id: str
