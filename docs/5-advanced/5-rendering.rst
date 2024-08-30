@@ -40,7 +40,7 @@ It allows property transformers to pass information to the post-render transform
 The ``RenderState`` object has the following attributes:
 
 1. ``root``: The original renderable object that was passed to the renderer.
-2. ``target_target``: A string representing the target format of the rendering process.
+2. ``render_target``: A string representing the target format of the rendering process.
 3. ``custom_data``: A dictionary that can be used to store custom data.
 
 
