@@ -18,9 +18,9 @@
   "scripts": {
     "build": "tsc -b ./packages",
     "build:all": "tsc -b ./packages && npm run build:browser && npm run build:react",
-    "build:browser": "webpack --config ./packages/core/webpack.config.js --entry ./packages/core/src/index.ts --output-filename seamless.min.js",
-    "build:browser:init": "webpack --config ./packages/core/webpack.config.js --entry ./packages/core/src/init.ts --output-filename seamless.init.js",
+    "build:browser": "webpack --config ./packages/core/webpack.config.js",
     "build:react": "webpack --config ./packages/react/webpack.config.js",
-    "watch": "tsc -b ./packages -w"
+    "watch": "tsc -b ./packages -w",
+    "webpack": "webpack"
   }
 }
