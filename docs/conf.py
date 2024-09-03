@@ -1,8 +1,4 @@
-import os
-
-os.environ["SEAMLESS_VERSION_ONLY"] = "true"
-
-from seamless import __version__
+from seamless.version import version as __version__
 
 # Configuration file for the Sphinx documentation builder.
 #
