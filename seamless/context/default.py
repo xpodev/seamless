@@ -12,8 +12,9 @@ from ..extra.transports.socketio.transport import SocketIOTransport
 def add_standard_features(ctx: Context):
     pydom_standard_features(ctx)
 
+    ctx.add_feature(SocketIOTransport)
     ctx.add_feature(ComponentsFeature)
-    ctx.add_feature(EventsFeature, claim_time=30)
+    ctx.add_feature(EventsFeature)
     ctx.add_feature(StateFeature)
 
     ctx.add_prop_transformer(*init_transformer())

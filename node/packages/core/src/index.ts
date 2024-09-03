@@ -1,4 +1,3 @@
-import io from "socket.io-client";
 import type {
   SeamlessOptions,
   OutEvent,
@@ -17,7 +16,6 @@ import {
 const AsyncFunction = new Function("return (async function () {}).constructor")();
 
 class Seamless {
-  protected readonly socket;
   private readonly eventObjectTransformer: (
     originalEvent: Event,
     outEvent: any
@@ -25,15 +23,10 @@ class Seamless {
   private readonly context: Record<any, any> = {};
 
   constructor(config?: SeamlessOptions) {
-    this.socket = io({
-      reconnectionDelayMax: 10000,
-      ...config?.socketOptions,
-    });
     this.eventObjectTransformer =
       config?.eventObjectTransformer || ((_, outEvent) => outEvent);
 
     this.context.instance = this;
-    this.socket.on("error", (error) => this.handleErrors(error));
     this.init();
   }
 
@@ -112,9 +105,9 @@ class Seamless {
 
   protected initEmpty(element: HTMLElement) {
     while (element.firstChild) {
-      element.parentElement?.insertBefore(element.firstChild, element);
+      element.parentNode?.insertBefore(element.firstChild, element);
     }
-    element.parentElement?.removeChild(element);
+    element.parentNode?.removeChild(element);
   }
 
   protected isPrimitive(value: any): value is Primitive {
@@ -125,35 +118,6 @@ class Seamless {
       value === null ||
       value === undefined
     );
-  }
-
-  async getComponent(name: string, props: Record<string, any>) {
-    return await this.sendWaitResponse<SeamlessElement | Primitive>(
-      "component",
-      name,
-      props
-    );
-  }
-
-  registerEventListener(
-    event: string,
-    callback: (e: any) => any
-  ) {
-    this.socket.on(event, callback);
-  }
-
-  emit(event: string, ...args: any[]) {
-    this.socket.emit(event, ...args);
-  }
-
-  sendWaitResponse<T>(event: string, ...args: any[]) {
-    return new Promise<T>((resolve) => {
-      this.socket.emit(event, ...args, resolve);
-    });
-  }
-
-  protected handleErrors(error: any) {
-    throw new Error(error);
   }
 
   protected serializeEventObject(event: Event) {

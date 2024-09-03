@@ -4,77 +4,93 @@ from pydom.context import Context
 from pydom.rendering.render_state import RenderState
 from pydom.rendering.tree.nodes import ContextNode
 
-from .database import ElementsDatabase, Action
-
+from .database import EventsDatabase, Action
 from ..feature import Feature
 from ...internal.constants import (
-    CLAIM_COOKIE_NAME,
     SEAMLESS_ELEMENT_ATTRIBUTE,
     SEAMLESS_INIT_ATTRIBUTE,
 )
-from ...internal.cookies import Cookies
+
 from ...internal.validation import wrap_with_validation
-from ...rendering.render_state import RenderState
+from ..transports.errors import TransportConnectionRefused
+from ..transports.transport import TransportFeature
 
 
 class EventsFeature(Feature):
-    def __init__(self, context: ContextBase, claim_time=20.0):
+    def __init__(self, context: Context):
         super().__init__(context)
 
-        self.DB = ElementsDatabase(claim_time=claim_time)
-        self.context.add_prop_transformer(*self.events_transformer())
+        try:
+            self.transport = context.get_feature(TransportFeature)
+        except KeyError:
+            raise ValueError(
+                "EventsFeature requires a TransportFeature in the context."
+                "Please add it before adding the EventsFeature."
+            )
 
-        from ...context import Context
+        self.DB = EventsDatabase()
+        self.context.add_prop_transformer(*self._events_transformer())
+        self.context.add_post_render_transformer(self._post_render_transformer)
 
-        if isinstance(self.context, Context):
-            self.context.on("connect", self.on_connect)
-            self.context.on("disconnect", self.on_disconnect)
-            self.context.on("event", self.event)
+        self.transport.disconnect += self._on_disconnect
+        self.transport.event.on("event", self._event)
 
-    async def event(self, sid: str, data: str, event_data: dict):
-        return await self.DB.invoke_event(data, event_data, scope=sid)
+    async def _event(self, client_id: str, event_id: str, *event_data):
+        return await self.DB.invoke_event(event_id, *event_data, scope=client_id)
 
-    async def on_connect(self, sid: str, env: dict):
-        cookies = Cookies(env.get("HTTP_COOKIE", ""))
-        claim_id = cookies[CLAIM_COOKIE_NAME]
-        if not claim_id:
-            return await self.context.server.disconnect(sid)  # type: ignore - since on_connect is called only when self.context is a Context, we can safely ignore the type error
+    async def _on_disconnect(self, client_id: str):
+        self.DB.release_actions(client_id)
 
-        self.DB.claim(claim_id, sid)
-
-    async def on_disconnect(self, sid: str):
-        self.DB.release_actions(sid)
-
-    def events_transformer(self):
+    def _events_transformer(self):
 
         def matcher(key: str, value):
             return key.startswith("on_") and callable(value)
 
         def transformer(
-            key: str, value: Callable, element: ContextNode, render_state: RenderState
+            key: str,
+            value: Callable,
+            element: ContextNode,
+            render_state: RenderState,
         ):
             event_name = key.removeprefix("on").replace("_", "").lower()
-            action = self.DB.add_event(
-                Action(
-                    wrap_with_validation(
-                        self.context.inject(value), context=self.context
-                    ),
-                    str(hash(value)),
-                ),
-                render_state.custom_data.get("events_scope", None),
+            action = Action(
+                wrap_with_validation(self.context.inject(value), context=self.context),
+                str(hash(value)),
             )
+
+            render_state.custom_data.setdefault("events.actions", []).append(action)
+
             element.props[SEAMLESS_INIT_ATTRIBUTE] = (
                 str(element.props.get(SEAMLESS_INIT_ATTRIBUTE, ""))
-                + f"""this.addEventListener('{event_name}', (event) => {{
-              const outEvent = seamless.instance.eventObjectTransformer(
-                event, 
-                seamless.instance.serializeEventObject(event)
-              );
-            seamless.instance.socket.emit("event", "{action.id}", outEvent);
-          }});"""
+                + f"""
+                this.addEventListener('{event_name}', (event) => {{
+                    const outEvent = seamless.instance.eventObjectTransformer(
+                        event, 
+                        seamless.instance.serializeEventObject(event)
+                    );
+                    seamless.emit("event", "{action.id}", outEvent);
+                }});
+                """
             )
 
             element.props[SEAMLESS_ELEMENT_ATTRIBUTE] = True
             del element.props[key]
 
         return matcher, transformer
+
+    def _post_render_transformer(self, root: ContextNode, render_state: RenderState):
+        actions = render_state.custom_data.get("events.actions", [])
+
+        if len(actions) == 0:
+            return
+
+        client_id = render_state.custom_data.get("transports.client_id", None)
+
+        if not client_id:
+            raise ValueError(
+                "transports.client_id is not set in the custom_data. "
+                "Please make sure that the TransportFeature is added to the context."
+            )
+        else:
+            for action in actions:
+                self.DB.add_event(action, scope=client_id)

@@ -45,15 +45,31 @@ class ComponentsFeature(Feature):
 
         Component.__init_subclass__ = __init_subclass__
 
-        if isinstance(self.context, Context):
-            self.context.on("component", self.get_component)
+        try:
+            transport = context.get_feature(TransportFeature)
+        except KeyError:
+            raise ValueError(
+                "ComponentsFeature requires a TransportFeature in the context."
+                "Please add it before adding the ComponentsFeature."
+            )
 
-    def get_component(self, sid: str, name: str, props=None):
+        transport.event.on("component", self.get_component)
+
+    async def get_component(self, client_id: str, component_name: str, props=None, *_):
         props = props or {}
-        cls = self.DB.get_component(name)
+        cls = self.DB.get_component(component_name)
+
         try:
             component = cls(**props)
         except TypeError:
-            raise ClientError(f"Invalid props for component {name}")
+            raise ClientError(
+                f"Invalid props for component {component_name}", client_id=client_id
+            )
 
-        return render_json(component, context=self.context, events_scope=sid)
+        return render_json(
+            component, context=self.context, **{"transports.client_id": client_id}
+        )
+
+
+def component_name(component: Type[Component]) -> Optional[str]:
+    return getattr(component, "__seamless_name__", None)
