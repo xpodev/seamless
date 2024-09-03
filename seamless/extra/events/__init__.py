@@ -89,7 +89,8 @@ class EventsFeature(Feature):
         if not client_id:
             raise ValueError(
                 "transports.client_id is not set in the custom_data. "
-                "Please make sure that the TransportFeature is added to the context."
+                "Please make sure that the TransportFeature is added to the context "
+                "and TransportFeature.init() is called inside your component."
             )
         else:
             for action in actions:
