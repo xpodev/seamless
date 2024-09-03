@@ -1,5 +1,10 @@
 import io from "socket.io-client";
-import { SeamlessOptions, OutEvent } from "./types";
+import type {
+  SeamlessOptions,
+  OutEvent,
+  SeamlessElement,
+  Primitive,
+} from "./types";
 export { SeamlessOptions };
 
 import {

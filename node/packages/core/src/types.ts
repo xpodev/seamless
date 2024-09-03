@@ -18,3 +18,10 @@ export interface OutEvent<T = any> {
   data: T;
 }
 
+export type Primitive = string | number | boolean | null;
+
+export interface SeamlessElement {
+  type: string;
+  props: Record<string, any>;
+  children: Array<SeamlessElement | Primitive> | null;
+}
