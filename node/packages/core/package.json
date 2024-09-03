@@ -1,5 +1,5 @@
 {
-  "name": "@python-seamless/core",
+  "name": "python-seamless",
   "version": "0.1.2",
   "description": "JavaScript integration for Seamless",
   "main": "dist/index.js",
