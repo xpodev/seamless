@@ -1,15 +1,13 @@
 [project]
 name = "python-seamless"
-authors = [
-  { name="Xpo Development", email="dev@xpo.dev" },
-]
+authors = [{ name = "Xpo Development", email = "dev@xpo.dev" }]
 description = "A Python package for creating and manipulating HTML components. It is working similar to React.js, but in Python"
 readme = "README.md"
 requires-python = ">=3.10"
 classifiers = [
-    "Programming Language :: Python :: 3",
-    "License :: OSI Approved :: MIT License",
-    "Operating System :: OS Independent",
+  "Programming Language :: Python :: 3",
+  "License :: OSI Approved :: MIT License",
+  "Operating System :: OS Independent",
 ]
 dynamic = ["dependencies", "version"]
 
@@ -30,4 +28,5 @@ exclude = ["tests*"]
 seamless = ["**/*.js"]
 
 [tool.setuptools.dynamic]
-version = {attr="seamless.__version__"}
+version = { attr = "seamless.version.version" }
+dependencies = { file = ["requirements.txt"] }
