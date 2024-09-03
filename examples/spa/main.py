@@ -1,23 +1,17 @@
 from pathlib import Path
+
 from fastapi import FastAPI
 from fastapi.responses import HTMLResponse, FileResponse
-from seamless import render, Script
-from seamless.middlewares import ASGIMiddleware
-from seamless.rendering.transformers import post_render_transformer
+from seamless import render
+from seamless.extra.transports.socketio.middleware import SocketIOMiddleware
 
 from components.app import App
-from seamless.rendering.tree.nodes.context_node import ContextNode
 
 HERE = Path(__file__).parent
 
 app = FastAPI()
-app.add_middleware(ASGIMiddleware)
+app.add_middleware(SocketIOMiddleware)
 
-@post_render_transformer()
-def script_head(root: ContextNode):
-    head = root.get_by_tag("head")
-    if head:
-        head.append_child(Script(src="/static/script.js"))
 
 @app.get("/static/{file_path:path}")
 def read_static(file_path: str):
