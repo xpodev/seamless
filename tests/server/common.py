@@ -1,6 +1,7 @@
-from seamless.html import *
 from seamless import Component, render
 from seamless.components import Page as _Page
+from seamless.extra.transports.socketio.transport import SocketIOTransport
+from seamless.html import *
 from seamless.styling import CSS, StyleObject
 
 
@@ -17,6 +18,7 @@ class Page(_Page):
         yield from super().head()
         yield Script(src="/static/main.js", defer=True)
         yield Link(rel="stylesheet", href="/static/main.css")
+        yield SocketIOTransport.init()
 
 
 class AnotherComponent(Component):
