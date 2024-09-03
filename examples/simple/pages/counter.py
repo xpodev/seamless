@@ -1,7 +1,7 @@
 from pydantic import BaseModel
 from seamless import Div, Form, Input, Button, Component
-from seamless.core import SocketID
 from seamless.extensions import State
+from seamless.extra.transports.client_id import ClientID
 from seamless.types.events import SubmitEvent
 
 
@@ -47,7 +47,7 @@ class CounterPage(Component):
             ),
         )
 
-    def submit(self, event: SubmitEvent[Counter], sid: SocketID):
+    def submit(self, event: SubmitEvent[Counter], sid: ClientID):
         print("Form submitted!")
         print("socket id:", sid)
         print(event)
