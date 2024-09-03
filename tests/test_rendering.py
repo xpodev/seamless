@@ -1,5 +1,5 @@
 from seamless import Component, Div, render
-from seamless.element import Element
+from pydom.element import Element
 
 import unittest
 
