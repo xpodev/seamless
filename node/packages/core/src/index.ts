@@ -2,17 +2,14 @@ import io from "socket.io-client";
 import { SeamlessOptions, OutEvent } from "./types";
 export { SeamlessOptions };
 
-export type Primitive = string | number | boolean | null;
+import {
+  SEAMLESS_ELEMENT,
+  SEAMLESS_INIT,
+  SEAMLESS_EMPTY,
+  SEAMLESS_INIT_ASYNC,
+} from "./constants";
 
-export interface SeamlessElement {
-  type: string;
-  props: Record<string, any>;
-  children: Array<SeamlessElement | Primitive> | null;
-}
-
-const SEAMLESS_ELEMENT = "seamless:element";
-const SEAMLESS_INIT = "seamless:init";
-const SEAMLESS_EMPTY = "seamless:empty";
+const AsyncFunction = new Function("return (async function () {}).constructor")();
 
 class Seamless {
   protected readonly socket;
@@ -99,7 +96,11 @@ class Seamless {
   protected attachInit(element: HTMLElement) {
     const initCode = element.getAttribute(SEAMLESS_INIT);
     if (initCode) {
-      new Function("seamless", initCode).apply(element, [this.context]);
+      new (element.hasAttribute(SEAMLESS_INIT_ASYNC)
+        ? AsyncFunction as { new (): Function }
+        : Function)("seamless", initCode).apply(element, [this.context]);
+
+      element.removeAttribute(SEAMLESS_INIT_ASYNC);
       element.removeAttribute(SEAMLESS_INIT);
     }
   }
