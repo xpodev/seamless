@@ -57,7 +57,7 @@ class Page(Component):
         return (
             Meta(charset="UTF-8"),
             Meta(name="viewport", content="width=device-width, initial-scale=1.0"),
-            Title(self.title),
+            Title(self.title) if self.title else None,
         )
 
     def body(self) -> Iterable[ChildType]:
