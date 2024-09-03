@@ -1,6 +1,8 @@
-from typing import overload, Iterable, TYPE_CHECKING
+from typing import overload, Iterable
 
-from ..core.component import Component
+from pydom import Component
+from pydom.utils.functions import to_iter
+
 from ..html import (
     Fragment,
     Html,
@@ -9,41 +11,39 @@ from ..html import (
     Body,
     Meta,
 )
-from ..internal.utils import to_iter
 
-if TYPE_CHECKING:
-    from ..types import ChildType, ChildrenType
-    from ..types.html import HTMLHtmlElement, HTMLBodyElement, HTMLHeadElement
+from ..types import ChildType, ChildrenType
+from ..types.html import HTMLHtmlElement, HTMLBodyElement, HTMLHeadElement
 
 
 class Page(Component):
     @overload
     def __init__(
         self,
-        *children: "ChildType",
+        *children: ChildType,
         title: str | None = None,
-        html_props: "HTMLHtmlElement | None" = None,
-        head_props: "HTMLHeadElement | None" = None,
-        body_props: "HTMLBodyElement | None" = None,
+        html_props: HTMLHtmlElement | None = None,
+        head_props: HTMLHeadElement | None = None,
+        body_props: HTMLBodyElement | None = None,
     ): ...
     @overload
     def __init__(
         self,
         *,
-        children: "ChildrenType",
+        children: ChildrenType,
         title: str | None = None,
-        html_props: "HTMLHtmlElement | None" = None,
-        head_props: "HTMLHeadElement | None" = None,
-        body_props: "HTMLBodyElement | None" = None,
+        html_props: HTMLHtmlElement | None = None,
+        head_props: HTMLHeadElement | None = None,
+        body_props: HTMLBodyElement | None = None,
     ): ...
 
     def __init__(  # type: ignore
         self,
         *,
         title: str | None = None,
-        html_props: "HTMLHtmlElement | None" = None,
-        head_props: "HTMLHeadElement | None" = None,
-        body_props: "HTMLBodyElement | None" = None,
+        html_props: HTMLHtmlElement | None = None,
+        head_props: HTMLHeadElement | None = None,
+        body_props: HTMLBodyElement | None = None,
     ):
         self.title = title
         self._html_props = html_props or {"lang": "en"}
@@ -60,7 +60,7 @@ class Page(Component):
             Title(self.title),
         )
 
-    def body(self) -> Iterable["ChildType"]:
+    def body(self) -> Iterable[ChildType]:
         """
         The children that will be inside the `body` tag.
         """

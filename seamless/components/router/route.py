@@ -1,4 +1,4 @@
-from ...core import Component
+from pydom import Component
 
 
 class Route(Component):
