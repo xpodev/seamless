@@ -1,5 +1,7 @@
-from typing import TYPE_CHECKING
+from pydom.context.standard import add_standard_features as pydom_standard_features
 
+
+from .context import Context
 from ..extra.components import ComponentsFeature
 from ..extra.events import EventsFeature
 from ..extra.state import StateFeature
@@ -15,16 +17,12 @@ if TYPE_CHECKING:
     from . import Context
 
 
-def add_standard_features(ctx: "Context"):
+def add_standard_features(ctx: Context):
+    pydom_standard_features(ctx)
+
     ctx.add_feature(ComponentsFeature)
     ctx.add_feature(EventsFeature, claim_time=30)
     ctx.add_feature(StateFeature)
 
-    # Order matters
-    ctx.add_prop_transformer(*class_transformer())
-    ctx.add_prop_transformer(*simple_transformer())
-    ctx.add_prop_transformer(*html_events_transformer())
-    ctx.add_prop_transformer(*dash_transformer())
     ctx.add_prop_transformer(*init_transformer())
     ctx.add_prop_transformer(*js_transformer())
-    ctx.add_prop_transformer(*style_transformer())

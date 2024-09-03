@@ -1,4 +1,3 @@
-from .post_render_transformer import post_render_transformer
-from .property_transformer import property_transformer
+from pydom.rendering.transformers import *
 
 __all__ = ["post_render_transformer", "property_transformer"]

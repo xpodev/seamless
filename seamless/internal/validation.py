@@ -1,18 +1,16 @@
 # type: ignore
 
-from typing import Any, TYPE_CHECKING
+from typing import Any
+
+from pydom.context import Context
 
 from .utils import Promise, _obj, wraps
 from ..errors import ClientError
 
-if TYPE_CHECKING:
-    from ..context.base import ContextBase
-
-
 class _DataValidationError(ClientError): ...
 
 
-def wrap_with_validation(func, *, context: "ContextBase"):
+def wrap_with_validation(func, *, context: "Context"):
     @wraps(func)
     def no_validation(*args):
         return func(*[_obj(arg) if isinstance(arg, dict) else arg for arg in args])

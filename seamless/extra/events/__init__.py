@@ -1,12 +1,12 @@
 from typing import Callable
 
-from ...rendering.tree.nodes.context_node import ContextNode
+from pydom.context import Context
+from pydom.rendering.render_state import RenderState
+from pydom.rendering.tree.nodes import ContextNode
 
 from .database import ElementsDatabase, Action
 
 from ..feature import Feature
-
-from ...context.base import ContextBase
 from ...internal.constants import (
     CLAIM_COOKIE_NAME,
     SEAMLESS_ELEMENT_ATTRIBUTE,

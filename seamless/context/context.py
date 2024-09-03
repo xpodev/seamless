@@ -1,26 +1,26 @@
 import os
 from typing import (
+    Any,
     Callable,
     Concatenate,
+    Optional,
     ParamSpec,
-    Any,
-    TYPE_CHECKING,
     TypeVar,
-    overload,
+    cast,
 )
-from socketio import AsyncServer
 
+from pydom.context.context import (
+    Context as _Context,
+    get_context as _get_context,
+    set_default_context as _set_global_context,
+)
+from pydom.rendering.tree.nodes import ContextNode
+
+from ..errors import Error
 from ..internal.constants import DISABLE_GLOBAL_CONTEXT_ENV
+from ..internal.injector import Injector
 
-from .base import ContextBase
-from ..errors import ClientError, Error
-from ..internal.utils import to_async, wraps
-from .request import WSRequest, set_request
-
-if TYPE_CHECKING:
-    from ..rendering.tree.nodes.context_node import ContextNode
-
-T = TypeVar("T")
+T = TypeVar("T", bound=_Context)
 P = ParamSpec("P")
 
 Feature = Callable[Concatenate["Context", P], Any]
@@ -29,30 +29,11 @@ PropertyTransformer = Callable[Concatenate[str, Any, "ContextNode", ...], None]
 PostRenderTransformer = Callable[Concatenate["ContextNode", ...], None]
 
 
-class Context(ContextBase):
+class Context(_Context):
     def __init__(self) -> None:
         super().__init__()
-        self.server = AsyncServer(async_mode="asgi")
+        self.injector = Injector()
         self.injector.add(Context, self)
-
-    def on(self, event, handler):
-        @wraps(handler)
-        async def wrapper(sid, *args, **kwargs):
-            try:
-                WSRequest.make(sid)
-                result = await to_async(handler)(sid, *args, **kwargs)
-                set_request(None)
-                return result
-            except ClientError as e:
-                await self.server.emit("error", str(e), to=sid)
-            except Exception as e:
-                await self.server.emit("error", str(e), to=sid)
-                raise e
-
-        self.server.on(event, wrapper)
-
-    async def emit(self, event: str, *args):
-        return await self.server.emit(event, *args)
 
     @classmethod
     def standard(cls) -> "Context":
@@ -64,29 +45,23 @@ class Context(ContextBase):
         return context
 
 
-_GLOBAL_CONTEXT: ContextBase
+def get_context(context: Optional[Context] = None):
+    if context is None:
+        context = cast(Optional[Context], _get_context())
 
-CT = TypeVar("CT", bound=ContextBase)
-
-@overload
-def get_context(context: None = None) -> Context: ...
-@overload
-def get_context(context: CT) -> CT: ...
-
-def get_context(context: ContextBase | None = None):
-    try:
-        return context or _GLOBAL_CONTEXT
-    except NameError as e:
+    if context is None:
         if os.getenv(DISABLE_GLOBAL_CONTEXT_ENV):
             raise Error(
-                f"Global context is disabled by {DISABLE_GLOBAL_CONTEXT_ENV} environment variable. " \
-                "You must provide a context explicitly."
+                f"Global context is disabled by {DISABLE_GLOBAL_CONTEXT_ENV} environment variable. "
+                "You must provide a context explicitly. Did you forget to call set_global_context?"
             ) from None
-            
-        else:
-            raise e
+
+        raise Error(
+            "No global context found. Did you forget to call set_global_context?"
+        )
+
+    return context
 
 
-def set_global_context(context: ContextBase):
-    global _GLOBAL_CONTEXT
-    _GLOBAL_CONTEXT = context
+def set_global_context(context: _Context):
+    _set_global_context(context)

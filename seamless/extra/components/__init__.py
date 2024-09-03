@@ -1,17 +1,23 @@
-from .repository import ComponentsRepository
+import inspect
+from typing import TYPE_CHECKING, ClassVar, Optional, Type
 
-from ..feature import Feature
+from pydom import Component
+from pydom.context import Context
+from pydom.context.feature import Feature
+from pydom.rendering import render_json
 
-from ...context import Context
-from ...context.base import ContextBase
-from ...core.component import Component
 from ...errors import ClientError
-from ...rendering import render_json
+from .repository import ComponentsRepository
+from ..transports.transport import TransportFeature
 
+if TYPE_CHECKING:
+
+    class _Component(Component):
+        __seamless_name__: ClassVar[str]
 
 
 class ComponentsFeature(Feature):
-    def __init__(self, context: ContextBase) -> None:
+    def __init__(self, context: Context) -> None:
         super().__init__(context)
         self.DB = ComponentsRepository()
 
@@ -19,15 +25,17 @@ class ComponentsFeature(Feature):
 
         @classmethod
         def __init_subclass__(
-            cls: type[Component],
+            cls: Type["_Component"],
             *,
-            name: str | None = None,
+            name: Optional[str] = None,
             inject_render: bool = False,
             **kwargs,
         ) -> None:
-            if cls is not Component:
+            if not inspect.isabstract(cls):
 
-                cls.__seamless_name__ = cls.__dict__.get("__seamless_name__", None) or name or cls.__name__
+                cls.__seamless_name__ = (
+                    cls.__dict__.get("__seamless_name__", None) or name or cls.__name__
+                )
                 self.DB.add_component(cls, cls.__seamless_name__)
 
                 if inject_render:
