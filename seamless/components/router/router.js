@@ -76,12 +76,6 @@ routes = routes.map((route) => {
   };
 });
 
-if (loadingComponentName) {
-  seamless.instance.getComponent(loadingComponentName, {}).then((component) => {
-    loadingComponent = seamless.instance.toDOMElement(component);
-  });
-}
-
 const clearParent = () => {
   while (parent.firstChild) {
     parent.removeChild(parent.firstChild);
@@ -90,7 +84,7 @@ const clearParent = () => {
 
 const loadComponent = async (name, props = {}) => {
   return seamless.instance.toDOMElement(
-    await seamless.instance.getComponent(name, props)
+    await seamless.getComponent(name, props)
   );
 };
 
@@ -102,14 +96,16 @@ window.addEventListener("pageLocationChange", () => {
     const match = path.match(route.regex);
     if (match) {
       page = route;
-      page.params = match.groups ? Object.fromEntries(
-        Object.entries(match.groups).map(([key, value]) => [
-          key,
-          route.regexConvertors[key]
-            ? route.regexConvertors[key].convert(value)
-            : value,
-        ])
-      ) : {};
+      page.params = match.groups
+        ? Object.fromEntries(
+            Object.entries(match.groups).map(([key, value]) => [
+              key,
+              route.regexConvertors[key]
+                ? route.regexConvertors[key].convert(value)
+                : value,
+            ])
+          )
+        : {};
       break;
     }
   }
@@ -118,7 +114,9 @@ window.addEventListener("pageLocationChange", () => {
     return;
   }
 
-  const props = Object.fromEntries(new URLSearchParams(window.location.search).entries());
+  const props = Object.fromEntries(
+    new URLSearchParams(window.location.search).entries()
+  );
 
   clearParent();
   if (loadingComponent) {
@@ -137,4 +135,12 @@ seamless.navigateTo = function (to) {
   return false;
 };
 
-window.dispatchEvent(PageStateChange);
+window.addEventListener("transportsAvailable", async (event) => {
+  if (loadingComponentName) {
+    seamless.getComponent(loadingComponentName, {}).then((component) => {
+      loadingComponent = seamless.instance.toDOMElement(component);
+    });
+  }
+
+  window.dispatchEvent(PageStateChange);
+});
