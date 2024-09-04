@@ -1,0 +1,53 @@
+name: Create Release
+
+on:
+  workflow_dispatch:
+    inputs:
+      version:
+        description: "Version number"
+        required: true
+
+permissions:
+  contents: write
+
+env:
+  VERSION: ${{ github.event.inputs.version }}
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v4
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.x"
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: "20"
+          registry-url: "https://registry.npmjs.org"
+
+      - name: Update Versions
+        run: |
+          echo "Updating Python version to $VERSION"
+          echo "version = \"$VERSION\"" > seamless/version.py
+          echo "Updating node package version to $VERSION"
+          cd node && node build.js $VERSION
+
+      - name: Commit Version Changes
+        run: |
+          git config --local user.email "${{ github.actor }}@users.noreply.github.com"
+          git config --local user.name "${{ github.actor }}"
+          git add .
+          git commit -m "Update version to $VERSION"
+          git push origin release/$VERSION
+
+      - name: Create Release
+        id: create_release
+        run: |
+          echo "Creating release $VERSION"
+          gh release create $VERSION --target release/$VERSION -t v$VERSION --generate-notes
+          gh pr create --title "Release $VERSION" --body "Release $VERSION" --base main --head release/$VERSION
