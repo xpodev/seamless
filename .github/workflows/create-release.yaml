@@ -30,6 +30,10 @@ jobs:
           node-version: "20"
           registry-url: "https://registry.npmjs.org"
 
+      - name: Install dependencies
+        run: |
+          cd node && yarn
+
       - name: Update Versions
         run: |
           echo "Updating Python version to $VERSION"
