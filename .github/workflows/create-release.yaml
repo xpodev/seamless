@@ -12,6 +12,7 @@ permissions:
 
 env:
   VERSION: ${{ github.event.inputs.version }}
+  GH_TOKEN: ${{ github.token }}
 
 jobs:
   deploy:
