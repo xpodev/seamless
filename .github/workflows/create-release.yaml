@@ -13,7 +13,7 @@ permissions:
 
 env:
   VERSION: ${{ github.event.inputs.version }}
-  GH_TOKEN: ${{ github.token }}
+  GH_TOKEN: ${{ secrets.PAT }}
 
 jobs:
   deploy:
