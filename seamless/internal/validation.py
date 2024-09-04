@@ -1,13 +1,11 @@
 # type: ignore
 
-from typing import Any, TYPE_CHECKING
+from typing import Any
+
+from pydom.context import Context
 
 from .utils import Promise, _obj, wraps
 from ..errors import ClientError
-
-if TYPE_CHECKING:
-    from ..context import Context
-
 
 class _DataValidationError(ClientError): ...
 

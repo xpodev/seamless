@@ -1,9 +1,22 @@
 import os
 
+from pydom import Component
+
+from .context import Context, set_global_context
+from .core import JS
+from .internal.constants import DISABLE_GLOBAL_CONTEXT_ENV
+from .html import *
+from .rendering import render
 from .version import version as __version__
 
-if not os.environ.get("SEAMLESS_VERSION_ONLY", False):
-    from ._init import *
+
+if not os.getenv(DISABLE_GLOBAL_CONTEXT_ENV):
+    set_global_context(Context.standard())
+else:
+    set_global_context(None)  # type: ignore
+
+del set_global_context
+del DISABLE_GLOBAL_CONTEXT_ENV
 
 __all__ = [
     "Component",

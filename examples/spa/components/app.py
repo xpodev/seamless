@@ -1,7 +1,7 @@
 from seamless import Component, Div, Nav, Button
 from seamless.context.context import Context
 from seamless.styling import StyleObject
-from seamless.extensions import State
+from seamless.extensions import State, SocketIOTransport
 from seamless.components.router import Router, Route, RouterLink
 from pages import HomePage, CounterPage, BasePage, UserPage
 from components.loading import Loading
@@ -12,6 +12,7 @@ class App(Component):
     def render(self):
         return BasePage(
             State.init(),
+            SocketIOTransport.init(),
             Div(class_name="d-flex flex-column h-100")(
                 Div(class_name="d-flex justify-content-between")(
                     Nav(class_name="navbar navbar-expand-lg navbar-light bg-light")(
@@ -19,7 +20,7 @@ class App(Component):
                         RouterLink(to="/counter", class_name="navbar-brand")("Counter"),
                     ),
                     Div(
-                        Button(on_click=self.foo, style=StyleObject(border_radius="5px", background_color="red"))(
+                        Button(on_click=foo, style=StyleObject(border_radius="5px", background_color="red"))(
                             "Click me!"
                         )
                     )
@@ -36,5 +37,5 @@ class App(Component):
             title="Seamless",
         )
 
-    def foo(self, event, context: Context):
-        print("foo")
+def foo(event, context: Context):
+    print("foo")

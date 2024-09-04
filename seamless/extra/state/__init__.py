@@ -1,16 +1,14 @@
-from pathlib import Path
 from json import dumps
-from typing import Any, overload, TYPE_CHECKING
+from pathlib import Path
+from typing import Any, overload
 
-from ...core.component import Component
+from pydom import Component
+from pydom.context import Context
+from pydom.rendering.tree.nodes import ContextNode
+
 from ...core import Empty, JS
-from ...internal.constants import SEAMLESS_ELEMENT_ATTRIBUTE, SEAMLESS_INIT_ATTRIBUTE
-from ...rendering.tree import ElementNode
-
 from ..feature import Feature
-
-if TYPE_CHECKING:
-    from ...context import Context
+from ...internal.constants import SEAMLESS_ELEMENT_ATTRIBUTE, SEAMLESS_INIT_ATTRIBUTE
 
 HERE = Path(__file__).parent
 _EMPTY = object()
@@ -20,9 +18,7 @@ class _StateMeta(type):
     _instances = {}
 
     def __call__(self, name: str, *args: Any, **kwds: Any):
-        if name not in self._instances:
-            self._instances[name] = super().__call__(name, *args, **kwds)
-        return self._instances[name]
+        return self._instances.setdefault(name, super().__call__(name, *args, **kwds))
 
     def __iter__(self):
         return iter(self._instances.values())
@@ -76,7 +72,7 @@ class State(metaclass=_StateMeta):
 
 
 class StateFeature(Feature):
-    def __init__(self, context: "Context"):
+    def __init__(self, context: Context):
         super().__init__(context)
         self.context.add_prop_transformer(*self.state_transformer())
 
@@ -84,7 +80,7 @@ class StateFeature(Feature):
         def matcher(_, value):
             return isinstance(value, Empty) and value.props.get("state-name", False)
 
-        def transformer(key, value: Empty, element: ElementNode):
+        def transformer(key, value: Empty, element: ContextNode):
             empty_props = value.props
             element.props[SEAMLESS_ELEMENT_ATTRIBUTE] = True
             element.props[SEAMLESS_INIT_ATTRIBUTE] = (

@@ -16,7 +16,7 @@ T = TypeVar("T")
 
 class EventTarget(BaseModel):
     id: str
-    tagName: str
+    tag_name: str
 
 
 class Event(BaseModel):
@@ -71,7 +71,9 @@ class FormDataEvent(Event): ...
 class GamepadEvent(Event): ...
 
 
-class HashChangeEvent(Event): ...
+class HashChangeEvent(Event):
+    old_url: str
+    new_url: str
 
 
 class HIDInputReportEvent(Event): ...
@@ -86,7 +88,12 @@ class InputEvent(Event): ...
 class KeyboardEvent(Event): ...
 
 
-class MessageEvent(Event): ...
+class MessageEvent(Event):
+    data: str
+    origin: str
+    last_event_id: str
+    source: EventTarget
+    ports: list
 
 
 class MouseEvent(Event): ...
@@ -104,7 +111,8 @@ class PaymentRequestUpdateEvent(Event): ...
 class PointerEvent(Event): ...
 
 
-class PopStateEvent(Event): ...
+class PopStateEvent(Event):
+    state: dict | None
 
 
 class ProgressEvent(Event): ...
@@ -116,7 +124,11 @@ class RTCDataChannelEvent(Event): ...
 class RTCPeerConnectionIceEvent(Event): ...
 
 
-class StorageEvent(Event): ...
+class StorageEvent(Event):
+    key: str
+    old_value: str
+    new_value: str
+    url: str
 
 
 class SubmitEvent(Event, Generic[T]):

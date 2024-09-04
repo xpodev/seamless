@@ -1,5 +1,6 @@
 from typing import TYPE_CHECKING, Any
-from ..element import Element
+from pydom.element import Element
+
 from ..internal.constants import SEAMLESS_ELEMENT_ATTRIBUTE
 
 if TYPE_CHECKING:

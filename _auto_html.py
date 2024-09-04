@@ -227,18 +227,15 @@ inline_html_classes = [
 
 html_map = {key: html_map.get(key, "HTMLElementProps") for key in html_classes}
 
-template = """from typing import TYPE_CHECKING, Unpack
-from ..element import Element
+template = """from typing_extensions import Unpack
+from pydom.element import Element
 
-if TYPE_CHECKING:
-    from ..types.html import {props_class_name}
-    from ..types import ChildType
+from ..types.html import {props_class_name}
+from ..types import ChildType
+
 
 class {class_name}(Element):
-    def __init__(self, *children: "ChildType", **kwargs: Unpack["{props_class_name}"]):
-        super().__init__(*children, **kwargs)
-
-    tag_name = "{class_name_lower}"{inline}
+    def __init__(self, *children: ChildType, **kwargs: Unpack[{props_class_name}]): ...
 """
 
 inline_string = "\n    inline = True"
@@ -249,16 +246,14 @@ for cls, props in html_map.items():
     class_name = cls
     class_name_lower = class_name.lower()
     props_class_name = props
-    filename = f"{class_name_lower}.py"
+    filename = f"{class_name_lower}.pyi"
     inline = inline_string if class_name in inline_html_classes else ""
 
     if class_name == "Meta":
         continue
 
     if class_name == "Del":
-        filename = "del_.py"
+        filename = "del_.pyi"
 
     with open(HTML_FILES / filename, "w") as f:
         f.write(template.format(class_name=class_name, class_name_lower=class_name_lower, props_class_name=props_class_name, inline=inline))
-
-    

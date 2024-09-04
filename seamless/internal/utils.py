@@ -1,12 +1,5 @@
-# type: ignore
-
-from functools import wraps as _wraps
-from inspect import iscoroutinefunction, ismethod
-from string import ascii_letters
-from typing import TypeGuard
-from uuid import uuid4
-
-ascii_length = len(ascii_letters)
+from functools import wraps
+from inspect import iscoroutinefunction, isfunction
 
 
 class Promise:
@@ -35,26 +28,6 @@ class TwoWayDict(dict):
         return dict.__len__(self) // 2
 
 
-def short_uuid(length=12):
-    original_uuid = uuid4()
-    hex_string = original_uuid.hex
-    base62_uuid = ""
-    for i in range(0, len(hex_string), 2):
-        hex_byte = int(hex_string[i : i + 2], 16)
-        base62_uuid += ascii_letters[hex_byte % ascii_length]
-
-    short_uuid = base62_uuid[:length]
-
-    return short_uuid
-
-
-def to_iter(value):
-    try:
-        return iter(value)
-    except TypeError:
-        return iter((value,))
-
-
 def to_async(func):
     if iscoroutinefunction(func):
         return func
@@ -69,7 +42,7 @@ def to_async(func):
 class _obj(object):
     def __init__(self, d: dict):
         for key, value in d.items():
-            if isinstance(key, (list, tuple)):
+            if isinstance(value, (list, tuple)):
                 setattr(
                     self, key, [_obj(x) if isinstance(x, dict) else x for x in value]
                 )
@@ -77,38 +50,12 @@ class _obj(object):
                 setattr(self, key, _obj(value) if isinstance(value, dict) else value)
 
 
-def wraps(info):
-    def inner(callback):
-        if ismethod(info):
-
-            if iscoroutinefunction(callback):
-
-                @_wraps(info.__func__)
-                async def wrapper(_, *args, **kwargs):
-                    return await callback(*args, **kwargs)
-
-            else:
-
-                @_wraps(info.__func__)
-                def wrapper(_, *args, **kwargs):
-                    return callback(*args, **kwargs)
-
-            return wrapper.__get__(info.__self__, info.__class__)
-
-        if iscoroutinefunction(callback):
-
-            @_wraps(info)
-            async def wrapper(*args, **kwargs):
-                return await callback(*args, **kwargs)
-
-        @_wraps(info)
-        def wrapper(*args, **kwargs):
-            return callback(*args, **kwargs)
-        
-        return wrapper
-
-    return inner
+def is_global(func):
+    func = original_func(func)
+    return isfunction(func) and (getattr(func, "__closure__", None) is None)
 
 
-def is_primitive(value) -> TypeGuard[str | int | float | bool | None]:
-    return isinstance(value, (str, int, float, bool)) or value is None
+def original_func(func):
+    if hasattr(func, "__wrapped__"):
+        return original_func(func.__wrapped__)
+    return func

@@ -4,18 +4,16 @@ from pathlib import Path
 from fastapi import FastAPI, Response
 from fastapi.responses import FileResponse
 from pydantic import BaseModel
+from pydom.element import Element
 from seamless import *
-from seamless.element import Element
-from seamless.middlewares.asgi import ASGIMiddleware
+from seamless.extra.transports.socketio.middleware import SocketIOMiddleware
 from seamless.styling import CSS
 from seamless.components import Page as BasePage
 from .server.common import Card, Page, SuperCard, SampleComponent
 from .components import Page as TestPage, App
 
 app = FastAPI()
-app.add_middleware(
-    ASGIMiddleware,
-)
+app.add_middleware(SocketIOMiddleware)
 
 
 def _make_response(response):
