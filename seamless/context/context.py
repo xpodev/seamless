@@ -24,9 +24,9 @@ T = TypeVar("T", bound=_Context)
 P = ParamSpec("P")
 
 Feature = Callable[Concatenate["Context", P], Any]
-PropertyMatcher = Callable[Concatenate[str, Any, ...], bool] | str
-PropertyTransformer = Callable[Concatenate[str, Any, "ContextNode", ...], None]
-PostRenderTransformer = Callable[Concatenate["ContextNode", ...], None]
+PropertyMatcher = Callable[Concatenate[str, Any, P], bool] | str
+PropertyTransformer = Callable[Concatenate[str, Any, "ContextNode", P], None]
+PostRenderTransformer = Callable[Concatenate["ContextNode", P], None]
 
 
 class Context(_Context):

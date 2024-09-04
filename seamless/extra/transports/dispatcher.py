@@ -1,7 +1,7 @@
 from typing import Any, Callable, Dict, Generic, TYPE_CHECKING, TypeVar, Awaitable
 
 from pydom import Context
-from typing_extensions import ParamSpec, Concatenate
+from typing_extensions import ParamSpec
 
 
 if TYPE_CHECKING:
