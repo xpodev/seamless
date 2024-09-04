@@ -41,4 +41,5 @@ jobs:
       - name: Run build test
         working-directory: ${{ github.workspace }}
         run: |
+          py -m pip install build
           python -m build
