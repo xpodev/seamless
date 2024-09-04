@@ -1,4 +1,3 @@
-from typing_extensions import deprecated
 from seamless.types.html.html_element_props import HTMLElementProps
 from seamless.types.html.html_event_props import Event, EventFunction
 from seamless.types.events import (
