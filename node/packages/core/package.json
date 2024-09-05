@@ -1,6 +1,6 @@
 {
   "name": "python-seamless",
-  "version": "0.1.2",
+  "version": "0.0.6",
   "description": "JavaScript integration for Seamless",
   "main": "dist/index.js",
   "private": false,

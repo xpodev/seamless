@@ -1,6 +1,6 @@
 {
   "name": "@python-seamless/react",
-  "version": "0.1.2",
+  "version": "0.0.6",
   "description": "Python-Seamless integration with React",
   "main": "dist/index.js",
   "private": false,
