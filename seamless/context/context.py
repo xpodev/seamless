@@ -2,12 +2,12 @@ import os
 from typing import (
     Any,
     Callable,
-    Concatenate,
     Optional,
-    ParamSpec,
     TypeVar,
     cast,
 )
+
+from typing_extensions import Concatenate, ParamSpec
 
 from pydom.context.context import (
     Context as _Context,

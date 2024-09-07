@@ -23,13 +23,24 @@ from seamless.types.events import (
 P = ParamSpec("P")
 EventProps = TypeVar("EventProps", bound=Event)
 
-if sys.version_info >= (3, 11):
-    EventFunction = Union[Callable[Concatenate[EventProps, ...], None], "JS", str]
-elif sys.version_info >= (3, 10):
-    EventCallable = Callable[Concatenate[EventProps, P], None]
-    EventFunction = Union[EventCallable[EventProps, ...], "JS", str]
+if TYPE_CHECKING:
+    if sys.version_info >= (3, 11):
+        EventFunction = Union[Callable[Concatenate[EventProps, ...], None], "JS", str]
+    elif sys.version_info >= (3, 10):
+        from typing import Type
+
+        def _EventCallable(**kwargs):
+            ...
+
+        def _EventFunction(_: Callable[P, None]) -> Type[Callable[Concatenate[EventProps, P], None]]:
+            ...
+
+        EventCallable = _EventFunction(_EventCallable)
+        EventFunction = Union[EventCallable, "JS", str]
+    else:
+        EventFunction = Union[Callable[Concatenate[EventProps, ...], None], "JS", str]
 else:
-    EventFunction = Union[Callable[Concatenate[EventProps, ...], None], "JS", str]
+    EventFunction = Union[Callable[..., None], "JS", str]
 
 
 class HTMLEventProps(TypedDict, total=False):
