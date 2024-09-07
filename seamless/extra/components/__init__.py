@@ -1,5 +1,5 @@
 import inspect
-from typing import TYPE_CHECKING, ClassVar, Optional, Type
+from typing import TYPE_CHECKING, ClassVar, Optional
 
 from pydom import Component
 from pydom.context import Context
@@ -25,7 +25,7 @@ class ComponentsFeature(Feature):
 
         @classmethod
         def __init_subclass__(
-            cls: Type["_Component"],
+            cls: type["_Component"],
             *,
             name: Optional[str] = None,
             inject_render: bool = False,
@@ -71,5 +71,5 @@ class ComponentsFeature(Feature):
         )
 
 
-def component_name(component: Type[Component]) -> Optional[str]:
+def component_name(component: type[Component]) -> Optional[str]:
     return getattr(component, "__seamless_name__", None)

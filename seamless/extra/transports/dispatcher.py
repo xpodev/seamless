@@ -1,4 +1,4 @@
-from typing import Any, Callable, Dict, Generic, TYPE_CHECKING, TypeVar, Awaitable
+from typing import Any, Callable, Generic, TYPE_CHECKING, TypeVar, Awaitable
 
 from pydom import Context
 from typing_extensions import ParamSpec
@@ -14,7 +14,7 @@ T = TypeVar("T")
 class Dispatcher(Generic[P, T]):
     def __init__(self, context: Context) -> None:
         self._context = context
-        self._handlers: Dict[Any, Callable] = {}
+        self._handlers: dict[Any, Callable] = {}
 
     def on(self, name: Any, handler: Callable[P, Awaitable[T]]):
         if name in self._handlers:

@@ -1,6 +1,6 @@
 from json import dumps
 from pathlib import Path
-from typing import Optional, Tuple, overload, Type
+from typing import Optional, Tuple, overload
 
 from pydom import Component
 
@@ -16,13 +16,13 @@ class Router(Component):
     children: Tuple[Route, ...]  # type: ignore
 
     @overload
-    def __init__(self, *, loading_component: Optional[Type[Component]] = None): ...
+    def __init__(self, *, loading_component: Optional[type[Component]] = None): ...
     @overload
     def __init__(
-        self, *routes: Route, loading_component: Optional[Type[Component]] = None
+        self, *routes: Route, loading_component: Optional[type[Component]] = None
     ): ...
 
-    def __init__(self, *, loading_component: Optional[Type[Component]] = None):  # type: ignore
+    def __init__(self, *, loading_component: Optional[type[Component]] = None):  # type: ignore
         self.loading_component = (
             component_name(loading_component) if loading_component else None
         )
