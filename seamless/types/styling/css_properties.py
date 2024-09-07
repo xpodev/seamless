@@ -1,5 +1,6 @@
-from typing import Any, Generic, Literal, TypeVar, Union, TypeAlias
-from typing_extensions import TypedDict
+from typing import Any, Generic, Literal, TypeVar, Union
+
+from typing_extensions import TypedDict, TypeAlias
 
 float_ = float
 T = TypeVar("T")
