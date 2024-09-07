@@ -1,9 +1,7 @@
-from typing import TYPE_CHECKING, Callable, Concatenate, TypeVar, Union
+import sys
+from typing import TYPE_CHECKING, Callable, TypeVar, Union
 
-from typing_extensions import TypedDict
-
-if TYPE_CHECKING:
-    from seamless.core.javascript import JS
+from typing_extensions import ParamSpec, TypedDict, Concatenate
 
 from seamless.types.events import (
     CloseEvent,
@@ -19,8 +17,23 @@ from seamless.types.events import (
     WheelEvent,
 )
 
-EventProps = TypeVar("EventProps", bound=Event)
-EventFunction = Union[Callable[Concatenate[EventProps, ...], None], "JS", str]
+P = ParamSpec("P")
+EventProps = TypeVar("EventProps", bound=Event, contravariant=True)
+
+if TYPE_CHECKING:
+    from seamless.core.javascript import JS
+
+    if sys.version_info >= (3, 11):
+        EventFunction = Union[Callable[Concatenate[EventProps, ...], None], "JS", str]
+    else:
+        from typing import Protocol
+
+        class EventCallable(Protocol[EventProps]):
+            def __call__(self, _: EventProps, /, **kwargs) -> None: ...
+
+        EventFunction = Union[EventCallable[EventProps], JS, str]
+else:
+    EventFunction = Union[Callable[[EventProps], None], "JS", str]
 
 
 class HTMLEventProps(TypedDict, total=False):

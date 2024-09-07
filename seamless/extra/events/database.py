@@ -1,5 +1,5 @@
 from inspect import iscoroutinefunction
-from typing import Any, Callable, Dict
+from typing import Any, Callable, Union
 
 from ...internal.utils import is_global
 
@@ -24,9 +24,9 @@ class Action:
 class EventsDatabase:
 
     def __init__(self):
-        self.events: Dict[str, Action] = {}
-        self.scoped_events: Dict[str, Dict[str, Action]] = {}
-        self.actions_ids = dict[str | Callable, Action]()
+        self.events: dict[str, Action] = {}
+        self.scoped_events: dict[str, dict[str, Action]] = {}
+        self.actions_ids: dict[Union[str, Callable], Action] = {}
 
     def add_event(self, action: Action, *, scope: str):
         try:

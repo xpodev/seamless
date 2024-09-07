@@ -1,4 +1,4 @@
-from typing import overload, Iterable
+from typing import Optional, overload, Iterable
 
 from pydom import Component
 from pydom.utils.functions import to_iter
@@ -21,29 +21,29 @@ class Page(Component):
     def __init__(
         self,
         *children: ChildType,
-        title: str | None = None,
-        html_props: HTMLHtmlElement | None = None,
-        head_props: HTMLHeadElement | None = None,
-        body_props: HTMLBodyElement | None = None,
+        title: Optional[str] = None,
+        html_props: Optional[HTMLHtmlElement] = None,
+        head_props: Optional[HTMLHeadElement] = None,
+        body_props: Optional[HTMLBodyElement] = None,
     ): ...
     @overload
     def __init__(
         self,
         *,
         children: ChildrenType,
-        title: str | None = None,
-        html_props: HTMLHtmlElement | None = None,
-        head_props: HTMLHeadElement | None = None,
-        body_props: HTMLBodyElement | None = None,
+        title: Optional[str] = None,
+        html_props: Optional[HTMLHtmlElement] = None,
+        head_props: Optional[HTMLHeadElement] = None,
+        body_props: Optional[HTMLBodyElement] = None,
     ): ...
 
     def __init__(  # type: ignore
         self,
         *,
-        title: str | None = None,
-        html_props: HTMLHtmlElement | None = None,
-        head_props: HTMLHeadElement | None = None,
-        body_props: HTMLBodyElement | None = None,
+        title: Optional[str] = None,
+        html_props: Optional[HTMLHtmlElement] = None,
+        head_props: Optional[HTMLHeadElement] = None,
+        body_props: Optional[HTMLBodyElement] = None,
     ):
         self.title = title
         self._html_props = html_props or {"lang": "en"}
@@ -75,7 +75,7 @@ class Page(Component):
             ),
         )
 
-    def __init_subclass__(cls, title: str | None = None, **kwargs) -> None:
+    def __init_subclass__(cls, title: Optional[str] = None, **kwargs) -> None:
         super().__init_subclass__(**kwargs)
 
         if title is None:

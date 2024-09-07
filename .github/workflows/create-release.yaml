@@ -9,9 +9,11 @@ on:
 
 permissions:
   contents: write
+  pull-requests: write
 
 env:
   VERSION: ${{ github.event.inputs.version }}
+  GH_TOKEN: ${{ github.token }}
 
 jobs:
   deploy:
@@ -45,6 +47,7 @@ jobs:
         run: |
           git config --local user.email "${{ github.actor }}@users.noreply.github.com"
           git config --local user.name "${{ github.actor }}"
+          git checkout -b release/$VERSION
           git add .
           git commit -m "Update version to $VERSION"
           git push origin release/$VERSION

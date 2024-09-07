@@ -2,12 +2,13 @@ import os
 from typing import (
     Any,
     Callable,
-    Concatenate,
     Optional,
-    ParamSpec,
     TypeVar,
+    Union,
     cast,
 )
+
+from typing_extensions import Concatenate, ParamSpec
 
 from pydom.context.context import (
     Context as _Context,
@@ -24,7 +25,7 @@ T = TypeVar("T", bound=_Context)
 P = ParamSpec("P")
 
 Feature = Callable[Concatenate["Context", P], Any]
-PropertyMatcher = Callable[Concatenate[str, Any, P], bool] | str
+PropertyMatcher = Union[Callable[Concatenate[str, Any, P], bool], str]
 PropertyTransformer = Callable[Concatenate[str, Any, "ContextNode", P], None]
 PostRenderTransformer = Callable[Concatenate["ContextNode", P], None]
 

@@ -29,7 +29,7 @@ jobs:
 
       - name: Publish node packages
         run: |
-          node build.js ${{ github.event.release.tag_name }}
+          node publish.js ${{ github.event.release.tag_name }}
         env:
           NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
 

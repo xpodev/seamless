@@ -1,6 +1,8 @@
 from inspect import iscoroutinefunction
 from functools import wraps
-from typing import TypeVar, Callable, TypeAlias
+from typing import TypeVar, Callable
+
+from typing_extensions import TypeAlias
 
 from pydom.utils.injector import Injector as _Injector
 
