@@ -40,7 +40,7 @@ if TYPE_CHECKING:
     else:
         EventFunction = Union[Callable[Concatenate[EventProps, ...], None], "JS", str]
 else:
-    EventFunction = Union[Callable[..., None], "JS", str]
+    EventFunction = Union[Callable[EventProps, None], "JS", str]
 
 
 class HTMLEventProps(TypedDict, total=False):
