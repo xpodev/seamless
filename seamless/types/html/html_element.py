@@ -10,7 +10,7 @@ if TYPE_CHECKING:
 class HTMLElement(TypedDict, total=False, closed=False):
     access_key: str
     auto_capitalize: str
-    class_name: str | Iterable[str]
+    class_name: Union[str, Iterable[str]]
     content_editable: str
     # data: dict[str, str]  # add this if needed in the future
     dir: Literal["ltr", "rtl", "auto"]

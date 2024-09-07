@@ -1,6 +1,6 @@
 # type: ignore
 
-from typing import Iterable
+from typing import Iterable, Union
 
 class Cookies:
     def __init__(self, cookie_string: str):
@@ -22,7 +22,7 @@ class Cookies:
         return key in self.cookies
 
     @staticmethod
-    def from_request_headers(headers: Iterable[Iterable[bytes]] | dict):
+    def from_request_headers(headers: Union[Iterable[Iterable[bytes]], dict]):
         cookie_string = ""
         if isinstance(headers, dict):
             return Cookies(headers.get("cookie", ""))

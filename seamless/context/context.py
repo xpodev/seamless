@@ -4,6 +4,7 @@ from typing import (
     Callable,
     Optional,
     TypeVar,
+    Union,
     cast,
 )
 
@@ -24,7 +25,7 @@ T = TypeVar("T", bound=_Context)
 P = ParamSpec("P")
 
 Feature = Callable[Concatenate["Context", P], Any]
-PropertyMatcher = Callable[Concatenate[str, Any, P], bool] | str
+PropertyMatcher = Union[Callable[Concatenate[str, Any, P], bool], str]
 PropertyTransformer = Callable[Concatenate[str, Any, "ContextNode", P], None]
 PostRenderTransformer = Callable[Concatenate["ContextNode", P], None]
 

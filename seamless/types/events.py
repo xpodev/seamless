@@ -1,5 +1,5 @@
 from dataclasses import dataclass
-from typing import Generic, TypeVar
+from typing import Generic, Optional, TypeVar, Union
 
 try:
     from pydantic import BaseModel  # type: ignore
@@ -112,7 +112,7 @@ class PointerEvent(Event): ...
 
 
 class PopStateEvent(Event):
-    state: dict | None
+    state: Optional[dict]
 
 
 class ProgressEvent(Event): ...
