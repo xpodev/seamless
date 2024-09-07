@@ -51,7 +51,7 @@ class SocketIOTransport(TransportFeature):
 
     @staticmethod
     def init(config=None):
-        init_js = JS(file=HERE / "socketio.init.js", async_=True)
+        init_js = JS(file=HERE / "socketio.init.js")
 
         class InitSocketIO(Component, inject_render=True):
             def render(self, render_state: RenderState):
