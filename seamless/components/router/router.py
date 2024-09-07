@@ -10,6 +10,7 @@ from .route import Route
 
 
 HERE = Path(__file__).parent
+ROUTER_JS = JS(file=HERE / "router.js")
 
 
 class Router(Component):
@@ -36,10 +37,7 @@ class Router(Component):
             for route in self.children
         ]
 
-        with open(HERE / "router.js", "r") as f:
-            router_js = f.read()
-
         return Empty(
-            init=JS(f"let routes = {dumps(routes)};{router_js}"),
+            init=JS(f"let routes = {dumps(routes)};") + ROUTER_JS,
             loading=self.loading_component,
         )
