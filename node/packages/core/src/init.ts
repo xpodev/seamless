@@ -1,3 +1,3 @@
-import Seamless from ".";
+import Seamless from "./index";
 
 new Seamless();
