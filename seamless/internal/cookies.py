@@ -1,10 +1,11 @@
 # type: ignore
 
-from typing import Iterable, Union
+from typing import Iterable, Union, Dict
+
 
 class Cookies:
     def __init__(self, cookie_string: str):
-        self.cookies = dict[str, str]()
+        self.cookies: Dict[str, str] = {}
         self._parse(cookie_string)
 
     def _parse(self, cookie_string: str):

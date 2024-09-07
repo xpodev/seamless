@@ -26,7 +26,7 @@ class EventsDatabase:
     def __init__(self):
         self.events: Dict[str, Action] = {}
         self.scoped_events: Dict[str, Dict[str, Action]] = {}
-        self.actions_ids = dict[Union[str, Callable], Action]()
+        self.actions_ids: Dict[Union[str, Callable], Action] = {}
 
     def add_event(self, action: Action, *, scope: str):
         try:
