@@ -4,11 +4,11 @@ from typing import Union, overload
 
 class JavaScript:
     @overload
-    def __init__(self, code: str, *, async_: bool = False) -> None: ...
+    def __init__(self, code: str) -> None: ...
     @overload
-    def __init__(self, *, file: Union[str, PathLike], async_: bool = False) -> None: ...
+    def __init__(self, *, file: Union[str, PathLike]) -> None: ...
 
-    def __init__(self, code=None, *, file=None, async_: bool = False) -> None:
+    def __init__(self, code=None, *, file=None) -> None:
         if file:
             if code:
                 raise ValueError("Cannot specify both code and file")
@@ -17,13 +17,12 @@ class JavaScript:
         elif not code:
             raise ValueError("Must specify either code or file")
         self.code = code
-        self.async_ = async_
 
     def __add__(self, other: Union["JavaScript", str]) -> "JavaScript":
         if isinstance(other, JavaScript):
-            return JavaScript(self.code + other.code, async_=self.async_ or other.async_)
+            return JavaScript(self.code + other.code)
         elif isinstance(other, str):
-            return JavaScript(self.code + other, async_=self.async_)
+            return JavaScript(self.code + other)
         else:
             raise TypeError(
                 f"Cannot concatenate JavaScript with {type(other).__name__}"

@@ -6,14 +6,7 @@ import type {
 } from "./types";
 export { SeamlessOptions };
 
-import {
-  SEAMLESS_ELEMENT,
-  SEAMLESS_INIT,
-  SEAMLESS_EMPTY,
-  SEAMLESS_INIT_ASYNC,
-} from "./constants";
-
-const AsyncFunction = new Function("return (async function () {}).constructor")();
+import { SEAMLESS_ELEMENT, SEAMLESS_INIT, SEAMLESS_EMPTY } from "./constants";
 
 class Seamless {
   private readonly eventObjectTransformer: (
@@ -94,11 +87,7 @@ class Seamless {
   protected attachInit(element: HTMLElement) {
     const initCode = element.getAttribute(SEAMLESS_INIT);
     if (initCode) {
-      new (element.hasAttribute(SEAMLESS_INIT_ASYNC)
-        ? AsyncFunction as { new (): Function }
-        : Function)("seamless", initCode).apply(element, [this.context]);
-
-      element.removeAttribute(SEAMLESS_INIT_ASYNC);
+      new Function("seamless", initCode).apply(element, [this.context]);
       element.removeAttribute(SEAMLESS_INIT);
     }
   }
