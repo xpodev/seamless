@@ -74,20 +74,20 @@ class Person(Component):
 ```
 To call a function on the server include this script in your file
 ```html
-<script src="https://cdn.jsdelivr.net/npm/@python-seamless/core@0.8.4/umd/seamless.init.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/python-seamless/umd/seamless.init.js"></script>
 ```
 Import the middleware and mount it to your app
 ```python
 from fastapi import FastAPI
-from seamless.middlewares import ASGIMiddleware as SeamlessMiddleware
+from seamless.middlewares import SocketIOMiddleware
 
 app = FastAPI()
-app.add_middleware(SeamlessMiddleware)
+app.add_middleware(SocketIOMiddleware)
 ```
 You can pass the following config to the middleware to change the socket path of all seamless endpoints.
 ```python
 app.add_middleware(
-  SeamlessMiddleware,
+  SocketIOMiddleware,
   socket_path="/my/custom/path"
 )
 ```
