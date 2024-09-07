@@ -8,6 +8,7 @@ on:
     types: [opened, reopened, synchronize]
     paths:
       - 'seamless/**/*.py'
+  workflow_dispatch:
 
 permissions:
   contents: read
