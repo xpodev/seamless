@@ -38,7 +38,7 @@ class State(metaclass=_StateMeta):
 
     def set(self, value):
         return JS(
-            f"""const state = seamless.state.getState('{self.name}');\
+            f"""const current = seamless.state.getState('{self.name}');\
             seamless.state.setState('{self.name}', {value})"""
         )
 

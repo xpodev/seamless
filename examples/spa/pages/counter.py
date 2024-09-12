@@ -27,14 +27,14 @@ class CounterPage(Component):
             Div(class_name="row")(
                 Div(class_name="col-12 text-center")(
                     Div(class_name="btn-group")(
-                        Div(class_name="btn btn-danger", on_click=counter("state - 1"))(
+                        Div(class_name="btn btn-danger", on_click=counter("current - 1"))(
                             "Decrement"
                         ),
                         Div(class_name="btn btn-primary", on_click=counter("0"))(
                             "Reset"
                         ),
                         Div(
-                            class_name="btn btn-success", on_click=counter("state + 1")
+                            class_name="btn btn-success", on_click=counter("current + 1")
                         )("Increment"),
                     ),
                 ),
