@@ -4,6 +4,9 @@ class SeamlessState {
     }
 
     setState(key, value) {
+        if (this.state[key] === value) {
+            return;
+        }
         const oldValue = this.state[key];
         this.state[key] = value;
         const stateChangeEvent = new CustomEvent(`stateChange:${key}`, { detail: { oldValue, currentValue: this.state[key] } });
