@@ -1,0 +1,6 @@
+{
+  "scripts": {
+    "dev": "sphinx-autobuild -b html source build --host 0.0.0.0 --port 8080",
+    "dev:clean": "sphinx-autobuild -a -b html source build --host 0.0.0.0 --port 8080"
+  }
+}

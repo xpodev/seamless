@@ -1,0 +1,4 @@
+.lh/
+build/*
+.venv/
+seamless/

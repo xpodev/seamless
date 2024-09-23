@@ -1,0 +1,28 @@
+html[data-theme="light"] {
+  --pst-color-primary: #00518a;
+  --pst-color-secondary: #f7f7f7;
+  --pst-color-secondary-hover: #e6e6e6;
+}
+
+html[data-theme="dark"] {
+  --pst-color-primary: #0b7ed1;
+  --pst-color-secondary: #f7f7f7;
+  --pst-color-secondary-hover: #e6e6e6;
+}
+
+.navbar-brand {
+  gap: 1rem;
+}
+
+.navbar-brand img {
+  height: 85%;
+}
+
+.navbar-item nav {
+  border-left: 2px solid #5d5d5f;
+  padding-left: 8px;
+}
+
+#pst-back-to-top:hover {
+  background-color: var(--pst-color-secondary-hover);
+}
