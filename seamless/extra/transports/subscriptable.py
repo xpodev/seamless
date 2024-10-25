@@ -7,15 +7,15 @@ from typing_extensions import ParamSpec
 from ...errors import ClientError
 
 
-P = ParamSpec("P")
+_P = ParamSpec("_P")
 
 
-class Subscriptable(Generic[P]):
+class Subscriptable(Generic[_P]):
     def __init__(self, context: Context) -> None:
         self._callbacks = []
         self._context = context
 
-    async def __call__(self, *args: P.args, **kwds: P.kwargs) -> None:
+    async def __call__(self, *args: _P.args, **kwds: _P.kwargs) -> None:
         try:
             for callback in self._callbacks:
                 await callback(*args, **kwds)
@@ -30,16 +30,16 @@ class Subscriptable(Generic[P]):
         return self
 
 
-class SubscriptableDescriptor(Generic[P]):
-    def __get__(self, instance: "Feature", owner) -> Subscriptable[P]:
+class SubscriptableDescriptor(Generic[_P]):
+    def __get__(self, instance: "Feature", owner) -> Subscriptable[_P]:
         return instance.__dict__.setdefault(self.name, Subscriptable(instance.context))
 
-    def __set__(self, instance: "Feature", value: Subscriptable[P]) -> None:
+    def __set__(self, instance: "Feature", value: Subscriptable[_P]) -> None:
         pass
 
     def __set_name__(self, owner, name):
         self.name = name
 
 
-def event(_: Callable[P, None]) -> SubscriptableDescriptor[P]:
+def event(_: Callable[_P, None]) -> SubscriptableDescriptor[_P]:
     return SubscriptableDescriptor()

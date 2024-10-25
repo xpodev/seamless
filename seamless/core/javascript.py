@@ -3,10 +3,26 @@ from typing import Union, overload
 
 
 class JavaScript:
+    """
+    A class representing a block of JavaScript code.
+    """
+
     @overload
-    def __init__(self, code: str) -> None: ...
+    def __init__(self, code: str) -> None:
+        """
+        Create a new JavaScript object from a string of code.
+
+        Args:
+            code: The JavaScript code.
+        """
     @overload
-    def __init__(self, *, file: Union[str, PathLike]) -> None: ...
+    def __init__(self, *, file: Union[str, PathLike]) -> None:
+        """
+        Create a new JavaScript object from a file.
+
+        Args:
+            file: The path to the file containing the JavaScript code.
+        """
 
     def __init__(self, code=None, *, file=None) -> None:
         if file:

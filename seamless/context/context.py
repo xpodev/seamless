@@ -21,13 +21,12 @@ from ..errors import Error
 from ..internal.constants import DISABLE_GLOBAL_CONTEXT_ENV
 from ..internal.injector import Injector
 
-T = TypeVar("T", bound=_Context)
-P = ParamSpec("P")
+_P = ParamSpec("_P")
 
-Feature = Callable[Concatenate["Context", P], Any]
-PropertyMatcher = Union[Callable[Concatenate[str, Any, P], bool], str]
-PropertyTransformer = Callable[Concatenate[str, Any, "ContextNode", P], None]
-PostRenderTransformer = Callable[Concatenate["ContextNode", P], None]
+Feature = Callable[Concatenate["Context", _P], Any]
+PropertyMatcher = Union[Callable[Concatenate[str, Any, _P], bool], str]
+PropertyTransformer = Callable[Concatenate[str, Any, "ContextNode", _P], None]
+PostRenderTransformer = Callable[Concatenate["ContextNode", _P], None]
 
 
 class Context(_Context):

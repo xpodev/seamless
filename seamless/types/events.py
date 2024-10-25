@@ -9,7 +9,7 @@ except ImportError:
     class BaseModel: ...
 
 
-T = TypeVar("T")
+_T = TypeVar("_T")
 
 # region: Event Types
 
@@ -131,8 +131,8 @@ class StorageEvent(Event):
     url: str
 
 
-class SubmitEvent(Event, Generic[T]):
-    data: T
+class SubmitEvent(Event, Generic[_T]):
+    data: _T
 
 
 class TimeEvent(Event): ...

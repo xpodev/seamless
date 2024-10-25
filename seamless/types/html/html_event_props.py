@@ -17,7 +17,7 @@ from seamless.types.events import (
     WheelEvent,
 )
 
-P = ParamSpec("P")
+_P = ParamSpec("_P")
 EventProps = TypeVar("EventProps", bound=Event, contravariant=True)
 
 if TYPE_CHECKING:

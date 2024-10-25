@@ -1,5 +1,4 @@
-from seamless import Component, Div, Nav, Button
-from seamless.context.context import Context
+from seamless import Component, Div, Nav, Button, Context
 from seamless.styling import StyleObject
 from seamless.extensions import State, SocketIOTransport
 from seamless.components.router import Router, Route, RouterLink
@@ -21,10 +20,13 @@ class App(Component):
                         RouterLink(to="/usage", class_name="navbar-brand")("Usage"),
                     ),
                     Div(
-                        Button(on_click=foo, style=StyleObject(border_radius="5px", background_color="red"))(
-                            "Click me!"
-                        )
-                    )
+                        Button(
+                            on_click=foo,
+                            style=StyleObject(
+                                border_radius="5px", background_color="red"
+                            ),
+                        )("Click me!")
+                    ),
                 ),
                 Div(class_name="content flex-grow-1")(
                     Router(loading_component=Loading)(
@@ -37,6 +39,7 @@ class App(Component):
             ),
             title="Seamless",
         )
+
 
 def foo(event, context: Context):
     print("foo")

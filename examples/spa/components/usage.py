@@ -36,7 +36,7 @@ class Usage(Component, inject_render=True):
         events = context.get_feature(EventsFeature)
         total_scoped = sum(len(scope) for scope in events.DB.scoped_events.values())
 
-        return Div(
+        return Div(class_name="p-4")(
             Details(
                 Summary(
                     Span(class_name="h2")(

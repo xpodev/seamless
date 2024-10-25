@@ -1,3 +1,4 @@
+from typing import TypedDict
 from pydantic import BaseModel
 from seamless import Div, Form, Input, Button, Component
 from seamless.extra.transports.client_id import ClientID
@@ -5,7 +6,7 @@ from seamless.extensions import State
 from seamless.types.events import SubmitEvent
 
 
-class Counter(BaseModel):
+class Counter(TypedDict):
     counter_value: int
 
 
@@ -50,10 +51,10 @@ class CounterPage(Component):
             ),
         )
 
-    def submit(self, event: SubmitEvent[Counter], sid: ClientID):
+    def submit(self, event: SubmitEvent, sid: ClientID):
         print("Form submitted!")
         print("socket id:", sid)
-        print(event)
+        print(event.data["counter_value"])
 
 
 def global_submit(event, sid: ClientID):

@@ -7,9 +7,9 @@ from typing_extensions import TypeAlias
 from pydom.utils.injector import Injector as _Injector
 
 
-T = TypeVar("T")
+_T = TypeVar("_T")
 
-InjectFactory: TypeAlias = Callable[[], T]
+InjectFactory: TypeAlias = Callable[[], _T]
 
 
 class Injector(_Injector):

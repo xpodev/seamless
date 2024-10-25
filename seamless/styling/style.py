@@ -1,20 +1,18 @@
-from typing import Generic, TypeVar, Union, TYPE_CHECKING
+from typing import Generic, TypeVar, Union
 
 from typing_extensions import Unpack
+from pydom.types.styling.css_properties import CSSProperties
 
-if TYPE_CHECKING:
-    from ..types.styling.css_properties import CSSProperties
-
-T = TypeVar("T")
+_T = TypeVar("_T")
 
 
 class StyleObject:
-    class _StyleProperty(Generic[T]):
+    class _StyleProperty(Generic[_T]):
         def __init__(self, instance: "StyleObject", name: str):
             self.instance = instance
             self.name = name.replace("_", "-")
 
-        def __call__(self, value: T):
+        def __call__(self, value: _T):
             self.instance.style[self.name] = value
             return self.instance
 

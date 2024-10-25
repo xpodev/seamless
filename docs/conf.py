@@ -1,6 +1,6 @@
 import sys
 
-sys.path.insert(0, "../..")
+sys.path.insert(0, "..")
 from seamless import __version__
 
 # Configuration file for the Sphinx documentation builder.
@@ -22,11 +22,26 @@ version = __version__
 extensions = [
     "pydata_sphinx_theme",
     "sphinx_substitution_extensions",
-    "sphinx.ext.autodoc",
+    "autoapi.extension",
 ]
 
 templates_path = ["_templates"]
-exclude_patterns = []
+exclude_patterns = ["_build", "_templates", "Thumbs.db", ".DS_Store"]
+
+autoapi_dirs = ["../seamless"]
+autoapi_ignore = ["*/internal/*"]
+autoapi_options = [
+    "members",
+    "undoc-members",
+    "show-inheritance",
+    "show-module-summary",
+    "special-members",
+    "imported-members",
+]
+autoapi_root = "api-reference"
+autoapi_keep_files = True
+autoapi_generate_api_docs = True
+autoapi_add_toctree_entry = True
 
 
 # -- Options for HTML output -------------------------------------------------
