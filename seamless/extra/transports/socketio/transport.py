@@ -2,11 +2,11 @@ from json import dumps
 from pathlib import Path
 from urllib.parse import parse_qs
 
-from pydom import Component, Context
 from pydom.rendering.render_state import RenderState
 from pydom.utils.functions import random_string
 from socketio import AsyncServer
 
+from .... import Component, Context
 from ....core.javascript import JS
 from ....core.empty import Empty
 from ..client_id import ClientID
