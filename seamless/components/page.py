@@ -1,14 +1,9 @@
 from typing import Optional, overload, Iterable
 
-from pydom import Component
-from pydom.utils.functions import to_iter
+from pydom.page import Page as BasePage
 
 from ..html import (
-    Fragment,
-    Html,
-    Head,
     Title,
-    Body,
     Meta,
 )
 
@@ -16,7 +11,7 @@ from ..types import ChildType, ChildrenType
 from ..types.html import HTMLHtmlElement, HTMLBodyElement, HTMLHeadElement
 
 
-class Page(Component):
+class Page(BasePage):
     @overload
     def __init__(
         self,
@@ -65,15 +60,6 @@ class Page(Component):
         The children that will be inside the `body` tag.
         """
         return self.children
-
-    def render(self):
-        return Fragment(
-            "<!DOCTYPE html>",
-            Html(**self._html_props)(
-                Head(**self._head_props)(*to_iter(self.head())),
-                Body(**self._body_props)(*to_iter(self.body())),
-            ),
-        )
 
     def __init_subclass__(cls, title: Optional[str] = None, **kwargs) -> None:
         super().__init_subclass__(**kwargs)
