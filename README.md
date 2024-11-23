@@ -4,7 +4,7 @@
 
 ![test](https://github.com/xpodev/pyrl/actions/workflows/python-test.yml/badge.svg)
 
-Seamless is a Python package for creating and manipulating HTML components. It is working similar to React.js, but in Python.
+Seamless is a Python package for creating and manipulating HTML components. It works similar to React.js, but in Python.
 
 We have detailed documentation [here](https://seamless.readthedocs.io/)
 
