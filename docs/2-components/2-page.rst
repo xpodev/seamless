@@ -44,12 +44,12 @@ The page component can be used to create a new page by passing the following pro
 
     def my_awesome_page():
         return Page(title="My awesome page")(
-            Div(class_name="container mt-5")(
-              Div(class_name="text-center p-4 rounded")(
-                Div(class_name="h-1")(
+            Div(classes="container mt-5")(
+              Div(classes="text-center p-4 rounded")(
+                Div(classes="h-1")(
                   "Awesome page"
                 ),
-                P(class_name="lead")(
+                P(classes="lead")(
                   "Welcome to seamless"
                 )
               )
@@ -87,12 +87,12 @@ You can create custom pages by extending the page component and overriding the d
 
     def my_awesome_page():
         return MyPage(title="My awesome page")(
-            Div(class_name="container mt-5")(
-              Div(class_name="text-center p-4 rounded")(
-                Div(class_name="h-1")(
+            Div(classes="container mt-5")(
+              Div(classes="text-center p-4 rounded")(
+                Div(classes="h-1")(
                   "Awesome page"
                 ),
-                P(class_name="lead")(
+                P(classes="lead")(
                   "Welcome to seamless"
                 )
               )

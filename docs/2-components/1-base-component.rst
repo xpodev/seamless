@@ -25,11 +25,11 @@ It provides a ``children`` property that is a tuple of the components that are c
             self.title = title
 
         def render(self):
-            return Div(class_name="card")(
-              self.title and Div(class_name="card-title")(
+            return Div(classes="card")(
+              self.title and Div(classes="card-title")(
                 self.title
               ),
-              Div(class_name="card-content")(
+              Div(classes="card-content")(
                 *self.children
               )
             )
@@ -137,11 +137,11 @@ component with the children as arguments. (See :ref:`syntax`)
             self.title = title
 
         def render(self):
-            return Div(class_name="card")(
-                Div(class_name="card-header")(
+            return Div(classes="card")(
+                Div(classes="card-header")(
                     self.title
                 ),
-                Div(class_name="card-body")(
+                Div(classes="card-body")(
                     *self.children
                 )
             )

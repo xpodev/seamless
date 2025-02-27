@@ -2,7 +2,7 @@ from seamless import Component, render
 from seamless.components import Page as _Page
 from seamless.extra.transports.socketio.transport import SocketIOTransport
 from seamless.html import *
-from seamless.styling import CSS, StyleObject
+from seamless.styling import CSS, StyleSheet
 
 
 def index():
@@ -57,8 +57,8 @@ class Card(Component):
     def render(self):
         styles = CSS.module("./static/card.css")
         return Div(
-            class_name=styles.card,
-            style=StyleObject(border_radius="5px") if self.rounded else None,
+            classes=styles.card,
+            style=StyleSheet(border_radius="5px") if self.rounded else None,
         )(*self.children)
 
 
@@ -70,6 +70,6 @@ class SuperCard(Card):
     def render(self):
         styles = CSS.module("./static/card.css")
         return Div(
-            class_name=styles.card,
-            style=StyleObject(border_radius="5px") if self.rounded else None,
+            classes=styles.card,
+            style=StyleSheet(border_radius="5px") if self.rounded else None,
         )(Div("Super card!" if self.is_super else "Card!"), *self.children)

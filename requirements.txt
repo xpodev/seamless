@@ -1,4 +1,4 @@
 cssutils==2.9.0
-python-dom
+pydom>=0.3.0
 python-socketio==5.11.1
 typing-extensions

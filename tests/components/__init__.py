@@ -10,7 +10,7 @@ class Plugin(Component):
     def render(self):
         return Div(
             f"{self.name} v{self.version}",
-            class_name="plugin",
+            classes="plugin",
         )
 
 
@@ -21,7 +21,7 @@ class PluginList(Component):
     def render(self):
         return Div(
             *[Plugin(plugin.name, plugin.version) for plugin in self.plugins],
-            class_name="plugin-list",
+            classes="plugin-list",
         )
 
 
@@ -29,7 +29,7 @@ class Card(Component):
     def render(self):
         return Div(
             *self.children,
-            class_name="card",
+            classes="card",
         )
 
 
@@ -37,7 +37,7 @@ class CardTitle(Component):
     def render(self):
         return H3(
             *self.children,
-            class_name="card-title",
+            classes="card-title",
         )
 
 
