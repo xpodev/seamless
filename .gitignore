@@ -167,3 +167,6 @@ src/**/*.js
 
 examples/**/static/*.js
 tests/**/static/*.js
+
+# Stubs should be generated on build, matching the pydom version
+seamless/stubs/

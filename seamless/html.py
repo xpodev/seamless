@@ -1,43 +1,47 @@
-import os
+from typing import TYPE_CHECKING
 
-from pydom import Component
-
-from .context import Context, set_global_context
-from .core import JS
-from .html import *
-from .internal.constants import DISABLE_GLOBAL_CONTEXT_ENV
-from .rendering import render
-from .version import version as __version__
-
-if not os.getenv(DISABLE_GLOBAL_CONTEXT_ENV):
-    set_global_context(Context.standard())
+if TYPE_CHECKING:
+    from .stubs.html import *
 else:
-    set_global_context(None)  # type: ignore
-
-del set_global_context
-del DISABLE_GLOBAL_CONTEXT_ENV
+    from pydom.html import *
 
 __all__ = [
-    "Component",
     "A",
     "Abbr",
     "Address",
     "Area",
     "Article",
     "Aside",
+    "Audio",
     "B",
     "Base",
+    "Bdi",
+    "Bdo",
     "BlockQuote",
     "Body",
     "Br",
     "Button",
     "Canvas",
+    "Caption",
     "Cite",
     "Code",
     "Col",
+    "ColGroup",
+    "Data",
+    "DataList",
+    "Dd",
+    "Del",
+    "Details",
+    "Dfn",
+    "Dialog",
     "Div",
+    "Dl",
+    "Dt",
     "Em",
     "Embed",
+    "FieldSet",
+    "FigCaption",
+    "Figure",
     "Footer",
     "Form",
     "Fragment",
@@ -49,36 +53,62 @@ __all__ = [
     "H6",
     "Head",
     "Header",
+    "HGroup",
     "Hr",
     "Html",
     "I",
+    "IFrame",
     "Img",
     "Input",
+    "Ins",
+    "Kbd",
     "Label",
+    "Legend",
     "Li",
     "Link",
     "Main",
+    "Map",
+    "Mark",
+    "Menu",
     "Meta",
+    "Meter",
     "Nav",
+    "NoScript",
+    "Object",
     "Ol",
+    "OptGroup",
     "Option",
+    "Output",
     "P",
     "Param",
+    "Picture",
     "Pre",
+    "Progress",
+    "Q",
+    "Rp",
+    "Rt",
+    "Ruby",
+    "S",
+    "Samp",
     "Script",
+    "Search",
     "Section",
     "Select",
+    "Slot",
     "Small",
     "Source",
     "Span",
     "Strong",
     "Style",
     "Sub",
+    "Summary",
     "Sup",
     "Table",
     "TBody",
     "Td",
+    "Template",
     "TextArea",
+    "TFoot",
     "Th",
     "THead",
     "Time",
@@ -87,9 +117,7 @@ __all__ = [
     "Track",
     "U",
     "Ul",
+    "Var",
+    "Video",
     "Wbr",
-    "Context",
-    "JS",
-    "render",
-    "__version__",
 ]

@@ -54,7 +54,7 @@ To navigate between the pages, use the ``RouterLink`` component from ``seamless.
 
     class MyApp(Component):
         def render(self):
-            return Div(class_name="root")(
+            return Div(classes="root")(
               Nav(
                   RouterLink(to="/")(
                       "Home"
@@ -66,7 +66,7 @@ To navigate between the pages, use the ``RouterLink`` component from ``seamless.
                       "Contact"
                   )
               ),
-              Div(class_name="content")(
+              Div(classes="content")(
                   Router(
                       Route(path="/", component=Home),
                       Route(path="/about", component=About),
@@ -148,7 +148,7 @@ The parameter will be passed to the component as a prop with the same name.
 
     class MyApp(Component):
         def render(self):
-            return Div(class_name="root")(
+            return Div(classes="root")(
               Nav(
                   RouterLink(to="/user/1")(
                       "User 1"
@@ -157,7 +157,7 @@ The parameter will be passed to the component as a prop with the same name.
                       "User 2"
                   )
               ),
-              Div(class_name="content")(
+              Div(classes="content")(
                   Router(
                       Route(path="/user/{id:int}", component=User)
                   )

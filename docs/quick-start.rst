@@ -61,12 +61,12 @@ Last, we create the ``FastAPI`` app and add an endpoint that will render our pag
     async def read_root():
         return render(
           AppPage(
-            Div(class_name="container mt-5")(
-              Div(class_name="text-center p-4 rounded")(
-                Div(class_name="display-4")(
+            Div(classes="container mt-5")(
+              Div(classes="text-center p-4 rounded")(
+                Div(classes="display-4")(
                   "Hello, World!"
                 ),
-                P(class_name="lead")(
+                P(classes="lead")(
                   "Welcome to seamless"
                 )
               )

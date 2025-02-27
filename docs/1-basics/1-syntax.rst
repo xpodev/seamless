@@ -22,11 +22,11 @@ Using the card component as an example, we will show the different syntaxes.
             self.title = title
 
         def render(self):
-            return Div(class_name="card")(
-              self.title and Div(class_name="card-title")(
+            return Div(classes="card")(
+              self.title and Div(classes="card-title")(
                 self.title
               ),
-              Div(class_name="card-content")(
+              Div(classes="card-content")(
                 *self.children
               )
             )

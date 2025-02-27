@@ -4,20 +4,20 @@
 Style Object
 ############
 
-The ``StyleObject`` class is used to create reusable styles for components.
+The ``StyleSheet`` class is used to create reusable styles for components.
 It is a dictionary-like object that can be used to store CSS properties and values.
 
 Usage
 #####
 
-To create a new style object, create a new instance of the ``StyleObject`` class from ``seamless.styling``.
+To create a new style object, create a new instance of the ``StyleSheet`` class from ``seamless.styling``.
 
 .. code-block:: python
     :caption: Creating a style object
 
-    from seamless.styling import StyleObject
+    from seamless.styling import StyleSheet
 
-    style = StyleObject(
+    style = StyleSheet(
         background_color="red",
         color="white"
     )

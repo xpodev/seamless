@@ -14,9 +14,9 @@ class UserPage(Component):
 
     def render(self):
         if self.user_id >= len(users):
-            return Div(class_name="container")(
-                Div(class_name="row")(
-                    Div(class_name="display-1 text-center")("User not found"),
+            return Div(classes="container")(
+                Div(classes="row")(
+                    Div(classes="display-1 text-center")("User not found"),
                 )
             )
 
@@ -25,16 +25,16 @@ class UserPage(Component):
             f"{user['name']['title']} {user['name']['first']} {user['name']['last']}"
         )
 
-        return Div(class_name="container")(
-            Div(class_name="row")(
-                Div(class_name="text-center")(
+        return Div(classes="container")(
+            Div(classes="row")(
+                Div(classes="text-center")(
                     Img(
                         src=user["picture"]["large"],
                         alt=user_name,
-                        class_name="rounded-circle",
+                        classes="rounded-circle",
                     ),
                 ),
-                Div(class_name="display-1 text-center")(user_name),
-                Div(class_name="display-6 text-center")(f"Email: {user['email']}"),
+                Div(classes="display-1 text-center")(user_name),
+                Div(classes="display-6 text-center")(f"Email: {user['email']}"),
             ),
         )

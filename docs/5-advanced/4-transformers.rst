@@ -52,11 +52,11 @@ The following example demonstrates how to use a property transformer to give a c
 
     @property_transformer("style")
     def add_class_to_inline_styles(key, value, element: ElementNode, render_state: RenderState):
-        class_name = uuid4().hex
+        classes = uuid4().hex
         if value:
-            element.props["class"] = f"{class_name} {element.props.get('class', '')}"
+            element.props["class"] = f"{classes} {element.props.get('class', '')}"
 
-        render_state.custom_data["css_string"] = render_state.custom_data.get("css_string", "") + f".{class_name} {{{value}}}"
+        render_state.custom_data["css_string"] = render_state.custom_data.get("css_string", "") + f".{classes} {{{value}}}"
         del element.props[key]
 
 
@@ -104,11 +104,11 @@ The following example demonstrates how to use a post-render transformer to add t
 
     @property_transformer("style")
     def add_class_to_inline_styles(key, value, element, render_state: RenderState):
-        class_name = uuid4().hex
+        classes = uuid4().hex
         if value:
-            element.props["class"] = f"{class_name} {element.props.get('class', '')}"
+            element.props["class"] = f"{classes} {element.props.get('class', '')}"
 
-        render_state.custom_data["css_string"] = render_state.custom_data.get("css_string", "") + f".{class_name} {{{value}}}"
+        render_state.custom_data["css_string"] = render_state.custom_data.get("css_string", "") + f".{classes} {{{value}}}"
         del element.props[key]
 
     @post_render_transformer()

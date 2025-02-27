@@ -16,11 +16,11 @@ pip install python-seamless
 ## Usage
 
 ```python
-from seamless import Div, H1, P, Component, StyleObject
+from seamless import Div, H1, P, Component, StyleSheet
 
 class MyComponent(Component):
   def render(self):
-    root_style = StyleObject(color="#33343c")
+    root_style = StyleSheet(color="#33343c")
     return Div(style=div_style)(
       H1(
         "Hello, World!",
