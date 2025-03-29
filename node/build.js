@@ -17,5 +17,4 @@ packages.forEach((pkg) => {
   const pkgJson = require(pkgJsonPath);
   pkgJson.version = nextVersion;
   fs.writeFileSync(pkgJsonPath, JSON.stringify(pkgJson, null, 2));
-  execSync(`cd ${pkgPath} && npm run build && npm publish --access public`);
 });

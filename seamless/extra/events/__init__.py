@@ -1,18 +1,18 @@
-from typing import Callable
+from typing import Callable, List
 
-from pydom.context import Context
 from pydom.rendering.render_state import RenderState
 from pydom.rendering.tree.nodes import ContextNode
 
+from ...context import Context
 from .database import EventsDatabase, Action
 from ..feature import Feature
 from ...internal.constants import (
     SEAMLESS_ELEMENT_ATTRIBUTE,
     SEAMLESS_INIT_ATTRIBUTE,
+    UNSAFE_GLOBAL_EVENT_ATTRIBUTE,
 )
 
 from ...internal.validation import wrap_with_validation
-from ..transports.errors import TransportConnectionRefused
 from ..transports.transport import TransportFeature
 
 
@@ -79,7 +79,7 @@ class EventsFeature(Feature):
         return matcher, transformer
 
     def _post_render_transformer(self, root: ContextNode, render_state: RenderState):
-        actions = render_state.custom_data.get("events.actions", [])
+        actions: List[Action] = render_state.custom_data.get("events.actions", [])
 
         if len(actions) == 0:
             return
@@ -94,4 +94,12 @@ class EventsFeature(Feature):
             )
         else:
             for action in actions:
-                self.DB.add_event(action, scope=client_id)
+                self.DB.add_event(
+                    action,
+                    scope=client_id,
+                )
+
+
+def UnsAfE_gL__o__bAL_EVEnt(func: Callable) -> Callable:
+    setattr(func, UNSAFE_GLOBAL_EVENT_ATTRIBUTE, True)
+    return func

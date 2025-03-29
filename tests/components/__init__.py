@@ -1,5 +1,5 @@
-from seamless import Component, Div, H3, Hr, Link, Button, JS
-from seamless.components import Page as _Page
+from pydom import Component, Div, H3, Hr, Link
+from pydom.page import Page as _Page
 
 
 class Plugin(Component):
@@ -9,8 +9,9 @@ class Plugin(Component):
 
     def render(self):
         return Div(
+            classes="plugin",
+        )(
             f"{self.name} v{self.version}",
-            class_name="plugin",
         )
 
 
@@ -20,44 +21,36 @@ class PluginList(Component):
 
     def render(self):
         return Div(
+            classes="plugin-list",
+        )(
             *[Plugin(plugin.name, plugin.version) for plugin in self.plugins],
-            class_name="plugin-list",
         )
 
 
 class Card(Component):
     def render(self):
         return Div(
+            classes="card",
+        )(
             *self.children,
-            class_name="card",
         )
 
 
 class CardTitle(Component):
     def render(self):
         return H3(
+            classes="card-title",
+        )(
             *self.children,
-            class_name="card-title",
         )
 
 
 class App(Component):
     def render(self):
-        return Card(
-            CardTitle("Card title"),
-            Hr(),
-            Div("Card content"),
-        )
+        return Card(CardTitle("Card title"), Hr(), Div(*self.children))
 
 
 class Page(_Page):
     def head(self):
         yield from super().head()
         yield Link(rel="stylesheet", href="/static/style.css")
-
-
-class AlertButton(Component):
-    def render(self):
-        return Button(on_click=JS("alert('Button clicked')"))(
-            "Click me",
-        )

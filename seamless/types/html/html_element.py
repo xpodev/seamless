@@ -1,29 +1,11 @@
 from typing import TYPE_CHECKING, Iterable, Union, Literal
 
-from typing_extensions import TypedDict
+from pydom.styling import StyleSheet
+from pydom.types.html.html_element import HTMLElement
 
 if TYPE_CHECKING:
     from seamless.core.javascript import JS
-    from seamless.styling import StyleObject
 
 
-class HTMLElement(TypedDict, total=False, closed=False):
-    access_key: str
-    auto_capitalize: str
-    class_name: str | Iterable[str]
-    content_editable: str
-    # data: dict[str, str]  # add this if needed in the future
-    dir: Literal["ltr", "rtl", "auto"]
-    draggable: str
-    hidden: str
-    id: str
-    input_mode: str
-    lang: str
-    role: str
-    spell_check: str
-    style: Union[str, "StyleObject"]
-    tab_index: str
-    title: str
-    translate: str
-
+class HTMLElement(HTMLElement, total=False, closed=False):
     init: "JS"

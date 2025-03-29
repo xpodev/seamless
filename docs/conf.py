@@ -1,4 +1,7 @@
-from seamless.version import version as __version__
+import sys, datetime
+
+sys.path.insert(0, "..")
+from seamless import __version__
 
 # Configuration file for the Sphinx documentation builder.
 #
@@ -9,29 +12,69 @@ from seamless.version import version as __version__
 # https://www.sphinx-doc.org/en/master/usage/configuration.html#project-information
 
 project = "Seamless"
-copyright = "2024, Xpo Development"
 author = "Xpo Development"
+copyright = f"{datetime.date.today().year}, {author}"
 version = __version__
 
 # -- General configuration ---------------------------------------------------
 # https://www.sphinx-doc.org/en/master/usage/configuration.html#general-configuration
 
 extensions = [
-    "sphinx_rtd_theme",
+    "pydata_sphinx_theme",
     "sphinx_substitution_extensions",
+    "autoapi.extension",
 ]
 
 templates_path = ["_templates"]
-exclude_patterns = []
+exclude_patterns = ["_build", "_templates", "Thumbs.db", ".DS_Store"]
+
+autoapi_dirs = ["../seamless"]
+autoapi_ignore = ["*/internal/*"]
+autoapi_options = [
+    "members",
+    "undoc-members",
+    "show-inheritance",
+    "show-module-summary",
+    "special-members",
+    "imported-members",
+]
+autoapi_root = "api-reference"
+autoapi_keep_files = True
+autoapi_generate_api_docs = True
+autoapi_add_toctree_entry = True
 
 
 # -- Options for HTML output -------------------------------------------------
 # https://www.sphinx-doc.org/en/master/usage/configuration.html#options-for-html-output
 
-html_theme = "sphinx_rtd_theme"
+html_favicon = "_static/images/favicon.ico"
+html_logo = "_static/images/favicon.svg"
 html_static_path = ["_static"]
-html_favicon = "favicon.ico"
+html_theme = "pydata_sphinx_theme"
 html_title = "Seamless Documentation"
+
+html_theme_options = {
+    "icon_links": [
+        {
+            "name": "GitHub",
+            "url": "https://github.com/xpodev/seamless",
+            "icon": "fa-brands fa-github",
+        },
+        {
+            "name": "PyPI",
+            "url": "https://pypi.org/project/python-seamless",
+            "icon": "fa-brands fa-python",
+        },
+    ],
+    "logo": {
+        "alt_text": "Seamless",
+        "text": "Seamless",
+    },
+}
+
+html_css_files = [
+    "css/custom.css",
+]
 
 rst_prolog = f"""
 .. |version| replace:: {version}

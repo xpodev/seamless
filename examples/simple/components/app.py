@@ -12,11 +12,11 @@ class App(Component):
         return BasePage(
             State.init(),
             SocketIOTransport.init(),
-            Div(class_name="d-flex flex-column h-100")(
-                Div(class_name="d-flex justify-content-between")(
-                    Nav(class_name="navbar navbar-expand-lg navbar-light bg-light")(
-                        RouterLink(to="/", class_name="navbar-brand")("Home"),
-                        RouterLink(to="/counter", class_name="navbar-brand")("Counter"),
+            Div(classes="d-flex flex-column h-100")(
+                Div(classes="d-flex justify-content-between")(
+                    Nav(classes="navbar navbar-expand-lg navbar-light bg-light")(
+                        RouterLink(to="/", classes="navbar-brand")("Home"),
+                        RouterLink(to="/counter", classes="navbar-brand")("Counter"),
                     ),
                     Div(
                         Button(on_click=self.foo)(
@@ -24,7 +24,7 @@ class App(Component):
                         )
                     )
                 ),
-                Div(class_name="content flex-grow-1")(
+                Div(classes="content flex-grow-1")(
                     Router(loading_component=Loading)(
                         Route(path="/", component=HomePage),
                         Route(path="/counter", component=CounterPage),

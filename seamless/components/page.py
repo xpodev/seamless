@@ -1,14 +1,9 @@
-from typing import overload, Iterable
+from typing import Optional, overload, Iterable
 
-from pydom import Component
-from pydom.utils.functions import to_iter
+from pydom.page import Page as BasePage
 
 from ..html import (
-    Fragment,
-    Html,
-    Head,
     Title,
-    Body,
     Meta,
 )
 
@@ -16,34 +11,34 @@ from ..types import ChildType, ChildrenType
 from ..types.html import HTMLHtmlElement, HTMLBodyElement, HTMLHeadElement
 
 
-class Page(Component):
+class Page(BasePage):
     @overload
     def __init__(
         self,
         *children: ChildType,
-        title: str | None = None,
-        html_props: HTMLHtmlElement | None = None,
-        head_props: HTMLHeadElement | None = None,
-        body_props: HTMLBodyElement | None = None,
+        title: Optional[str] = None,
+        html_props: Optional[HTMLHtmlElement] = None,
+        head_props: Optional[HTMLHeadElement] = None,
+        body_props: Optional[HTMLBodyElement] = None,
     ): ...
     @overload
     def __init__(
         self,
         *,
         children: ChildrenType,
-        title: str | None = None,
-        html_props: HTMLHtmlElement | None = None,
-        head_props: HTMLHeadElement | None = None,
-        body_props: HTMLBodyElement | None = None,
+        title: Optional[str] = None,
+        html_props: Optional[HTMLHtmlElement] = None,
+        head_props: Optional[HTMLHeadElement] = None,
+        body_props: Optional[HTMLBodyElement] = None,
     ): ...
 
     def __init__(  # type: ignore
         self,
         *,
-        title: str | None = None,
-        html_props: HTMLHtmlElement | None = None,
-        head_props: HTMLHeadElement | None = None,
-        body_props: HTMLBodyElement | None = None,
+        title: Optional[str] = None,
+        html_props: Optional[HTMLHtmlElement] = None,
+        head_props: Optional[HTMLHeadElement] = None,
+        body_props: Optional[HTMLBodyElement] = None,
     ):
         self.title = title
         self._html_props = html_props or {"lang": "en"}
@@ -66,16 +61,7 @@ class Page(Component):
         """
         return self.children
 
-    def render(self):
-        return Fragment(
-            "<!DOCTYPE html>",
-            Html(**self._html_props)(
-                Head(**self._head_props)(*to_iter(self.head())),
-                Body(**self._body_props)(*to_iter(self.body())),
-            ),
-        )
-
-    def __init_subclass__(cls, title: str | None = None, **kwargs) -> None:
+    def __init_subclass__(cls, title: Optional[str] = None, **kwargs) -> None:
         super().__init_subclass__(**kwargs)
 
         if title is None:

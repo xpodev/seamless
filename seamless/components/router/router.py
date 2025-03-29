@@ -1,6 +1,6 @@
 from json import dumps
 from pathlib import Path
-from typing import Optional, Tuple, overload, Type
+from typing import Optional, Tuple, overload
 
 from pydom import Component
 
@@ -10,19 +10,20 @@ from .route import Route
 
 
 HERE = Path(__file__).parent
+ROUTER_JS = JS(file=HERE / "router.js")
 
 
 class Router(Component):
     children: Tuple[Route, ...]  # type: ignore
 
     @overload
-    def __init__(self, *, loading_component: Optional[Type[Component]] = None): ...
+    def __init__(self, *, loading_component: Optional[type[Component]] = None): ...
     @overload
     def __init__(
-        self, *routes: Route, loading_component: Optional[Type[Component]] = None
+        self, *routes: Route, loading_component: Optional[type[Component]] = None
     ): ...
 
-    def __init__(self, *, loading_component: Optional[Type[Component]] = None):  # type: ignore
+    def __init__(self, *, loading_component: Optional[type[Component]] = None):  # type: ignore
         self.loading_component = (
             component_name(loading_component) if loading_component else None
         )
@@ -36,10 +37,11 @@ class Router(Component):
             for route in self.children
         ]
 
-        with open(HERE / "router.js", "r") as f:
-            router_js = f.read()
-
         return Empty(
-            init=JS(f"let routes = {dumps(routes)};{router_js}"),
+            init=JS(f"let routes = {dumps(routes)};") + ROUTER_JS,
             loading=self.loading_component,
+            umount_function=self.on_umount,
         )
+    
+    def on_umount(self):
+        ...

@@ -1,11 +1,11 @@
 import inspect
-from typing import TYPE_CHECKING, ClassVar, Optional, Type
+from typing import TYPE_CHECKING, ClassVar, Optional
 
 from pydom import Component
-from pydom.context import Context
-from pydom.context.feature import Feature
 from pydom.rendering import render_json
 
+from ...context import Context
+from ...context.feature import Feature
 from ...errors import ClientError
 from .repository import ComponentsRepository
 from ..transports.transport import TransportFeature
@@ -25,7 +25,7 @@ class ComponentsFeature(Feature):
 
         @classmethod
         def __init_subclass__(
-            cls: Type["_Component"],
+            cls: type["_Component"],
             *,
             name: Optional[str] = None,
             inject_render: bool = False,
@@ -71,5 +71,5 @@ class ComponentsFeature(Feature):
         )
 
 
-def component_name(component: Type[Component]) -> Optional[str]:
+def component_name(component: type[Component]) -> Optional[str]:
     return getattr(component, "__seamless_name__", None)

@@ -1,7 +1,7 @@
 from typing import Optional
 from socketio import ASGIApp
 
-from pydom.context import Context, get_context
+from ....context import Context, get_context
 
 from .transport import SocketIOTransport
 
@@ -23,4 +23,9 @@ class SocketIOMiddleware:
         self.app = ASGIApp(transport.server, app, socketio_path=self.socket_path)
 
     async def __call__(self, scope, receive, send):
-        await self.app(scope, receive, send)
+        ...
+
+    def __new__(cls, *args, **kwargs):
+        instance = super().__new__(cls)
+        instance.__init__(*args, **kwargs)
+        return instance.app

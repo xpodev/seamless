@@ -1,5 +1,5 @@
 from dataclasses import dataclass
-from typing import Generic, TypeVar
+from typing import Generic, Optional, TypeVar
 
 try:
     from pydantic import BaseModel  # type: ignore
@@ -9,7 +9,7 @@ except ImportError:
     class BaseModel: ...
 
 
-T = TypeVar("T")
+_T = TypeVar("_T")
 
 # region: Event Types
 
@@ -112,7 +112,7 @@ class PointerEvent(Event): ...
 
 
 class PopStateEvent(Event):
-    state: dict | None
+    state: Optional[dict]
 
 
 class ProgressEvent(Event): ...
@@ -131,8 +131,8 @@ class StorageEvent(Event):
     url: str
 
 
-class SubmitEvent(Event, Generic[T]):
-    data: T
+class SubmitEvent(Event, Generic[_T]):
+    data: _T
 
 
 class TimeEvent(Event): ...

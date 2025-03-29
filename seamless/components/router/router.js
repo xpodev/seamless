@@ -82,10 +82,12 @@ const clearParent = () => {
   }
 };
 
-const loadComponent = async (name, props = {}) => {
-  return seamless.instance.toDOMElement(
-    await seamless.getComponent(name, props)
-  );
+const loadComponent = (name, props = {}) => {
+  return new Promise((resolve) => {
+    seamless.getComponent(name, props).then((component) => {
+      resolve(seamless.instance.toDOMElement(component));
+    });
+  });
 };
 
 window.addEventListener("pageLocationChange", () => {
@@ -135,7 +137,7 @@ seamless.navigateTo = function (to) {
   return false;
 };
 
-window.addEventListener("transportsAvailable", async (event) => {
+window.addEventListener("transportsInitialized", () => {
   if (loadingComponentName) {
     seamless.getComponent(loadingComponentName, {}).then((component) => {
       loadingComponent = seamless.instance.toDOMElement(component);

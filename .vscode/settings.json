@@ -1,5 +1,7 @@
 {
-  "cSpell.words": [
-    "Renderable"
-  ]
+  "cSpell.words": ["pydom", "Renderable"],
+  "python.analysis.diagnosticSeverityOverrides": {
+    "reportWildcardImportFromLibrary": "none"
+  },
+  "python.analysis.extraPaths": ["../pydom"]
 }

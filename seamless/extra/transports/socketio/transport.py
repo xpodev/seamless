@@ -2,11 +2,10 @@ from json import dumps
 from pathlib import Path
 from urllib.parse import parse_qs
 
-from pydom import Component, Context
 from pydom.rendering.render_state import RenderState
-from pydom.utils.functions import random_string
 from socketio import AsyncServer
 
+from .... import Component, Context
 from ....core.javascript import JS
 from ....core.empty import Empty
 from ..client_id import ClientID
@@ -30,6 +29,12 @@ class SocketIOTransport(TransportFeature):
         try:
             query = parse_qs(env.get("QUERY_STRING", ""))
             client_id = query.get("client_id", [None])[0]
+
+            try:
+                TransportFeature.claim_client_id(client_id)
+            except KeyError:
+                raise TransportConnectionRefused("Client ID does not exist")
+
             await self.connect(client_id, env)
             await self.server.save_session(sid, {"client_id": client_id})
         except TransportConnectionRefused:
@@ -45,19 +50,20 @@ class SocketIOTransport(TransportFeature):
         client_id = await self._client_id(sid)
         await self.disconnect(client_id)
 
-    async def _client_id(self, sid):
+    async def _client_id(self, sid) -> str:
         session = await self.server.get_session(sid)
         return session["client_id"]
 
     @staticmethod
     def init(config=None):
-        init_js = JS(file=HERE / "socketio.init.js", async_=True)
+        init_js = JS(file=HERE / "socketio.init.js")
 
         class InitSocketIO(Component, inject_render=True):
-            def render(self, render_state: RenderState):
-                client_id = render_state.custom_data.setdefault(
-                    "transports.client_id", random_string(24)
-                )
+            def render(self, render_state: RenderState, context: Context):
+                transport = context.get_feature(SocketIOTransport)
+                client_id = transport.create_client_id()
+
+                render_state.custom_data["transports.client_id"] = client_id
 
                 socket_options = config or {}
                 socket_options.setdefault("query", {})["client_id"] = client_id

@@ -2,7 +2,7 @@ from pathlib import Path
 from fastapi import FastAPI
 from fastapi.responses import HTMLResponse, FileResponse
 from seamless import render
-from seamless.extra.transports.socketio.middleware import SocketIOMiddleware
+from seamless.middlewares import SocketIOMiddleware
 
 from components.app import App
 

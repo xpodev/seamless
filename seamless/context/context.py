@@ -2,41 +2,52 @@ import os
 from typing import (
     Any,
     Callable,
-    Concatenate,
+    Dict,
     Optional,
-    ParamSpec,
+    Type,
     TypeVar,
     cast,
 )
 
+from typing_extensions import Concatenate, ParamSpec
 from pydom.context.context import (
     Context as _Context,
     get_context as _get_context,
     set_default_context as _set_global_context,
 )
-from pydom.rendering.tree.nodes import ContextNode
 
 from ..errors import Error
+from .feature import Feature
 from ..internal.constants import DISABLE_GLOBAL_CONTEXT_ENV
-from ..internal.injector import Injector
 
-T = TypeVar("T", bound=_Context)
-P = ParamSpec("P")
+_P = ParamSpec("_P")
+_T = TypeVar("_T", bound=Feature)
 
-Feature = Callable[Concatenate["Context", P], Any]
-PropertyMatcher = Callable[Concatenate[str, Any, P], bool] | str
-PropertyTransformer = Callable[Concatenate[str, Any, "ContextNode", P], None]
-PostRenderTransformer = Callable[Concatenate["ContextNode", P], None]
+FeatureFactory = Callable[Concatenate["Context", _P], Feature]
 
 
 class Context(_Context):
     def __init__(self) -> None:
         super().__init__()
-        self.injector = Injector()
-        self.injector.add(Context, self)
+        self._features: Dict[Type[Feature], Feature] = {}
+
+    def add_feature(self, feature: FeatureFactory[_P], *args: _P.args, **kwargs: _P.kwargs):
+        result = feature(self, *args, **kwargs)
+        if isinstance(feature, type):
+            self._features[feature] = result
+
+    def get_feature(self, feature_type: Type[_T]) -> _T:
+        try:
+            return cast(_T, self._features[feature_type])
+        except KeyError:
+            for instance in self._features.values():
+                if isinstance(instance, feature_type):
+                    return instance
+
+            raise
 
     @classmethod
-    def standard(cls) -> "Context":
+    def standard(cls: Type["Context"]) -> "Context":
         context = cls()
 
         from .default import add_standard_features
@@ -56,12 +67,10 @@ def get_context(context: Optional[Context] = None):
                 "You must provide a context explicitly. Did you forget to call set_global_context?"
             ) from None
 
-        raise Error(
-            "No global context found. Did you forget to call set_global_context?"
-        )
+        raise Error("No global context found. Did you forget to call set_global_context?")
 
     return context
 
 
-def set_global_context(context: _Context):
+def set_global_context(context: Context):
     _set_global_context(context)
