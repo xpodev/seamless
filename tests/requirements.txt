@@ -1,0 +1,5 @@
+fastapi==0.109.2
+Flask==3.0.2
+httpx==0.27.0
+python-socketio==5.11.1
+uvicorn==0.27.1
