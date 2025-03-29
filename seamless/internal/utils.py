@@ -1,6 +1,8 @@
 from functools import wraps
 from inspect import iscoroutinefunction, isfunction
 
+from seamless.internal.constants import UNSAFE_GLOBAL_EVENT_ATTRIBUTE
+
 
 class Promise:
     def __init__(self, value):
@@ -52,6 +54,8 @@ class _obj(object):
 
 def is_global(func):
     func = original_func(func)
+    if getattr(func, UNSAFE_GLOBAL_EVENT_ATTRIBUTE, False):
+        return True
     return isfunction(func) and (getattr(func, "__closure__", None) is None)
 
 

@@ -51,7 +51,7 @@ The default context is created using the ``Context.standard`` method and has the
 
 The standard context also comes with the following :ref:`property transformers<property-transformers>` in order:
 
-- **Class Transformer**: Changes the ``class_name`` property key to ``class`` and converts
+- **Class Transformer**: Changes the ``classes`` property key to ``class`` and converts
   the value to a string if it is a list.
 
   .. code-block:: python
@@ -62,7 +62,7 @@ The standard context also comes with the following :ref:`property transformers<p
       context = Context()
       context.add_prop_transformer(*class_transformer())
 
-- **Simple Transformer**: Converts the properties in :ref:`this list<props-rendering>` except for ``class_name``.
+- **Simple Transformer**: Converts the properties in :ref:`this list<props-rendering>` except for ``classes``.
 
   .. code-block:: python
 

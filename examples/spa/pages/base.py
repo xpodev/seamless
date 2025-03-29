@@ -1,6 +1,6 @@
+from pydom.styling import CSS
 from seamless import Link, Script, Style, __version__
 from seamless.components import Page
-from seamless.styling import CSS
 
 class BasePage(Page):
     def head(self):

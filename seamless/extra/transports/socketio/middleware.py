@@ -1,7 +1,7 @@
 from typing import Optional
 from socketio import ASGIApp
 
-from pydom.context import Context, get_context
+from ....context import Context, get_context
 
 from .transport import SocketIOTransport
 

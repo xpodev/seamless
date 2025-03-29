@@ -1,8 +1,8 @@
 from typing import Any, Set
 
-from pydom.context import Context
 from pydom.utils.functions import random_string
 
+from ...context import Context
 from ..feature import Feature
 from .dispatcher import dispatcher
 from .subscriptable import event

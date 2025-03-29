@@ -1,1 +1,1 @@
-from pydom.context.feature import Feature
+from ..context.feature import Feature

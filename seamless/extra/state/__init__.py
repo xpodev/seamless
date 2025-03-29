@@ -3,9 +3,9 @@ from pathlib import Path
 from typing import Any, overload
 
 from pydom import Component
-from pydom.context import Context
 from pydom.rendering.tree.nodes import ContextNode
 
+from ...context import Context
 from ...core import Empty, JS
 from ..feature import Feature
 from ...internal.constants import SEAMLESS_ELEMENT_ATTRIBUTE, SEAMLESS_INIT_ATTRIBUTE

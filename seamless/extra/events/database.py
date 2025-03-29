@@ -38,8 +38,8 @@ class EventsDatabase:
 
         if is_global(action.action):
             self.events[action.id] = action
-
-        self.scoped_events.setdefault(scope, {})[action.id] = action
+        else:
+            self.scoped_events.setdefault(scope, {})[action.id] = action
 
         return action
 
@@ -60,7 +60,5 @@ class EventsDatabase:
     def get_event(self, event_id: str, *, scope: str):
         if event_id in self.events:
             return self.events[event_id]
-        
+
         return self.scoped_events[scope][event_id]
-
-

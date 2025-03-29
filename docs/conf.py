@@ -1,4 +1,4 @@
-import sys
+import sys, datetime
 
 sys.path.insert(0, "..")
 from seamless import __version__
@@ -12,8 +12,8 @@ from seamless import __version__
 # https://www.sphinx-doc.org/en/master/usage/configuration.html#project-information
 
 project = "Seamless"
-copyright = "2024, Xpo Development"
 author = "Xpo Development"
+copyright = f"{datetime.date.today().year}, {author}"
 version = __version__
 
 # -- General configuration ---------------------------------------------------

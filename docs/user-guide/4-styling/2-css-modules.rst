@@ -34,7 +34,7 @@ Then, use the ``CSS`` to import your css files.
 
     class MyComponent(Component):
         def render(self, css):
-            return Div(class_name=styles.card)(
+            return Div(classes=styles.card)(
                 "Hello, world!"
             )
 

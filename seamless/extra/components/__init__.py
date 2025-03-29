@@ -2,10 +2,10 @@ import inspect
 from typing import TYPE_CHECKING, ClassVar, Optional
 
 from pydom import Component
-from pydom.context import Context
-from pydom.context.feature import Feature
 from pydom.rendering import render_json
 
+from ...context import Context
+from ...context.feature import Feature
 from ...errors import ClientError
 from .repository import ComponentsRepository
 from ..transports.transport import TransportFeature

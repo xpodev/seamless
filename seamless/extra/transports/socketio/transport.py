@@ -3,7 +3,6 @@ from pathlib import Path
 from urllib.parse import parse_qs
 
 from pydom.rendering.render_state import RenderState
-from pydom.utils.functions import random_string
 from socketio import AsyncServer
 
 from .... import Component, Context

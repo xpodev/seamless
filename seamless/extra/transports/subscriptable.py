@@ -1,7 +1,7 @@
 from typing import Any, Generic, Callable
 
-from pydom import Context
-from pydom.context.feature import Feature
+from ...context.feature import Feature
+from ...context import Context
 from typing_extensions import ParamSpec
 
 from ...errors import ClientError

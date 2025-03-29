@@ -9,7 +9,19 @@ classifiers = [
   "License :: OSI Approved :: MIT License",
   "Operating System :: OS Independent",
 ]
-dynamic = ["dependencies", "version"]
+dynamic = ["version"]
+dependencies = [
+  "cssutils==2.9.0",
+  "pydom",
+  "python-socketio==5.11.1",
+  "typing-extensions",
+]
+
+[dependency-groups]
+dev = [
+    "fastapi",
+    "uvicorn",
+]
 
 [project.urls]
 Homepage = "https://github.com/xpodev/seamless"

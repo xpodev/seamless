@@ -122,14 +122,14 @@ class TestRender(unittest.TestCase):
                     "Hello",
                     Div(),
                     id="my-id",
-                    class_name="my-class",
+                    classes="my-class",
                 )
             
         class MyComponent2(Component):
             def render(self):
                 return Div(
                     MyComponent(),
-                    class_name="my-class",
+                    classes="my-class",
                 )
 
         self.assertEqual(

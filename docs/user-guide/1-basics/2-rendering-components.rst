@@ -114,11 +114,11 @@ Props Rendering
 ###############
 
 When rendering components, some props names are converted to another name in the HTML representation.
-For example, the ``class_name`` prop is converted to the ``class`` attribute in the HTML representation.
+For example, the ``classes`` prop is converted to the ``class`` attribute in the HTML representation.
 
 The full list of prop names and their corresponding HTML attributes is as follows:
 
-- ``class_name`` -> ``class``
+- ``classes`` -> ``class``
 - ``html_for`` -> ``for``
 - ``accept_charset`` -> ``accept-charset``
 - ``http_equiv`` -> ``http-equiv``

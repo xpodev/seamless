@@ -40,4 +40,8 @@ class Router(Component):
         return Empty(
             init=JS(f"let routes = {dumps(routes)};") + ROUTER_JS,
             loading=self.loading_component,
+            umount_function=self.on_umount,
         )
+    
+    def on_umount(self):
+        ...
